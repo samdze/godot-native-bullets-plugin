@@ -1,0 +1,4 @@
+[submodule "addons/native_bullets/godot-cpp"]
+	path = addons/native_bullets/godot-cpp
+	url = https://github.com/godotengine/godot-cpp
+	branch = 3.x

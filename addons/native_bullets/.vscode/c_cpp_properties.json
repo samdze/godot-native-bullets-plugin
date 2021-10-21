@@ -1,0 +1,20 @@
+{
+  "configurations": [
+    {
+      "name": "Win32",
+      "includePath": [
+        "${default}",
+        "${workspaceFolder}/godot-cpp/include",
+        "${workspaceFolder}/godot-cpp/include/core",
+        "${workspaceFolder}/godot-cpp/include/gen",
+        "${workspaceFolder}/godot-cpp/godot-headers"
+      ],
+      "windowsSdkVersion": "10.0.16299.0",
+      "compilerPath": "C:\\Program Files (x86)\\Microsoft Visual Studio\\2019\\Community\\VC\\Tools\\MSVC\\14.20.27508\\bin\\Hostx64\\x64\\cl.exe",
+      "cStandard": "c17",
+      "cppStandard": "c++17",
+      "intelliSenseMode": "windows-msvc-x64"
+    }
+  ],
+  "version": 4
+}

@@ -1,0 +1,16 @@
+[general]
+
+singleton=false
+load_once=true
+symbol_prefix="godot_"
+reloadable=true
+
+[entry]
+
+OSX.64="res://addons/native_bullets/bin/macos/libbullets.dylib"
+Windows.64="res://addons/native_bullets/bin/win64/bullets.dll"
+
+[dependencies]
+
+OSX.64=[  ]
+Windows.64=[  ]
