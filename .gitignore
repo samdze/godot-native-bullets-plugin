@@ -20,8 +20,8 @@ logs/*
 *.pyc
 *.dblite
 *.pdb
+*.exp
 *.lib
-bin
 *.config
 *.creator
 *.creator.user
@@ -170,7 +170,7 @@ godot.creator.*
 
 # Visual Studio 2017 and Visual Studio Code workspace folder
 /.vs
-/.vscode
+.vscode/
 
 # Visual Studio Code workspace file
 *.code-workspace
