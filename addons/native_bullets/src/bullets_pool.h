@@ -41,7 +41,7 @@ public:
 	int32_t pool_size = 0;
 
 	BulletsPool();
-	~BulletsPool();
+	virtual ~BulletsPool();
 
 	virtual void _init(Ref<BulletKit> kit, CanvasItem* canvas_parent, int32_t z_index,
 		RID shared_area, int32_t starting_shape_index, int32_t pool_size) = 0;
@@ -79,10 +79,10 @@ protected:
 
 public:
 	AbstractBulletsPool() {}
-	~AbstractBulletsPool();
+	virtual ~AbstractBulletsPool();
 
 	virtual void _init(Ref<BulletKit> kit, CanvasItem* canvas_parent, int32_t z_index,
-		RID shared_area, int32_t starting_shape_index, int32_t pool_size);
+		RID shared_area, int32_t starting_shape_index, int32_t pool_size) override;
 
 	virtual int32_t _process(float delta) override;
 	//virtual void _draw() override;

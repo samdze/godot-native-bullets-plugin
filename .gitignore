@@ -17,7 +17,6 @@ logs/*
 # Binaries
 *.o
 *.os
-*.so
 *.obj
 *.bc
 *.pyc
