@@ -9,6 +9,7 @@
 
 using namespace godot;
 
+
 // Bullet definition
 class DynamicBullet : public Bullet {
 	GODOT_CLASS(DynamicBullet, Bullet)

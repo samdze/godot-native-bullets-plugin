@@ -11,11 +11,12 @@
 
 using namespace godot;
 
+
 void Bullets::_register_methods() {
 	register_method("_ready", &Bullets::_ready);
-	register_method("_process", &Bullets::_process);
+	//register_method("_process", &Bullets::_process);
 	register_method("_physics_process", &Bullets::_physics_process);
-	register_method("_draw", &Bullets::_draw);
+	//register_method("_draw", &Bullets::_draw);
 
 	register_method("_get", &Bullets::_get);
 	register_method("_set", &Bullets::_set);
@@ -44,9 +45,7 @@ void Bullets::_register_methods() {
 	register_property<Bullets, Array>("z_indices", &Bullets::z_indices, Array(),
 		GODOT_METHOD_RPC_MODE_DISABLED, GODOT_PROPERTY_USAGE_DEFAULT, GODOT_PROPERTY_HINT_RANGE, "-128,128");
 
-	register_property<Bullets, Ref<Font> >("debug_font", &Bullets::debug_font, Ref<Font>(),
-		GODOT_METHOD_RPC_MODE_DISABLED, GODOT_PROPERTY_USAGE_DEFAULT, GODOT_PROPERTY_HINT_RESOURCE_TYPE, "Font");
-	register_property<Bullets, bool>("debug", &Bullets::debug, false);
+	//register_property<Bullets, bool>("debug", &Bullets::debug, false);
 }
 
 Bullets::Bullets() { }
@@ -68,7 +67,6 @@ void Bullets::_init() {
 	available_bullets = 0;
 	active_bullets = 0;
 	kits_to_pools = Dictionary();
-	debug = false;
 	invalid_id = PoolIntArray();
 	invalid_id.resize(2);
 	invalid_id.set(0, -1);
@@ -135,22 +133,22 @@ void Bullets::_physics_process(float delta) {
 		available_bullets -= bullets_variation;
 		active_bullets += bullets_variation;
 	}
-	if(debug) {
+	/*if(debug) {
 		update();
-	}
+	}*/
 }
 
-void Bullets::_process(float delta) {
+/*void Bullets::_process(float delta) {
 
 }
 
 void Bullets::_draw() {
 	if(debug && !Engine::get_singleton()->is_editor_hint()) {
 		for(int32_t i = 0; i < bullet_kits.size(); i++) {
-			pools[i].pool->_draw(debug_font);
+			pools[i].pool->_draw();
 		}
 	}
-}
+}*/
 
 Variant Bullets::_get(String property) {
 	if(property == "bullet_types_amount") {

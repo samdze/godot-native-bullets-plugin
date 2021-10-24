@@ -1,4 +1,7 @@
 
+# Project-specific ignores
+addons/native_bullets/tmp/*
+
 # Godot-specific ignores
 .import/
 export.cfg

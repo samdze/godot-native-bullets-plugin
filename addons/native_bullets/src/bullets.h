@@ -14,6 +14,7 @@
 
 using namespace godot;
 
+
 class Bullets : public Node2D {
 	GODOT_CLASS(Bullets, Node2D)
 	
@@ -37,10 +38,8 @@ private:
 	Array pools_sizes;
 	Array z_indices;
 
-	//BulletsPool** pools = nullptr;
 	Ref<RegEx> prop_regex;
-	Ref<Font> debug_font;
-	bool debug = false;
+	//bool debug = false;
 
 	int32_t available_bullets = 0;
 	int32_t active_bullets = 0;
@@ -60,9 +59,9 @@ public:
 	void _init();
 
 	void _ready();
-	void _process(float delta);
+	//void _process(float delta);
 	void _physics_process(float delta);
-	void _draw();
+	//void _draw();
 
 	Variant _get(String property);
 	bool _set(String property, Variant value);

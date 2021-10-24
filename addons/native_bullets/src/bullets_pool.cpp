@@ -2,6 +2,7 @@
 
 using namespace godot;
 
+
 BulletsPool::BulletsPool() {}
 
 BulletsPool::~BulletsPool() {

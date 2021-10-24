@@ -12,12 +12,14 @@
 
 using namespace godot;
 
+
 class BulletsPool {
 	
 protected:
 	int32_t* shapes_to_indices = nullptr;
 	int32_t available_bullets = 0;
 	int32_t active_bullets = 0;
+	int32_t bullets_to_handle = 0;
 	bool collisions_enabled;
 
 	CanvasItem* canvas_parent;
@@ -48,7 +50,7 @@ public:
 	int32_t get_active_bullets();
 
 	virtual int32_t _process(float delta) = 0;
-	virtual void _draw(Ref<Font> debug_font) = 0;
+	//virtual void _draw() = 0;
 
 	virtual void spawn_bullet(Dictionary properties) = 0;
 	virtual BulletID obtain_bullet() = 0;
@@ -83,7 +85,7 @@ public:
 		RID shared_area, int32_t starting_shape_index, int32_t pool_size);
 
 	virtual int32_t _process(float delta) override;
-	virtual void _draw(Ref<Font> debug_font) override;
+	//virtual void _draw() override;
 
 	virtual void spawn_bullet(Dictionary properties) override;
 	virtual BulletID obtain_bullet() override;

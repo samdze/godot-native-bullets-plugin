@@ -8,6 +8,7 @@
 
 using namespace godot;
 
+
 // Bullet kit definition
 class BasicBulletKit : public BulletKit {
 	GODOT_CLASS(BasicBulletKit, BulletKit)

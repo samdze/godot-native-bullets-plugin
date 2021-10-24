@@ -8,6 +8,7 @@
 
 using namespace godot;
 
+
 //-- START Default "standard" implementations.
 
 template <class Kit, class BulletType>
@@ -16,6 +17,7 @@ void AbstractBulletsPool<Kit, BulletType>::_init_bullet(BulletType* bullet) {}
 template <class Kit, class BulletType>
 void AbstractBulletsPool<Kit, BulletType>::_enable_bullet(BulletType* bullet) {
 	bullet->lifetime = 0.0f;
+
 	Rect2 texture_rect = Rect2(-kit->texture->get_size() / 2.0f, kit->texture->get_size());
 	RID texture_rid = kit->texture->get_rid();
 	
@@ -154,15 +156,14 @@ int32_t AbstractBulletsPool<Kit, BulletType>::_process(float delta) {
 	return amount_variation;
 }
 
-template <class Kit, class BulletType>
-void AbstractBulletsPool<Kit, BulletType>::_draw(Ref<Font> debug_font) {
+/*template <class Kit, class BulletType>
+void AbstractBulletsPool<Kit, BulletType>::_draw() {
 	for(int32_t i = pool_size - 1; i >= available_bullets; i--) {
 		BulletType* bullet = bullets[i];
-		canvas_parent->draw_string(debug_font, bullet->transform.get_origin() + Vector2(4, 2), Variant(bullet->shape_index));
 		if(collisions_enabled)
-			canvas_parent->draw_circle(Physics2DServer::get_singleton()->area_get_shape_transform(shared_area, bullet->shape_index).get_origin(), 0.5f, Color(1, 0, 0, 1));
+			canvas_parent->draw_circle(Physics2DServer::get_singleton()->area_get_shape_transform(shared_area, bullet->shape_index).get_origin(), 1.0f, Color(1, 0, 0, 1));
 	}
-}
+}*/
 
 template <class Kit, class BulletType>
 void AbstractBulletsPool<Kit, BulletType>::spawn_bullet(Dictionary properties) {
@@ -179,6 +180,10 @@ void AbstractBulletsPool<Kit, BulletType>::spawn_bullet(Dictionary properties) {
 		for(int32_t i = 0; i < keys.size(); i++) {
 			bullet->set(keys[i], properties[keys[i]]);
 		}
+
+		VisualServer::get_singleton()->canvas_item_set_transform(bullet->item_rid, bullet->transform);
+		if(collisions_enabled)
+			Physics2DServer::get_singleton()->area_set_shape_transform(shared_area, bullet->shape_index, bullet->transform);
 
 		_enable_bullet(bullet);
 	}
@@ -263,6 +268,13 @@ void AbstractBulletsPool<Kit, BulletType>::set_bullet_property(BulletID id, Stri
 	if(is_bullet_valid(id)) {
 		int32_t bullet_index = shapes_to_indices[id.index - starting_shape_index];
 		bullets[bullet_index]->set(property, value);
+
+		if(property == "transform") {
+			BulletType* bullet = bullets[bullet_index];
+			VisualServer::get_singleton()->canvas_item_set_transform(bullet->item_rid, bullet->transform);
+			if(collisions_enabled)
+				Physics2DServer::get_singleton()->area_set_shape_transform(shared_area, bullet->shape_index, bullet->transform);
+		}
 	}
 }
 

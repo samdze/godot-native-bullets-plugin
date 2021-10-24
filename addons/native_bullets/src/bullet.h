@@ -6,6 +6,7 @@
 
 using namespace godot;
 
+
 struct BulletID {
 	int32_t index;
 	int32_t cycle;

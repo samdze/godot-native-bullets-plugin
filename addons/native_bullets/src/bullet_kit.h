@@ -26,6 +26,7 @@ BulletsPool* BulletKitType::_create_pool() {												\
 
 using namespace godot;
 
+
 class BulletsPool;
 
 class BulletKit : public Resource {
