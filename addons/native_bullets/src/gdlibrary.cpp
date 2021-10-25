@@ -4,14 +4,6 @@
 #include "kits/dynamic_bullet_kit.h"
 #include "kits/following_dynamic_bullet_kit.h"
 
-/*
-#include "areas_bullets.h"
-#include "kits/areas_basic_bullet_kit.h"
-#include "kits/areas_following_bullet_kit.h"
-#include "kits/areas_dynamic_bullet_kit.h"
-#include "kits/areas_following_dynamic_bullet_kit.h"
-*/
-
 
 extern "C" void GDN_EXPORT godot_gdnative_init(godot_gdnative_init_options *o) {
 	godot::Godot::gdnative_init(o);
@@ -39,6 +31,7 @@ extern "C" void GDN_EXPORT godot_nativescript_init(void *handle) {
 
 	godot::register_class<FollowingDynamicBullet>();
 	godot::register_class<FollowingDynamicBulletKit>();
+	
 	// Custom Bullet Kits.
 	//godot::register_class<CustomBulletKit>();
 }
