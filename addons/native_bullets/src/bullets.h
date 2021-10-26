@@ -9,6 +9,9 @@
 #include <Array.hpp>
 #include <RegEx.hpp>
 
+#include <vector>
+#include <memory>
+
 #include "bullet_kit.h"
 #include "bullets_pool.h"
 
@@ -21,34 +24,36 @@ class Bullets : public Node2D {
 private:
 	// A pool internal representation with related properties.
 	struct PoolKit {
-		BulletsPool* pool = nullptr;
+		std::unique_ptr<BulletsPool> pool;
 		Ref<BulletKit> bullet_kit;
 		int32_t size;
 		int32_t z_index;
 	};
-	// Represents the actual internal organization of the bullet pools.
-	// It may be reordered if needed compared to the inspector order.
-	// E.g. to better support non-colliding bullets.
-	PoolKit* pools;
-	Dictionary kits_to_pools;
+	struct PoolKitSet {
+		std::vector<PoolKit> pools;
+		int32_t bullets_amount;
+	};
+	// PoolKitSets represent PoolKits organized by their shared area.
+	std::vector<PoolKitSet> pool_sets;
+	// Maps each area RID to the corresponding PoolKitSet index.
+	Dictionary areas_to_pool_set_indices;
+	// Maps each BulletKit to the corresponding PoolKit index.
+	Dictionary kits_to_set_pool_indices;
 
-	int32_t bullets_collision_layer = 0;
-	int32_t bullets_collision_mask = 0;
 	Array bullet_kits;
 	Array pools_sizes;
 	Array z_indices;
 
 	Ref<RegEx> prop_regex;
-	//bool debug = false;
 
 	int32_t available_bullets = 0;
 	int32_t active_bullets = 0;
 	int32_t total_bullets = 0;
 
-	RID shared_area;
+	Array shared_areas;
 	PoolIntArray invalid_id;
 
-	int32_t _get_pool_index(int32_t bullet_index);
+	int32_t _get_pool_index(int32_t set_index, int32_t bullet_index);
 
 public:
 	static void _register_methods();
@@ -59,23 +64,28 @@ public:
 	void _init();
 
 	void _ready();
-	//void _process(float delta);
 	void _physics_process(float delta);
-	//void _draw();
 
 	Variant _get(String property);
 	bool _set(String property, Variant value);
 	Array _get_property_list();
 
-	void spawn_bullet(Ref<BulletKit> kit, Dictionary properties);
+	bool spawn_bullet(Ref<BulletKit> kit, Dictionary properties);
 	Variant obtain_bullet(Ref<BulletKit> kit);
 	bool release_bullet(Variant id);
 	bool is_bullet_valid(Variant id);
+	bool is_kit_valid(Ref<BulletKit> kit);
 
-	int32_t get_available_bullets();
-	int32_t get_active_bullets();
+	int32_t get_available_bullets(Ref<BulletKit> kit);
+	int32_t get_active_bullets(Ref<BulletKit> kit);
+	int32_t get_pool_size(Ref<BulletKit> kit);
+	int32_t get_z_index(Ref<BulletKit> kit);
 
-	Variant get_bullet_from_shape(int32_t shape_index);
+	int32_t get_total_available_bullets();
+	int32_t get_total_active_bullets();
+
+	bool is_bullet_existing(RID area_rid, int32_t shape_index);
+	Variant get_bullet_from_shape(RID area_rid, int32_t shape_index);
 	Ref<BulletKit> get_kit_from_bullet(Variant id);
 
 	void set_bullet_property(Variant id, String property, Variant value);

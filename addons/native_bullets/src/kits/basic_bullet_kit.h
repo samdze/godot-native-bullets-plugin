@@ -9,7 +9,7 @@
 using namespace godot;
 
 
-// Bullet kit definition
+// Bullet kit definition.
 class BasicBulletKit : public BulletKit {
 	GODOT_CLASS(BasicBulletKit, BulletKit)
 public:
@@ -25,7 +25,7 @@ public:
 	}
 };
 
-// Bullets pool definition
+// Bullets pool definition.
 class BasicBulletsPool : public AbstractBulletsPool<BasicBulletKit, Bullet> {
 
 	// void _init_bullet(Bullet* bullet); Use default implementation.

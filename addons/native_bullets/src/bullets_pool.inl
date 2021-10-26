@@ -47,7 +47,7 @@ bool AbstractBulletsPool<Kit, BulletType>::_process_bullet(BulletType* bullet, f
 
 template <class Kit, class BulletType>
 AbstractBulletsPool<Kit, BulletType>::~AbstractBulletsPool() {
-	// Bullets object is responsible for clearing all the area shapes
+	// Bullets node is responsible for clearing all the area and area shapes
 	for(int32_t i = 0 - 1; i < pool_size; i++) {
 		VisualServer::get_singleton()->free_rid(bullets[i]->item_rid);
 		bullets[i]->free();
@@ -55,19 +55,20 @@ AbstractBulletsPool<Kit, BulletType>::~AbstractBulletsPool() {
 	VisualServer::get_singleton()->free_rid(canvas_item);
 
 	delete[] bullets;
-	delete[] shapes_to_indices;
 }
 
 template <class Kit, class BulletType>
-void AbstractBulletsPool<Kit, BulletType>::_init(Ref<BulletKit> kit, CanvasItem* canvas_parent, int32_t z_index,
-		RID shared_area, int32_t starting_shape_index, int32_t pool_size) {
-	this->bullet_kit = kit;
-	this->kit = kit;
+void AbstractBulletsPool<Kit, BulletType>::_init(CanvasItem* canvas_parent, RID shared_area, int32_t starting_shape_index,
+		int32_t set_index, Ref<BulletKit> kit, int32_t pool_size, int32_t z_index) {
+	
 	this->collisions_enabled = kit->collisions_enabled;
 	this->canvas_parent = canvas_parent;
 	this->shared_area = shared_area;
 	this->starting_shape_index = starting_shape_index;
+	this->bullet_kit = kit;
+	this->kit = kit;
 	this->pool_size = pool_size;
+	this->set_index = set_index;
 	
 	available_bullets = pool_size;
 	active_bullets = 0;
@@ -98,16 +99,16 @@ void AbstractBulletsPool<Kit, BulletType>::_init(Ref<BulletKit> kit, CanvasItem*
 		Color color = Color(1.0f, 1.0f, 1.0f, 1.0f);
 		switch(kit->unique_modulate_component) {
 			case 1: // Red
-				color.r = fmod(bullet->shape_index * 0.7213f, 1.0f);
+				color.r = fmod((starting_shape_index + i) * 0.7213f, 1.0f);
 				break;
 			case 2: // Green
-				color.g = fmod(bullet->shape_index * 0.7213f, 1.0f);
+				color.g = fmod((starting_shape_index + i) * 0.7213f, 1.0f);
 				break;
 			case 3: // Blue
-				color.b = fmod(bullet->shape_index * 0.7213f, 1.0f);
+				color.b = fmod((starting_shape_index + i) * 0.7213f, 1.0f);
 				break;
 			case 4: // Alpha
-				color.a = fmod(bullet->shape_index * 0.7213f, 1.0f);
+				color.a = fmod((starting_shape_index + i) * 0.7213f, 1.0f);
 				break;
 			default: // None or other values
 				break;
@@ -156,15 +157,6 @@ int32_t AbstractBulletsPool<Kit, BulletType>::_process(float delta) {
 	return amount_variation;
 }
 
-/*template <class Kit, class BulletType>
-void AbstractBulletsPool<Kit, BulletType>::_draw() {
-	for(int32_t i = pool_size - 1; i >= available_bullets; i--) {
-		BulletType* bullet = bullets[i];
-		if(collisions_enabled)
-			canvas_parent->draw_circle(Physics2DServer::get_singleton()->area_get_shape_transform(shared_area, bullet->shape_index).get_origin(), 1.0f, Color(1, 0, 0, 1));
-	}
-}*/
-
 template <class Kit, class BulletType>
 void AbstractBulletsPool<Kit, BulletType>::spawn_bullet(Dictionary properties) {
 	if(available_bullets > 0) {
@@ -202,14 +194,14 @@ BulletID AbstractBulletsPool<Kit, BulletType>::obtain_bullet() {
 
 		_enable_bullet(bullet);
 
-		return BulletID(bullet->shape_index, bullet->cycle);
+		return BulletID(bullet->shape_index, bullet->cycle, set_index);
 	}
-	return BulletID(-1, -1);
+	return BulletID(-1, -1, -1);
 }
 
 template <class Kit, class BulletType>
 bool AbstractBulletsPool<Kit, BulletType>::release_bullet(BulletID id) {
-	if(id.index >= starting_shape_index && id.index < starting_shape_index + pool_size) {
+	if(id.index >= starting_shape_index && id.index < starting_shape_index + pool_size && id.set == set_index) {
 		int32_t bullet_index = shapes_to_indices[id.index - starting_shape_index];
 		if(bullet_index >= available_bullets && bullet_index < pool_size && id.cycle == bullets[bullet_index]->cycle) {
 			_release_bullet(bullet_index);
@@ -223,10 +215,6 @@ template <class Kit, class BulletType>
 void AbstractBulletsPool<Kit, BulletType>::_release_bullet(int32_t index) {
 	BulletType* bullet = bullets[index];
 	
-	// Implement bullet recycling, defer the disabling, add the bullet to a list of bullets to disable,
-	// (can also be the available section of the list)
-	// increment a counter, at the beginning of the frame remove the shapes, if a bullet is obtained in the meantime,
-	// use one of the ones scheduled for disabling.
 	if(collisions_enabled)
 		Physics2DServer::get_singleton()->area_set_shape_disabled(shared_area, bullet->shape_index, true);
 	
@@ -242,9 +230,20 @@ void AbstractBulletsPool<Kit, BulletType>::_release_bullet(int32_t index) {
 
 template <class Kit, class BulletType>
 bool AbstractBulletsPool<Kit, BulletType>::is_bullet_valid(BulletID id) {
-	if(id.index >= starting_shape_index && id.index < starting_shape_index + pool_size) {
+	if(id.index >= starting_shape_index && id.index < starting_shape_index + pool_size && id.set == set_index) {
 		int32_t bullet_index = shapes_to_indices[id.index - starting_shape_index];
 		if(bullet_index >= available_bullets && bullet_index < pool_size && id.cycle == bullets[bullet_index]->cycle) {
+			return true;
+		}
+	}
+	return false;
+}
+
+template <class Kit, class BulletType>
+bool AbstractBulletsPool<Kit, BulletType>::is_bullet_existing(int32_t shape_index) {
+	if(shape_index >= starting_shape_index && shape_index < starting_shape_index + pool_size) {
+		int32_t bullet_index = shapes_to_indices[shape_index - starting_shape_index];
+		if(bullet_index >= available_bullets) {
 			return true;
 		}
 	}
@@ -256,10 +255,10 @@ BulletID AbstractBulletsPool<Kit, BulletType>::get_bullet_from_shape(int32_t sha
 	if(shape_index >= starting_shape_index && shape_index < starting_shape_index + pool_size) {
 		int32_t bullet_index = shapes_to_indices[shape_index - starting_shape_index];
 		if(bullet_index >= available_bullets) {
-			return BulletID(shape_index, bullets[bullet_index]->cycle);
+			return BulletID(shape_index, bullets[bullet_index]->cycle, set_index);
 		}
 	}
-	return BulletID(-1, -1);
+	return BulletID(-1, -1, -1);
 }
 
 

@@ -12,32 +12,19 @@
 using namespace godot;
 
 
-// Bullet definition
+// Bullet definition.
 class FollowingBullet : public Bullet {
 	GODOT_CLASS(FollowingBullet, Bullet)
 public:
-	//int64_t followed_node_id = -1;
 	Node2D* target_node = nullptr;
 
 	void _init() {}
 
 	void set_target_node(Node2D* node) {
 		target_node = node;
-		/*
-		if(followed_node != nullptr) {
-			followed_node_id = followed_node->get_instance_id();
-		} else {
-			followed_node_id = -1;
-		}
-		*/
 	}
 
 	Node2D* get_target_node() {
-		/*
-		if(godot_instance_from_id((godot_int)followed_node_id) != nullptr) {
-			return followed_node;
-		}
-		*/
 		return target_node;
 	}
 
@@ -51,7 +38,7 @@ public:
 	}
 };
 
-// Bullet kit definition
+// Bullet kit definition.
 class FollowingBulletKit : public BulletKit {
 	GODOT_CLASS(FollowingBulletKit, BulletKit)
 public:
@@ -70,7 +57,7 @@ public:
 	}
 };
 
-// Bullets pool definition
+// Bullets pool definition.
 class FollowingBulletsPool : public AbstractBulletsPool<FollowingBulletKit, FollowingBullet> {
 
 	//void _init_bullet(FollowingBullet* bullet); Use default implementation.

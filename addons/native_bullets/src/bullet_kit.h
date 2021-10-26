@@ -9,19 +9,21 @@
 #include <PackedScene.hpp>
 #include <Script.hpp>
 
+#include <memory>
+
 #include "bullet.h"
 
-#define BULLET_KIT(BulletPoolType)				\
-BulletsPool* _create_pool() override;
+#define BULLET_KIT(BulletsPoolType)							\
+std::unique_ptr<BulletsPool> _create_pool() override;
 
 #define BULLET_KIT_REGISTRATION(BulletKitType, BulletType)											\
 register_property<BulletKitType, String>("bullet_class_name",										\
 	&BulletKitType::_property_setter, &BulletKitType::_property_getter, #BulletType,			\
 	GODOT_METHOD_RPC_MODE_DISABLED, GODOT_PROPERTY_USAGE_NOEDITOR);
 
-#define BULLET_KIT_IMPLEMENTATION(BulletKitType, BulletPoolType)					\
-BulletsPool* BulletKitType::_create_pool() {												\
-	return new BulletPoolType();																\
+#define BULLET_KIT_IMPLEMENTATION(BulletKitType, BulletsPoolType)					\
+std::unique_ptr<BulletsPool> BulletKitType::_create_pool() {						\
+	return std::unique_ptr<BulletsPool>(new BulletsPoolType());						\
 }																										
 
 using namespace godot;
@@ -35,8 +37,11 @@ class BulletKit : public Resource {
 public:
 	// The material used to render each bullet.
 	Ref<Material> material;
-	// Controls whether collisions with other objects are enabled. Turning it off increases performances.
+	// Controls whether collisions with other objects are enabled. Turning it off increases performance.
 	bool collisions_enabled = true;
+	// Collisions related properties.
+	int32_t collision_layer = 0;
+	int32_t collision_mask = 0;
 	Ref<Shape2D> collision_shape;
 	// Controls whether the active rect is automatically set as the viewport visible rect.
 	bool use_viewport_as_active_rect = true;
@@ -62,6 +67,10 @@ public:
 		register_property<BulletKit, bool>("collisions_enabled", &BulletKit::collisions_enabled, true,
 			GODOT_METHOD_RPC_MODE_DISABLED, (godot_property_usage_flags)(GODOT_PROPERTY_USAGE_DEFAULT | GODOT_PROPERTY_USAGE_UPDATE_ALL_IF_MODIFIED),
 			GODOT_PROPERTY_HINT_NONE);
+		register_property<BulletKit, int32_t>("collision_layer", &BulletKit::collision_layer, 0, 
+			GODOT_METHOD_RPC_MODE_DISABLED, GODOT_PROPERTY_USAGE_DEFAULT, GODOT_PROPERTY_HINT_LAYERS_2D_PHYSICS);
+		register_property<BulletKit, int32_t>("collision_mask", &BulletKit::collision_mask, 0, 
+			GODOT_METHOD_RPC_MODE_DISABLED, GODOT_PROPERTY_USAGE_DEFAULT, GODOT_PROPERTY_HINT_LAYERS_2D_PHYSICS);
 		register_property<BulletKit, Ref<Shape2D>>("collision_shape", &BulletKit::collision_shape,
 			Ref<Shape2D>(), GODOT_METHOD_RPC_MODE_DISABLED,GODOT_PROPERTY_USAGE_DEFAULT,
 			GODOT_PROPERTY_HINT_RESOURCE_TYPE, "Shape2D");
@@ -84,7 +93,7 @@ public:
 			GODOT_METHOD_RPC_MODE_DISABLED, GODOT_PROPERTY_USAGE_EDITOR);
 	}
 
-	virtual BulletsPool* _create_pool() { return nullptr; }
+	virtual std::unique_ptr<BulletsPool> _create_pool() { return std::unique_ptr<BulletsPool>(); }
 };
 
 #include "bullets_pool.h"

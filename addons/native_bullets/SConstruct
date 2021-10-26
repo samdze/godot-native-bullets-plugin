@@ -8,8 +8,8 @@ env = DefaultEnvironment()
 
 # Define our options
 opts.Add(EnumVariable('target', "Compilation target", 'debug', ['d', 'debug', 'r', 'release']))
-opts.Add(EnumVariable('platform', "Compilation platform", '', ['', 'windows', 'x11', 'linux', 'macos']))
-opts.Add(EnumVariable('p', "Compilation target, alias for 'platform'", '', ['', 'windows', 'x11', 'linux', 'macos']))
+opts.Add(EnumVariable('platform', "Compilation platform", '', ['', 'windows', 'x11', 'linux', 'osx']))
+opts.Add(EnumVariable('p', "Compilation target, alias for 'platform'", '', ['', 'windows', 'x11', 'linux', 'osx']))
 opts.Add(EnumVariable('macos_arch', "Target architecture for the macOS platform", 'universal', ['universal', 'x86_64', 'arm64']))
 opts.Add(BoolVariable('use_llvm', "Use the LLVM / Clang compiler", 'no'))
 opts.Add(PathVariable('target_path', 'The path where the lib is installed.', 'bin/'))
@@ -39,7 +39,7 @@ if env['platform'] == '':
     quit();
 
 # Check our platform specifics
-if env['platform'] == "macos":
+if env['platform'] == "osx":
     env['target_path'] += 'macos'
     cpp_library += '.osx'
     if env['macos_arch'] == 'universal':
@@ -80,6 +80,7 @@ elif env['platform'] == "windows":
         env.Append(CCFLAGS = ['-O2', '-EHsc', '-DNDEBUG', '-MD'])
 
 if env['target'] in ('debug', 'd'):
+    env.Append(CPPDEFINES=['DEBUG_ENABLED'])
     cpp_library += '.debug'
 else:
     cpp_library += '.release'

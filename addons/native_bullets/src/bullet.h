@@ -10,8 +10,10 @@ using namespace godot;
 struct BulletID {
 	int32_t index;
 	int32_t cycle;
+	int32_t set;
 
-	BulletID(int32_t index, int32_t cycle) : index(index), cycle(cycle) {}
+	BulletID(int32_t index, int32_t cycle, int32_t set): 
+		index(index), cycle(cycle), set(set) {}
 };
 
 class Bullet : public Object {

@@ -10,7 +10,7 @@
 using namespace godot;
 
 
-// Bullet definition
+// Bullet definition.
 class DynamicBullet : public Bullet {
 	GODOT_CLASS(DynamicBullet, Bullet)
 public:
@@ -51,7 +51,7 @@ public:
 	}
 };
 
-// Bullet kit definition
+// Bullet kit definition.
 class DynamicBulletKit : public BulletKit {
 	GODOT_CLASS(DynamicBulletKit, BulletKit)
 public:
@@ -79,7 +79,7 @@ public:
 	}
 };
 
-// Bullets pool definition
+// Bullets pool definition.
 class DynamicBulletsPool : public AbstractBulletsPool<DynamicBulletKit, DynamicBullet> {
 
 	// void _init_bullet(Bullet* bullet); Use default implementation.

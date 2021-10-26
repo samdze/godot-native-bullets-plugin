@@ -7,8 +7,14 @@ Efficiently spawn and move high amounts of objects like bullets for bullet hells
   <img src="https://user-images.githubusercontent.com/19392104/138732303-21ab282f-3f00-417f-ba47-d6e1713648ea.gif" width="360" />
 </p>
 
-This is a **GDNative plugin**, compatible with Godot 3.3.x.<br>
+This is a **GDNative plugin**, compatible with Godot 3.4.x and up.<br>
 Not compatible with Godot 4.x.
+
+Pre-built binaries are provided for:
+
+- Windows x86-64
+- Linux x86-64
+- macOS Universal (x86-64 + arm64)
 
 ## Features
 
@@ -28,9 +34,11 @@ Not compatible with Godot 4.x.
 1. Copy the addons/native_bullets folder in your addons folder.
 2. Navigate to Project -> Project Settings -> Plugin and enable the Native Bullets plugin.
 
+For best performance, toggle `use_bvh` off in Project Settings -> Physics -> 2d.
+
 ### BulletKit creation
 
-The first thing to do is to create a BulletKit resource and choose how bullets will appear and behave tweaking its properties.
+The first thing to do is create a BulletKit resource and choose how bullets will appear and behave tweaking its properties.
 
 1. Create a new empty resource and assign one of the scripts you can find in the `addons/native_bullets/kits` folder to it.
    In this example, we'll assign the `basic_bullet_kit.gdns` script.
@@ -42,6 +50,10 @@ The first thing to do is to create a BulletKit resource and choose how bullets w
 4. For now, turn off `collisions_enabled`, turn `use_viewport_as_active_rect` on, turn `rotate` off and set `unique_modulate_component` to `None`.
    See the [Reference](#reference) section to learn more.
 
+<p align="center">
+  <img src="https://user-images.githubusercontent.com/19392104/138973076-53e54c1f-69d1-4877-988b-47d80acad2dd.png" />
+</p>
+
 This BulletKit resource is now ready to be used!
 
 ### Bullets node
@@ -52,14 +64,16 @@ You can add it as an autoload or as a normal node in the scene.
 The Bullets node has to be configured to choose which kinds of bullets will be able to spawn, their maximum amount and their z indices.
 
 1. Create a new Bullets node.
+2. Choose how many types of bullets this node will be able to spawn. Increase `bullet_types_amount` to 1 for now.
 
-2. Set the `bullets_collision_layer` and `bullets_collision_mask` to your liking, for testing purposes, it's ok to set them both to the first bit.
-3. Choose how many types of bullets this node will be able to spawn. Increase `bullet_types_amount` to 1 for now.
-
-4. A new section of the inspector will appear below.
-   Here, drag & drop the BulletKit resource you created earlier to let the node know that you'll want to spawn the bullets described in it!
-5. Choose the maximum amount of bullets setting the `pool_size` property and the their `z_index`.
+3. A new section of the inspector will appear below. Unfold the 0 entry inside the Bullet Types section.
+   Here, drag & drop the BulletKit resource you created earlier to let the node know that you'll want to spawn the bullet described in it!
+4. Choose the maximum amount of bullets setting the `pool_size` property and the their `z_index`.
    3000 and 1 will be ok.
+
+<p align="center">
+  <img src="https://user-images.githubusercontent.com/19392104/138973300-ae4ca9f1-7b47-4d49-9332-b83ba763a5dc.png" />
+</p>
 
 Nice! Now you can set this node as an autoload for easier access.
 
@@ -155,9 +169,13 @@ When a bullet collides with a body or an area, the best way to get the data of t
 In this example Bullets is an autoload.
 
 ```gdscript
-func _on_area_shape_entered(_area_id, _area, area_shape, _local_shape):
+func _on_area_shape_entered(area_id, _area, area_shape, _local_shape):
+	if not Bullets.is_bullet_existing(area_id, area_shape):
+		# The colliding area is not a bullet, returning.
+		return
+
 	# Get a BulletID from the area_shape passed in by the engine.
-	var bullet_id = Bullets.get_bullet_from_shape(area_shape)
+	var bullet_id = Bullets.get_bullet_from_shape(area_id, area_shape)
 
 	# Get bullet properties, transform, velocity, lifetime etc.
 	var bullet_transform = Bullets.get_bullet_property(bullet_id, "transform")
@@ -173,7 +191,7 @@ func _on_area_shape_entered(_area_id, _area, area_shape, _local_shape):
 
 ## Reference
 
-The plugin has several components, explained below:
+The plugin has two main components, explained below:
 
 ### @ BulletKit
 
@@ -191,6 +209,8 @@ It's configurable with:
 - `texture`: controls what texture is sent to the bullet material.
 - `material`: the material used to render each bullet.
 - `collisions_enabled`: enables or disables collision detection, turning it off increases performances.
+- `collision_layer_`: the collision layer to use during collision detection. Visible only if `collisions_enabled` is on.
+- `collision_mask`: the collision mask to use during collision detection. Visible only if `collisions_enabled` is on.
 - `collision_shape`: the CollisionShape to use during collision detection. Visible only if `collisions_enabled` is on.
 - `use_viewport_as_active_rect`: if enabled, uses the current viewport to detect whether a bullet should be deleted.
 - `active_rect`: the rect outside of which the bullets get deleted. Visible only if `use_viewport_as_active_rect` if off.
@@ -219,6 +239,8 @@ It's configurable with:
 - `bullets_turning_speed`: the turning speed with which the bullets will rotate towards the target node.
 - `material`: the material used to render each bullet.
 - `collisions_enabled`: enables or disables collision detection, turning it off increases performances.
+- `collision_layer_`: the collision layer to use during collision detection. Visible only if `collisions_enabled` is on.
+- `collision_mask`: the collision mask to use during collision detection. Visible only if `collisions_enabled` is on.
 - `collision_shape`: the CollisionShape to use during collision detection. Visible only if `collisions_enabled` is on.
 - `use_viewport_as_active_rect`: if enabled, uses the current viewport to detect whether a bullet should be deleted.
 - `active_rect`: the rect outside of which the bullets get deleted. Visible only if `use_viewport_as_active_rect` if off.
@@ -251,6 +273,8 @@ It's configurable with:
 - `rotation_offset_over_lifetime`: controls the bullet rotation offsetting its initial rotation by the value in radians defined in this curve, based on the bullet lifetime.
 - `material`: the material used to render each bullet.
 - `collisions_enabled`: enables or disables collision detection, turning it off increases performances.
+- `collision_layer_`: the collision layer to use during collision detection. Visible only if `collisions_enabled` is on.
+- `collision_mask`: the collision mask to use during collision detection. Visible only if `collisions_enabled` is on.
 - `collision_shape`: the CollisionShape to use during collision detection. Visible only if `collisions_enabled` is on.
 - `use_viewport_as_active_rect`: if enabled, uses the current viewport to detect whether a bullet should be deleted.
 - `active_rect`: the rect outside of which the bullets get deleted. Visible only if `use_viewport_as_active_rect` if off.
@@ -293,6 +317,8 @@ It's configurable with:
 - `turning_speed`: controls the bullet turning speed towards the target node, based on whathever is set in `turning_speed_control_mode`.
 - `material`: the material used to render each bullet.
 - `collisions_enabled`: enables or disables collision detection, turning it off increases performances.
+- `collision_layer_`: the collision layer to use during collision detection. Visible only if `collisions_enabled` is on.
+- `collision_mask`: the collision mask to use during collision detection. Visible only if `collisions_enabled` is on.
 - `collision_shape`: the CollisionShape to use during collision detection. Visible only if `collisions_enabled` is on.
 - `use_viewport_as_active_rect`: if enabled, uses the current viewport to detect whether a bullet should be deleted.
 - `active_rect`: the rect outside of which the bullets get deleted. Visible only if `use_viewport_as_active_rect` if off.
@@ -320,7 +346,8 @@ It can be configured through the editor setting which kinds of bullets will be u
 
 ```gdscript
 # Spawns a bullet using the passed BulletKit and setting the properties contained in the `properties` dictionary.
-spawn_bullet(bullet_kit : BulletKit, properties : Dictionary) -> void
+# Returns whether a bullet has been spawned successfully.
+spawn_bullet(bullet_kit : BulletKit, properties : Dictionary) -> bool
 
 # Spawns and returns an opaque ID of a bullet using the passed BulletKit.
 obtain_bullet(bullet_kit : BulletKit) -> BulletID
@@ -331,14 +358,32 @@ release_bullet(bullet_id : BulletID) -> bool
 # Returns whether the bullet referenced by `bullet_id` is still alive and valid.
 is_bullet_valid(bullet_id : BulletID) -> bool
 
+# Returns whether `kit` has been configured and is ready to be used in this Bullets instance.
+is_kit_valid(kit : BulletKit) -> bool
+
+# Returns the number of currently available bullets for the `kit` BulletKit.
+get_available_bullets(kit : BulletKit) -> int
+
+# Returns the number of currently active bullets for the `kit` BulletKit.
+get_active_bullets(kit : BulletKit) -> int
+
+# Returns the number of pooled bullets for the `kit` BulletKit.
+get_pool_size(kit : BulletKit) -> int
+
+# Returns the z index of the bulltes generated by the `kit` BulletKit.
+get_z_index(kit : BulletKit) -> int
+
 # Returns the total number of currently available bullets.
-get_available_bullets(bullet_id : BulletID) -> int
+get_total_available_bullets() -> int
 
 # Returns the total number of currently active bullets.
-get_active_bullets(bullet_id : BulletID) -> int
+get_total_active_bullets() -> int
 
-# Returns the opaque ID of a bullet based on its shape index.
-get_bullet_from_shape(area_shape : int) -> BulletID
+# Returns whether `area_rid` and `area_shape` represent a valid and active bullet.
+is_bullet_existing(area_rid : RID, area_shape : int) -> BulletID
+
+# Returns the opaque ID of a bullet based on its area RID and its shape index.
+get_bullet_from_shape(area_rid : RID, area_shape : int) -> BulletID
 
 # Returns the BulletKit that defined the bullet referenced by the passed `bullet_id`.
 get_kit_from_bullet(bullet_id : BulletID) -> BulletKit

@@ -39,24 +39,25 @@ protected:
 public:
 	Ref<BulletKit> bullet_kit;
 	int32_t pool_size = 0;
+	int32_t set_index = -1;
 
 	BulletsPool();
 	virtual ~BulletsPool();
 
-	virtual void _init(Ref<BulletKit> kit, CanvasItem* canvas_parent, int32_t z_index,
-		RID shared_area, int32_t starting_shape_index, int32_t pool_size) = 0;
+	virtual void _init(CanvasItem* canvas_parent, RID shared_area, int32_t starting_shape_index,
+		int32_t set_index, Ref<BulletKit> kit, int32_t pool_size, int32_t z_index) = 0;
 	
 	int32_t get_available_bullets();
 	int32_t get_active_bullets();
 
 	virtual int32_t _process(float delta) = 0;
-	//virtual void _draw() = 0;
 
 	virtual void spawn_bullet(Dictionary properties) = 0;
 	virtual BulletID obtain_bullet() = 0;
 	virtual bool release_bullet(BulletID id) = 0;
 	virtual bool is_bullet_valid(BulletID id) = 0;
 
+	virtual bool is_bullet_existing(int32_t shape_index) = 0;
 	virtual BulletID get_bullet_from_shape(int32_t shape_index) = 0;
 
 	virtual void set_bullet_property(BulletID id, String property, Variant value) = 0;
@@ -81,17 +82,17 @@ public:
 	AbstractBulletsPool() {}
 	virtual ~AbstractBulletsPool();
 
-	virtual void _init(Ref<BulletKit> kit, CanvasItem* canvas_parent, int32_t z_index,
-		RID shared_area, int32_t starting_shape_index, int32_t pool_size) override;
+	virtual void _init(CanvasItem* canvas_parent, RID shared_area, int32_t starting_shape_index,
+		int32_t set_index, Ref<BulletKit> kit, int32_t pool_size, int32_t z_index) override;
 
 	virtual int32_t _process(float delta) override;
-	//virtual void _draw() override;
 
 	virtual void spawn_bullet(Dictionary properties) override;
 	virtual BulletID obtain_bullet() override;
 	virtual bool release_bullet(BulletID id) override;
 	virtual bool is_bullet_valid(BulletID id) override;
 
+	virtual bool is_bullet_existing(int32_t shape_index) override;
 	virtual BulletID get_bullet_from_shape(int32_t shape_index) override;
 
 	virtual void set_bullet_property(BulletID id, String property, Variant value) override;
