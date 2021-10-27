@@ -99,7 +99,7 @@ func shoot():
 	var bullet_velocity = Vector2(cos(global_rotation), sin(global_rotation)) * 30.0
 
 	# Define which properties will be set to the newly spawned bullet.
-	# The bullet will be spawned in the same position of this node,
+	# The bullet will be spawned in the same position as this node,
 	# travelling in the direction defined by its rotation.
 	var properties = {
 		"transform": Transform2D(global_rotation, global_position),
@@ -127,7 +127,7 @@ export(float) var bullets_speed = 50.0
 func shoot():
 	var bullet_kit = preload("res://path/to/following_bullet_kit.tres")
 
-	# The bullet will be spawned in the same position of this node,
+	# The bullet will be spawned in the same position as this node,
 	# travelling in the direction defined by its rotation.
 	var bullet_velocity = Vector2(cos(global_rotation), sin(global_rotation)) * bullets_speed
 	# Follow the first node inside the Player group.

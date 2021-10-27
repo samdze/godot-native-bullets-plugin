@@ -48,7 +48,7 @@ bool AbstractBulletsPool<Kit, BulletType>::_process_bullet(BulletType* bullet, f
 template <class Kit, class BulletType>
 AbstractBulletsPool<Kit, BulletType>::~AbstractBulletsPool() {
 	// Bullets node is responsible for clearing all the area and area shapes
-	for(int32_t i = 0 - 1; i < pool_size; i++) {
+	for(int32_t i = 0; i < pool_size; i++) {
 		VisualServer::get_singleton()->free_rid(bullets[i]->item_rid);
 		bullets[i]->free();
 	}
