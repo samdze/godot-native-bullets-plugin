@@ -29,8 +29,6 @@ Pre-built binaries are provided for:
 
 ## Step by step
 
-### README AND DOCUMENTATION ARE NOT UP TO DATE, THEY WILL BE UPDATED SOON.
-
 ### Installation
 
 1. Copy the addons/native_bullets folder in your addons folder.
@@ -53,36 +51,38 @@ The first thing to do is create a BulletKit resource and choose how bullets will
    See the [Reference](#reference) section to learn more.
 
 <p align="center">
-  <img src="https://user-images.githubusercontent.com/19392104/138973076-53e54c1f-69d1-4877-988b-47d80acad2dd.png" />
+  <img src="https://user-images.githubusercontent.com/19392104/140386739-dc06ddbe-1943-45b0-a4c7-ac5e6a494783.png" />
 </p>
 
 This BulletKit resource is now ready to be used!
 
-### Bullets node
+### BulletsEnvironment node
 
-In order to spawn bullets in the scene, a Bullets node is needed.
-You can add it as an autoload or as a normal node in the scene.
+In order to spawn bullets in the scene, a BulletsEnvironment node is needed.
+This is the node that will define which kinds of bullets will be available during its lifetime.
+Only one BulletsEnvironment node can be active at the same time and if you add another one to the scene tree its configuration will replace the previous one.
 
-The Bullets node has to be configured to choose which kinds of bullets will be able to spawn, their maximum amount and their z indices.
+The BulletsEnvironment node has to be configured to choose which kinds of bullets will be able to spawn, their maximum amount and their z indices.
 
-1. Create a new Bullets node.
+1. Create a new BulletsEnvironment node.
 2. Choose how many types of bullets this node will be able to spawn. Increase `bullet_types_amount` to 1 for now.
 
-3. A new section of the inspector will appear below. Unfold the 0 entry inside the Bullet Types section.
+3. A new section of the inspector will appear below. Unfold the `Bullet Type 0` entry.
    Here, drag & drop the BulletKit resource you created earlier to let the node know that you'll want to spawn the bullet described in it!
 4. Choose the maximum amount of bullets setting the `pool_size` property and the their `z_index`.
    3000 and 1 will be ok.
 
 <p align="center">
-  <img src="https://user-images.githubusercontent.com/19392104/138973300-ae4ca9f1-7b47-4d49-9332-b83ba763a5dc.png" />
+  <img src="https://user-images.githubusercontent.com/19392104/140386914-287dc3bb-9926-4f89-b4c1-f60a878406e3.png" />
 </p>
 
-Nice! Now you can set this node as an autoload for easier access.
+Nice! Now the bullets are ready.
 
 ### Spawn bullets
 
 Now the last step is to spawn a lot of those bullets.
-Let's create a script.
+You can use the utilities provided by the plugin to spawn bullets in a variety of ways, but let's so it manually for now.<br>
+Create a script.
 
 ```gdscript
 export(Resource) var bullet_kit
@@ -117,10 +117,18 @@ Now attach this script to one of your 2D nodes, start the game, press space to s
 
 ## More examples
 
+The repository contains an `examples` folder containing a few pre-configured scenes, ready to be played in the editor.<br>
+
+<p align="center">
+  <img src="https://user-images.githubusercontent.com/19392104/140408897-00f6de24-e826-4463-a95e-15f7152ead5b.gif" width="580" />
+  <img src="https://user-images.githubusercontent.com/19392104/140408824-e8008e68-5282-46b8-ab83-6dba3d96e41f.gif" width="580" />
+</p>
+
+Below are reported some of the most common things you can do.
+
 ### Bullets spawning
 
-Spawn bullets using a Bullets node.<br>
-In this example Bullets is an autoload.
+Spawn bullets.
 
 ```gdscript
 export(float) var bullets_speed = 50.0
@@ -147,8 +155,7 @@ func shoot():
 
 ### Bullets handling
 
-You can manipulate and set properties of bullets even after you spawned them.<br>
-In this example Bullets is an autoload.
+You can manipulate and set properties of bullets even after you spawned them.
 
 ```gdscript
 export(float) var bullets_speed = 50.0
@@ -167,8 +174,7 @@ func shoot():
 
 ### Collision detection
 
-When a bullet collides with a body or an area, the best way to get the data of the colliding bullet is to connect to the `area_shape_entered` signal.<br>
-In this example Bullets is an autoload.
+When a bullet collides with a body or an area, the best way to get the data of the colliding bullet is to connect to the `area_shape_entered` signal.
 
 ```gdscript
 func _on_area_shape_entered(area_id, _area, area_shape, _local_shape):
@@ -211,7 +217,7 @@ It's configurable with:
 - `texture`: controls what texture is sent to the bullet material.
 - `material`: the material used to render each bullet.
 - `collisions_enabled`: enables or disables collision detection, turning it off increases performances.
-- `collision_layer_`: the collision layer to use during collision detection. Visible only if `collisions_enabled` is on.
+- `collision_layer`: the collision layer to use during collision detection. Visible only if `collisions_enabled` is on.
 - `collision_mask`: the collision mask to use during collision detection. Visible only if `collisions_enabled` is on.
 - `collision_shape`: the CollisionShape to use during collision detection. Visible only if `collisions_enabled` is on.
 - `use_viewport_as_active_rect`: if enabled, uses the current viewport to detect whether a bullet should be deleted.
@@ -241,7 +247,7 @@ It's configurable with:
 - `bullets_turning_speed`: the turning speed with which the bullets will rotate towards the target node.
 - `material`: the material used to render each bullet.
 - `collisions_enabled`: enables or disables collision detection, turning it off increases performances.
-- `collision_layer_`: the collision layer to use during collision detection. Visible only if `collisions_enabled` is on.
+- `collision_layer`: the collision layer to use during collision detection. Visible only if `collisions_enabled` is on.
 - `collision_mask`: the collision mask to use during collision detection. Visible only if `collisions_enabled` is on.
 - `collision_shape`: the CollisionShape to use during collision detection. Visible only if `collisions_enabled` is on.
 - `use_viewport_as_active_rect`: if enabled, uses the current viewport to detect whether a bullet should be deleted.
@@ -275,7 +281,7 @@ It's configurable with:
 - `rotation_offset_over_lifetime`: controls the bullet rotation offsetting its initial rotation by the value in radians defined in this curve, based on the bullet lifetime.
 - `material`: the material used to render each bullet.
 - `collisions_enabled`: enables or disables collision detection, turning it off increases performances.
-- `collision_layer_`: the collision layer to use during collision detection. Visible only if `collisions_enabled` is on.
+- `collision_layer`: the collision layer to use during collision detection. Visible only if `collisions_enabled` is on.
 - `collision_mask`: the collision mask to use during collision detection. Visible only if `collisions_enabled` is on.
 - `collision_shape`: the CollisionShape to use during collision detection. Visible only if `collisions_enabled` is on.
 - `use_viewport_as_active_rect`: if enabled, uses the current viewport to detect whether a bullet should be deleted.
@@ -319,7 +325,7 @@ It's configurable with:
 - `turning_speed`: controls the bullet turning speed towards the target node, based on whathever is set in `turning_speed_control_mode`.
 - `material`: the material used to render each bullet.
 - `collisions_enabled`: enables or disables collision detection, turning it off increases performances.
-- `collision_layer_`: the collision layer to use during collision detection. Visible only if `collisions_enabled` is on.
+- `collision_layer`: the collision layer to use during collision detection. Visible only if `collisions_enabled` is on.
 - `collision_mask`: the collision mask to use during collision detection. Visible only if `collisions_enabled` is on.
 - `collision_shape`: the CollisionShape to use during collision detection. Visible only if `collisions_enabled` is on.
 - `use_viewport_as_active_rect`: if enabled, uses the current viewport to detect whether a bullet should be deleted.
@@ -341,12 +347,44 @@ Bullets spawned by a FollowingDynamicBulletKit have those properties:
 - `data`: custom data you can assign to any bullet.
 </details>
 
-### @ Bullets
+### @ BulletsEnvironment
 
-Bullets is the node used to spawn bullets into the scene.<br>
-It can be configured through the editor setting which kinds of bullets will be used, the pool sizes, the z indices and the collision layer/mask.
+The BulletsEnvironment node is responsible for defining which bullets will be spawned in the current scene.
+It can be configured through the editor setting which kinds of bullets will be used, the pool sizes and the z indices.
+
+#### Signals
 
 ```gdscript
+# Emitted when the BulletsEnvironment is about to commit itself to configure which kind of bullets will be available.
+# Can be used to customize the node configuration before applying it.
+signal tree_entering(node : BulletsEnvironment)
+```
+
+#### Methods
+
+```gdscript
+# Forces the reloading of this BulletsEnvironment, making it the active one.
+reload() -> void
+```
+
+### @ Bullets
+
+Bullets is the autoload used to spawn bullets into the scene.
+It can spawn bullets only if a BulletsEnvironment has been configured and added to the scene.
+
+#### Methods
+
+```gdscript
+# Sets the currently active BulletsEnvironment and allocates the bullets it contains.
+# If a BulletsEnvironment is already active, it will be disabled.
+mount(bullets_environment : BulletsEnvironment) -> void
+
+# Disables and deallocates the bullets contained in `bullets_environment` if it's the currently active BulletsEnvironment.
+unmount(bullets_environment : BulletsEnvironment) -> void
+
+# Returns the currently active BulletsEnvironment node.
+get_bullets_environment() -> BulletsEnvironment
+
 # Spawns a bullet using the passed BulletKit and setting the properties contained in the `properties` dictionary.
 # Returns whether a bullet has been spawned successfully.
 spawn_bullet(bullet_kit : BulletKit, properties : Dictionary) -> bool
@@ -395,6 +433,123 @@ set_bullet_property(bullet_id : BulletID, property : String, value : Variant) ->
 
 # Returns the indicated property of the bullet referenced by `bullet_id`.
 get_bullet_property(bullet_id : BulletID, property : String) -> Variant
+```
+
+### @ TimedRotator
+
+A node that defines and sets the rotation of itself over time based on a curve.
+
+#### Properties
+
+```gdscript
+# Enables or disables the rotating behaviour.
+var enabled : bool
+
+# The time span the curve acts on.
+var duration : float
+
+# The curve that defines the node rotation over time in degrees.
+# 1 in the curve X axis represents `duration` seconds passed.
+var orientation_over_time : Curve
+
+# The time scale, used to speed up or slow down the node rotation.
+var time_scale : float
+
+# Time offset used to calculate the current node rotation.
+var time_offset : float
+
+# Rotation offset in degrees applied to calculate the current node rotation.
+var orientation_degrees_offset : float
+
+# Enables the mirroring of the curve resulting rotation.
+var mirror_enabled : bool
+
+# If `mirror_enabled` is on, defines the reference degrees used to mirror the rotation applied by the curve.
+var mirror_reference_degrees : bool
+```
+
+### @ TimedEvents
+
+A node that defines and fires an amount of events per second over time based on a curve.
+
+#### Signals
+
+```gdscript
+# Emitted when an event should be fired.
+signal event()
+
+# Emitted when an event should be fired.
+# `leftover` is how much time, in seconds, the event is late. It is never above the delta time of a physics step.
+signal event_with_leftover(leftover : float)
+```
+
+#### Properties
+
+```gdscript
+# Enables or disables the event firing behaviour.
+var enabled : bool
+
+# If defined, this TimedEvents node will try to connect to `connect_to_children` and its children.
+# The `on_timed_events_request` function of 'connect_to_children` node and its children will be called, if defined.
+# The actual connection is their resposibility.
+var connect_to_children : NodePath
+
+# The time span the curve acts on.
+var duration : float
+
+# The curve that defines the fire rate of events over time.
+# 1 in the curve X axis represents `duration` seconds passed.
+var events_per_second_over_time : Curve
+
+# Multiplier used to calculate the events per second.
+var events_per_second_multiplier : float
+
+# Time offset used to calculate the events fire rate over time.
+var time_offset : float
+
+# Defines whether the curve will loop starting from the beginning if the time passed exceeds `duration`.
+var loop : bool
+```
+
+#### Methods
+
+```gdscript
+# Resets the time passed to 0.
+reset() -> void
+```
+
+### @ BulletsSpawner
+
+A simple bullets spawner that uses child nodes as spawning points.
+It sets bullets velocity, position and rotation.
+
+#### Properties
+
+```gdscript
+# Enables or disables shooting.
+var enabled : bool
+
+# The BulletKit to use to spawn bullets.
+var bullet_kit : BulletKit
+
+# The spawned bullets speed.
+var bullets_speed : float
+
+# The distance from the original spawn point at which the bullets will be spawned.
+var bullets_spawn_distance : float
+```
+
+#### Methods
+
+```gdscript
+# Shoots bullets based on how many children the node has.
+# Every child is a spawn point and can have its own position and rotation.
+# `revover_seconds` indicates how manu seconds the bullet has to recover ahead of time,
+# e.g. when spawning a bullet in the middle of two physics steps.
+shoot(recover_seconds : float) -> void
+
+# Called by TimedEvents nodes when they wish to automatically connect to this node.
+on_timed_events_request(timed_events : TimedEvents) -> void
 ```
 
 ## Compiling and extending the plugin

@@ -4,7 +4,7 @@ class_name TimedRotator, "../icons/icon_timed_rotator.svg"
 
 
 export(bool) var enabled = true setget _set_enabled
-export(float, 0, 10) var duration = 1.0
+export(float, 0.001, 10) var duration = 1.0
 export(Curve) var orientation_over_time
 export(float) var time_scale = 1.0
 export(float) var time_offset = 0.0

@@ -150,13 +150,9 @@ void Bullets::mount(Node* bullets_environment) {
 
 		pool_sets[i].pools.resize(kits.size());
 
-		Godot::print("Checking kit collisions: layer {0}, mask {1}\nValue of layer_mask signed int: {2}\nValue of layer_mask int64_t: {3}",
-			first_kit->collision_layer, first_kit->collision_mask, layer_mask_keys[i].operator signed int(), layer_mask_keys[i].operator int64_t());
-
 		RID shared_area = RID();
 		if(layer_mask_keys[i].operator int64_t() != 0) {
 			// This is a collisions-enabled set, create the shared area.
-			Godot::print("Setting collisions: layer {0}, mask {1}", first_kit->collision_layer, first_kit->collision_mask);
 			shared_area = Physics2DServer::get_singleton()->area_create();
 			Physics2DServer::get_singleton()->area_set_collision_layer(shared_area, first_kit->collision_layer);
 			Physics2DServer::get_singleton()->area_set_collision_mask(shared_area, first_kit->collision_mask);
