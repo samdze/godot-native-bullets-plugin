@@ -80,8 +80,8 @@ Nice! Now the bullets are ready.
 
 ### Spawn bullets
 
-Now the last step is to spawn a lot of those bullets.
-You can use the utilities provided by the plugin to spawn bullets in a variety of ways, but let's so it manually for now.<br>
+The last step is to spawn a lot of those bullets.<br>
+You can use the utilities provided by the plugin to spawn bullets in a variety of ways, but let's do it manually for now.<br>
 Create a script.
 
 ```gdscript
@@ -199,7 +199,7 @@ func _on_area_shape_entered(area_id, _area, area_shape, _local_shape):
 
 ## Reference
 
-The plugin has two main components, explained below:
+The plugin has a few main components, explained below:
 
 ### @ BulletKit
 
@@ -732,3 +732,6 @@ scons platform=windows target=release generate_bindings=yes -j4
 cd ..
 scons platform=windows target=release
 ```
+
+Finally, create a NativeScript resource setting `bullets.gdnlib` as its library and `CustomFollowingBulletKit` as its class name.<br>
+Now you can attach this script to your BulletKit resources and use it.
