@@ -29,6 +29,8 @@ Pre-built binaries are provided for:
 
 ## Step by step
 
+### README AND DOCUMENTATION ARE NOT UP TO DATE, THEY WILL BE UPDATED SOON.
+
 ### Installation
 
 1. Copy the addons/native_bullets folder in your addons folder.
