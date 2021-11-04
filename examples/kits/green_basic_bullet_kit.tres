@@ -1,0 +1,24 @@
+[gd_resource type="Resource" load_steps=5 format=2]
+
+[ext_resource path="res://addons/native_bullets/kits/basic_bullet_kit.gdns" type="Script" id=1]
+[ext_resource path="res://examples/images/laser_green_08.png" type="Texture" id=2]
+[ext_resource path="res://examples/misc/static_vertical_bullet.material" type="Material" id=3]
+
+[sub_resource type="RectangleShape2D" id=1]
+extents = Vector2( 14, 3.5 )
+
+[resource]
+script = ExtResource( 1 )
+texture = ExtResource( 2 )
+bullet_class_name = "Bullet"
+material = ExtResource( 3 )
+collisions_enabled = false
+collision_layer = 0
+collision_mask = 0
+collision_shape = SubResource( 1 )
+use_viewport_as_active_rect = true
+active_rect = Rect2( 0, 0, 0, 0 )
+rotate = false
+unique_modulate_component = 0
+data = {
+}

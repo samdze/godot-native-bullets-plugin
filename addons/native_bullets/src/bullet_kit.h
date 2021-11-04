@@ -79,11 +79,14 @@ public:
 			GODOT_PROPERTY_HINT_NONE);
 		register_property<BulletKit, Rect2>("active_rect", &BulletKit::active_rect, Rect2(),
 			GODOT_METHOD_RPC_MODE_DISABLED, GODOT_PROPERTY_USAGE_DEFAULT, GODOT_PROPERTY_HINT_NONE);
-		register_property<BulletKit, bool>("rotate", &BulletKit::rotate, false);
+		register_property<BulletKit, bool>("rotate", &BulletKit::rotate, false,
+			GODOT_METHOD_RPC_MODE_DISABLED, (godot_property_usage_flags)(GODOT_PROPERTY_USAGE_DEFAULT | GODOT_PROPERTY_USAGE_UPDATE_ALL_IF_MODIFIED),
+			GODOT_PROPERTY_HINT_NONE);
 		register_property<BulletKit, int32_t>("unique_modulate_component", &BulletKit::unique_modulate_component, 0,
 			GODOT_METHOD_RPC_MODE_DISABLED, GODOT_PROPERTY_USAGE_DEFAULT, GODOT_PROPERTY_HINT_ENUM, "None,Red,Green,Blue,Alpha");
 		register_property<BulletKit, Variant>("data", &BulletKit::data, Dictionary(),
-			GODOT_METHOD_RPC_MODE_DISABLED, GODOT_PROPERTY_USAGE_DEFAULT, GODOT_PROPERTY_HINT_NONE);
+			GODOT_METHOD_RPC_MODE_DISABLED, (godot_property_usage_flags)(GODOT_PROPERTY_USAGE_DEFAULT | GODOT_PROPERTY_USAGE_UPDATE_ALL_IF_MODIFIED),
+			GODOT_PROPERTY_HINT_NONE);
 		
 		register_property<BulletKit, String>("bullet_class_name",
 			&BulletKit::_property_setter, &BulletKit::_property_getter, "",

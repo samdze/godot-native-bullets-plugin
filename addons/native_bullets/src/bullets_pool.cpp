@@ -5,9 +5,7 @@ using namespace godot;
 
 BulletsPool::BulletsPool() {}
 
-BulletsPool::~BulletsPool() {
-	delete[] shapes_to_indices;
-}
+BulletsPool::~BulletsPool() {}
 
 int32_t BulletsPool::get_available_bullets() {
 	return available_bullets;

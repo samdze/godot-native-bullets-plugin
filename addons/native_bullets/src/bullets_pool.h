@@ -37,7 +37,6 @@ protected:
 	}
 
 public:
-	Ref<BulletKit> bullet_kit;
 	int32_t pool_size = 0;
 	int32_t set_index = -1;
 

@@ -35,12 +35,6 @@ func parse_property(object, type, path, hint, hint_text, usage):
 		return true
 	elif path == "active_rect" and object.use_viewport_as_active_rect:
 		return true
+	elif path == "rotate":
+		pass
 	return false
-
-
-func parse_category(object, category):
-	pass
-
-
-func parse_end():
-	pass

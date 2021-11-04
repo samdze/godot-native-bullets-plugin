@@ -1,6 +1,7 @@
 shader_type canvas_item;
 render_mode blend_mix;
 
+uniform float default_orientation : hint_range(-3.14159265, 3.14159265) = 0;
 uniform int frames : hint_range(1, 128) = 1;
 uniform float frame_duration : hint_range(0.001, 16.0) = 0.1;
 uniform int texture_h_frames : hint_range(1, 128) = 1;
@@ -13,6 +14,8 @@ void vertex() {
 	float v_frames = float(texture_v_frames);
 	
 	VERTEX.xy /= vec2(h_frames, v_frames);
+	VERTEX = VERTEX * mat2(vec2(cos(default_orientation), -sin(default_orientation)),
+		vec2(sin(default_orientation), cos(default_orientation)));
 	float total_frames = float(frames);
 	// Using the red component of modulate to offset the animation frame.
 	float frame = floor(MODULATE.r / frame_duration + TIME / frame_duration);

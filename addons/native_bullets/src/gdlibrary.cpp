@@ -16,14 +16,14 @@ extern "C" void GDN_EXPORT godot_gdnative_terminate(godot_gdnative_terminate_opt
 extern "C" void GDN_EXPORT godot_nativescript_init(void *handle) {
 	godot::Godot::nativescript_init(handle);
 
-	godot::register_tool_class<Bullet>();
+	godot::register_class<Bullet>();
 	godot::register_class<BulletKit>();
-	godot::register_tool_class<Bullets>();
+	godot::register_class<Bullets>();
 
 	// Default Bullet Kits.
 	godot::register_class<BasicBulletKit>();
 
-	godot::register_tool_class<FollowingBullet>();
+	godot::register_class<FollowingBullet>();
 	godot::register_class<FollowingBulletKit>();
 
 	godot::register_class<DynamicBullet>();

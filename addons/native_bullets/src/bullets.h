@@ -40,11 +40,7 @@ private:
 	// Maps each BulletKit to the corresponding PoolKit index.
 	Dictionary kits_to_set_pool_indices;
 
-	Array bullet_kits;
-	Array pools_sizes;
-	Array z_indices;
-
-	Ref<RegEx> prop_regex;
+	Node* bullets_environment = nullptr;
 
 	int32_t available_bullets = 0;
 	int32_t active_bullets = 0;
@@ -53,6 +49,7 @@ private:
 	Array shared_areas;
 	PoolIntArray invalid_id;
 
+	void _clear_rids();
 	int32_t _get_pool_index(int32_t set_index, int32_t bullet_index);
 
 public:
@@ -63,16 +60,16 @@ public:
 
 	void _init();
 
-	void _ready();
 	void _physics_process(float delta);
 
-	Variant _get(String property);
-	bool _set(String property, Variant value);
-	Array _get_property_list();
+	void mount(Node* bullets_environment);
+	void unmount(Node* bullets_environment);
+	Node* get_bullets_environment();
 
 	bool spawn_bullet(Ref<BulletKit> kit, Dictionary properties);
 	Variant obtain_bullet(Ref<BulletKit> kit);
 	bool release_bullet(Variant id);
+
 	bool is_bullet_valid(Variant id);
 	bool is_kit_valid(Ref<BulletKit> kit);
 

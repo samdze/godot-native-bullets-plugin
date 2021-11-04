@@ -55,21 +55,23 @@ AbstractBulletsPool<Kit, BulletType>::~AbstractBulletsPool() {
 	VisualServer::get_singleton()->free_rid(canvas_item);
 
 	delete[] bullets;
+	delete[] shapes_to_indices;
 }
 
 template <class Kit, class BulletType>
 void AbstractBulletsPool<Kit, BulletType>::_init(CanvasItem* canvas_parent, RID shared_area, int32_t starting_shape_index,
 		int32_t set_index, Ref<BulletKit> kit, int32_t pool_size, int32_t z_index) {
 	
-	this->collisions_enabled = kit->collisions_enabled;
+	// Check if collisions are enabled and if layer or mask are != 0, 
+	// otherwise the bullets would not collide with anything anyways.
+	this->collisions_enabled = kit->collisions_enabled && ((int64_t)kit->collision_layer + (int64_t)kit->collision_mask) != 0;
 	this->canvas_parent = canvas_parent;
 	this->shared_area = shared_area;
 	this->starting_shape_index = starting_shape_index;
-	this->bullet_kit = kit;
 	this->kit = kit;
 	this->pool_size = pool_size;
 	this->set_index = set_index;
-	
+
 	available_bullets = pool_size;
 	active_bullets = 0;
 
@@ -135,6 +137,7 @@ int32_t AbstractBulletsPool<Kit, BulletType>::_process(float delta) {
 			if(_process_bullet(bullet, delta)) {
 				_release_bullet(i);
 				amount_variation -= 1;
+				i += 1;
 				continue;
 			}
 			
@@ -148,6 +151,7 @@ int32_t AbstractBulletsPool<Kit, BulletType>::_process(float delta) {
 			if(_process_bullet(bullet, delta)) {
 				_release_bullet(i);
 				amount_variation -= 1;
+				i += 1;
 				continue;
 			}
 			
