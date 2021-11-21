@@ -64,7 +64,8 @@ void AbstractBulletsPool<Kit, BulletType>::_init(CanvasItem* canvas_parent, RID 
 	
 	// Check if collisions are enabled and if layer or mask are != 0, 
 	// otherwise the bullets would not collide with anything anyways.
-	this->collisions_enabled = kit->collisions_enabled && ((int64_t)kit->collision_layer + (int64_t)kit->collision_mask) != 0;
+	this->collisions_enabled = kit->collisions_enabled && kit->collision_shape.is_valid() &&
+		((int64_t)kit->collision_layer + (int64_t)kit->collision_mask) != 0;
 	this->canvas_parent = canvas_parent;
 	this->shared_area = shared_area;
 	this->starting_shape_index = starting_shape_index;
@@ -82,8 +83,6 @@ void AbstractBulletsPool<Kit, BulletType>::_init(CanvasItem* canvas_parent, RID 
 	VisualServer::get_singleton()->canvas_item_set_parent(canvas_item, canvas_parent->get_canvas_item());
 	VisualServer::get_singleton()->canvas_item_set_z_index(canvas_item, z_index);
 
-	RID shared_shape_rid = kit->collision_shape->get_rid();
-
 	for(int32_t i = 0; i < pool_size; i++) {
 		BulletType* bullet = BulletType::_new();
 		bullets[i] = bullet;
@@ -93,6 +92,8 @@ void AbstractBulletsPool<Kit, BulletType>::_init(CanvasItem* canvas_parent, RID 
 		VisualServer::get_singleton()->canvas_item_set_material(bullet->item_rid, kit->material->get_rid());
 
 		if(collisions_enabled) {
+			RID shared_shape_rid = kit->collision_shape->get_rid();
+
 			Physics2DServer::get_singleton()->area_add_shape(shared_area, shared_shape_rid, Transform2D(), true);
 			bullet->shape_index = starting_shape_index + i;
 			shapes_to_indices[i] = i;

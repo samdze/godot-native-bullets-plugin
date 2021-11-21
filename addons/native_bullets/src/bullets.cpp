@@ -127,7 +127,7 @@ void Bullets::mount(Node* bullets_environment) {
 		Ref<BulletKit> kit = bullet_kits[i];
 		// By default add the the BulletKit to a no-collisions list. (layer and mask = 0)
 		int64_t layer_mask = 0;
-		if(kit->collisions_enabled) {
+		if(kit->collisions_enabled && kit->collision_shape.is_valid()) {
 			// If collisions are enabled, add the BulletKit to another list.
 			layer_mask = (int64_t)kit->collision_layer + ((int64_t)kit->collision_mask << 32);
 		}
