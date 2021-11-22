@@ -85,6 +85,7 @@ You can use the utilities provided by the plugin to spawn bullets in a variety o
 Create a script.
 
 ```gdscript
+# Assign a valid BulletKit via the inspector.
 export(Resource) var bullet_kit
 
 
