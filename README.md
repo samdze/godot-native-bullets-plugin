@@ -14,7 +14,7 @@ Pre-built binaries are provided for:
 
 - Windows x86-64 (v1.1.1)
 - Linux x86-64 (v1.1)
-- macOS Universal (x86-64 + arm64, v1.1.1)
+- macOS Universal (x86-64 + arm64, v1.1.2)
 
 ## Features
 
