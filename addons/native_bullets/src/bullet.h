@@ -31,13 +31,13 @@ public:
 	void _init() {}
 
 	RID get_item_rid() { return item_rid; }
-	void set_item_rid(RID value) { Godot::print_error("Can't edit the item rid of bullets!", "set_item_rid", "bullet.h", 31); }
+	void set_item_rid(RID value) { ERR_PRINT("Can't edit the item rid of bullets!"); }
 
 	int32_t get_cycle() { return cycle; }
-	void set_cycle(int32_t value) { Godot::print_error("Can't edit the cycle of bullets!", "set_cycle", "bullet.h", 34); }
+	void set_cycle(int32_t value) { ERR_PRINT("Can't edit the cycle of bullets!"); }
 
 	int32_t get_shape_index() { return shape_index; }
-	void set_shape_index(int32_t value) { Godot::print_error("Can't edit the shape index of bullets!", "set_shape_index", "bullet.h", 37); }
+	void set_shape_index(int32_t value) { ERR_PRINT("Can't edit the shape index of bullets!"); }
 
 	static void _register_methods() {
 		register_property<Bullet, RID>("item_rid", &Bullet::set_item_rid, &Bullet::get_item_rid, RID());

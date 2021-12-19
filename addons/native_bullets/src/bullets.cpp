@@ -125,6 +125,10 @@ void Bullets::mount(Node* bullets_environment) {
 	
 	for(int32_t i = 0; i < bullet_kits.size(); i++) {
 		Ref<BulletKit> kit = bullet_kits[i];
+		if(!kit->is_valid()) {
+			ERR_PRINT("BulletKit is not valid!");
+			continue;
+		}
 		// By default add the the BulletKit to a no-collisions list. (layer and mask = 0)
 		int64_t layer_mask = 0;
 		if(kit->collisions_enabled && kit->collision_shape.is_valid()) {
