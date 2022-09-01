@@ -8,6 +8,7 @@ signal tree_entering(node)
 export(bool) var current = true setget _set_current
 export(Array, Resource) var bullet_kits: Array
 export(Array, int) var pools_sizes: Array
+export(Array, NodePath) var parents_hints: Array
 export(Array, int) var z_indices: Array
 
 var properties_regex : RegEx
@@ -22,6 +23,18 @@ func _enter_tree():
 	if Engine.editor_hint:
 		return
 	emit_signal("tree_entering", self)
+
+
+func _ready():
+	if Engine.editor_hint:
+		return
+#	var i = 0
+#	for parent_path in parents:
+#		if parent_path != null:
+#			parents[i] = get_node(parent_path)
+#		else:
+#			parents[i] = null
+#		i += 1
 	if current and is_instance_valid(Bullets):
 		Bullets.mount(self)
 
@@ -64,6 +77,8 @@ func _get(property: String):
 				return bullet_kits[prop_index]
 			elif strings[1] == "pool_size":
 				return pools_sizes[prop_index]
+			elif strings[1] == "parent_hint":
+				return parents_hints[prop_index]
 			elif strings[1] == "z_index":
 				return z_indices[prop_index]
 	return null
@@ -73,6 +88,7 @@ func _set(property: String, value):
 	if property == "bullet_types_amount":
 		bullet_kits.resize(value)
 		pools_sizes.resize(value)
+		parents_hints.resize(value)
 		z_indices.resize(value)
 		property_list_changed_notify()
 		return true
@@ -87,6 +103,9 @@ func _set(property: String, value):
 				return true
 			elif strings[1] == "pool_size":
 				pools_sizes[prop_index] = value
+				return true
+			elif strings[1] == "parent_hint":
+				parents_hints[prop_index] = value
 				return true
 			elif strings[1] == "z_index":
 				z_indices[prop_index] = value
@@ -121,6 +140,12 @@ func _get_property_list():
 			"usage": PROPERTY_USAGE_DEFAULT,
 			"hint": PROPERTY_HINT_RANGE,
 			"hint_string": "1,65536"
+		})
+		properties.append({
+			"name": "bullet_type_{0}/parent_hint".format(format_array),
+			"type": TYPE_NODE_PATH,
+			"usage": PROPERTY_USAGE_DEFAULT,
+			"hint": PROPERTY_HINT_NONE
 		})
 		properties.append({
 			"name": "bullet_type_{0}/z_index".format(format_array),

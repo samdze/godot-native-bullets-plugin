@@ -21,9 +21,6 @@ _data = [ Vector2( 0, -4 ), 0.0, 16.0773, 0, 1, Vector2( 0.497596, 4 ), 16.0773,
 [node name="Example01" type="CenterContainer"]
 anchor_right = 1.0
 anchor_bottom = 1.0
-__meta__ = {
-"_edit_use_anchors_": false
-}
 
 [node name="Center" type="Control" parent="."]
 margin_left = 512.0
@@ -131,10 +128,12 @@ bullets_active_rect_grow = 20.0
 script = ExtResource( 3 )
 bullet_kits = [ ExtResource( 4 ) ]
 pools_sizes = [ 3000 ]
+parents_hints = [ null ]
 z_indices = [ 1 ]
 bullet_types_amount = 1
 bullet_type_0/bullet_kit = ExtResource( 4 )
 bullet_type_0/pool_size = 3000
+bullet_type_0/parent_hint = null
 bullet_type_0/z_index = 1
 
 [node name="UI" type="CanvasLayer" parent="."]

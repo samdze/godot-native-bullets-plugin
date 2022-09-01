@@ -20,7 +20,7 @@ func can_handle(object):
 
 
 func parse_property(object, type, path, hint, hint_text, usage):
-	if path == "bullet_kits" or path == "pools_sizes" or path == "z_indices":
+	if path == "bullet_kits" or path == "pools_sizes" or path == "parents_hints" or path == "z_indices":
 		return true
 	
 	var result = properties_regex.search(path)

@@ -12,9 +12,9 @@ Not compatible with Godot 4.x.
 
 Pre-built binaries are provided for:
 
-- Windows x86-64 (v1.1.1)
+- Windows x86-64 (v1.2)
 - Linux x86-64 (v1.1)
-- macOS Universal (x86-64 + arm64, v1.1.2)
+- macOS Universal (x86-64 + arm64, v1.2)
 
 ## Features
 
@@ -25,7 +25,8 @@ Pre-built binaries are provided for:
 5. Configure bullets with a collision shape, layer and mask of your choice.
 6. Toggle collision detection on or off for each type of bullet.
 7. Set the pool size and z index for every bullet type.
-8. Extend the plugin using C++.
+8. Choose the target viewport or canvas layer.
+9. Extend the plugin using C++.
 
 ## Step by step
 
@@ -71,6 +72,7 @@ The BulletsEnvironment node has to be configured to choose which kinds of bullet
    Here, drag & drop the BulletKit resource you created earlier to let the node know that you'll want to spawn the bullet described in it!
 4. Choose the maximum amount of bullets setting the `pool_size` property and the their `z_index`.
    3000 and 1 will be ok.
+   Leave the `parent_hint` property empty, it will make the bullets spawn in the nearest Viewport or CanvasLayer up in the scene tree.
 
 <p align="center">
   <img src="https://user-images.githubusercontent.com/19392104/140386914-287dc3bb-9926-4f89-b4c1-f60a878406e3.png" />
@@ -352,6 +354,11 @@ Bullets spawned by a FollowingDynamicBulletKit have those properties:
 
 The BulletsEnvironment node is responsible for defining which bullets will be spawned in the current scene.
 It can be configured through the editor setting which kinds of bullets will be used, the pool sizes and the z indices.
+
+The `parent_hint` property indicates which node to use as a starting point to search for the first available Viewport or CanvasLayer up in the scene tree.
+The resulting node will then be used to render the bullets.
+
+Note: any change to a BulletsEnvironment node at runtime needs the node to be reloaded to take effect.
 
 #### Signals
 

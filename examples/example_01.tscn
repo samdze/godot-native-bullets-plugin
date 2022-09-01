@@ -107,10 +107,12 @@ __meta__ = {
 script = ExtResource( 3 )
 bullet_kits = [ ExtResource( 2 ) ]
 pools_sizes = [ 3000 ]
+parents_hints = [ null ]
 z_indices = [ 1 ]
 bullet_types_amount = 1
 bullet_type_0/bullet_kit = ExtResource( 2 )
 bullet_type_0/pool_size = 3000
+bullet_type_0/parent_hint = null
 bullet_type_0/z_index = 1
 
 [node name="UI" type="CanvasLayer" parent="."]

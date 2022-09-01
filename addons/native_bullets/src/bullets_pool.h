@@ -2,6 +2,7 @@
 #define BULLETS_POOL_H
 
 #include <Godot.hpp>
+#include <CanvasLayer.hpp>
 #include <CanvasItem.hpp>
 #include <AtlasTexture.hpp>
 #include <Material.hpp>
@@ -22,7 +23,9 @@ protected:
 	int32_t bullets_to_handle = 0;
 	bool collisions_enabled;
 
-	CanvasItem* canvas_parent;
+	CanvasLayer* canvas_layer;
+	Viewport* viewport;
+	RID canvas_parent;
 	RID canvas_item;
 	RID shared_area;
 	int32_t starting_shape_index;
@@ -43,7 +46,7 @@ public:
 	BulletsPool();
 	virtual ~BulletsPool();
 
-	virtual void _init(CanvasItem* canvas_parent, RID shared_area, int32_t starting_shape_index,
+	virtual void _init(/*RID canvas_parent, Viewport* viewport, */Node* parent_hint, RID shared_area, int32_t starting_shape_index,
 		int32_t set_index, Ref<BulletKit> kit, int32_t pool_size, int32_t z_index) = 0;
 	
 	int32_t get_available_bullets();
@@ -81,7 +84,7 @@ public:
 	AbstractBulletsPool() {}
 	virtual ~AbstractBulletsPool();
 
-	virtual void _init(CanvasItem* canvas_parent, RID shared_area, int32_t starting_shape_index,
+	virtual void _init(/*RID canvas_parent, Viewport* viewport, */Node* parent_hint, RID shared_area, int32_t starting_shape_index,
 		int32_t set_index, Ref<BulletKit> kit, int32_t pool_size, int32_t z_index) override;
 
 	virtual int32_t _process(float delta) override;
