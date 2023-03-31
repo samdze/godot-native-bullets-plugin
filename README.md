@@ -44,7 +44,7 @@ The first thing to do is create a BulletKit resource and choose how bullets will
 1. Create a new empty resource and assign one of the scripts you can find in the `addons/native_bullets/kits` folder to it.
    In this example, we'll assign the `basic_bullet_kit.gdns` script.
    New properties will appear in the resource inspector.
-2. To get started fill the `texture` property with any texture you have.
+2. To get started, fill the `texture` property with any texture you have.
 3. As the `material`, you can use a new material resource using the `animated_shader.gdshader` you can find in the utils folder.
    This shader takes care of animating your bullets if you specify more than 1 frame in its parameters.
 
@@ -219,7 +219,7 @@ It's configurable with:
 
 - `texture`: controls what texture is sent to the bullet material.
 - `material`: the material used to render each bullet.
-- `collisions_enabled`: enables or disables collision detection, turning it off increases performances.
+- `collisions_enabled`: enables or disables collision detection, turning it off increases performance.
 - `collision_layer`: the collision layer to use during collision detection. Visible only if `collisions_enabled` is on.
 - `collision_mask`: the collision mask to use during collision detection. Visible only if `collisions_enabled` is on.
 - `collision_shape`: the CollisionShape to use during collision detection. Visible only if `collisions_enabled` is on.
@@ -243,13 +243,13 @@ Bullets spawned by a BasicBulletKit have those properties:
 <details>
 <summary>FollowingBulletKit</summary>
 <br>
-This BulletKit lets you define a target node for each bullet and a turning speed used to chase a it around.<br>
+This BulletKit lets you define a target node for each bullet and a turning speed used to chase it around.<br>
 It's configurable with:
 
 - `texture`: controls what texture is sent to the bullet material.
 - `bullets_turning_speed`: the turning speed with which the bullets will rotate towards the target node.
 - `material`: the material used to render each bullet.
-- `collisions_enabled`: enables or disables collision detection, turning it off increases performances.
+- `collisions_enabled`: enables or disables collision detection, turning it off increases performance.
 - `collision_layer`: the collision layer to use during collision detection. Visible only if `collisions_enabled` is on.
 - `collision_mask`: the collision mask to use during collision detection. Visible only if `collisions_enabled` is on.
 - `collision_shape`: the CollisionShape to use during collision detection. Visible only if `collisions_enabled` is on.
@@ -283,7 +283,7 @@ It's configurable with:
 - `speed_multiplier_over_lifetime`: controls the bullet speed multiplying its velocity magnitude by the value defined in this curve, based on the bullet lifetime.
 - `rotation_offset_over_lifetime`: controls the bullet rotation offsetting its initial rotation by the value in radians defined in this curve, based on the bullet lifetime.
 - `material`: the material used to render each bullet.
-- `collisions_enabled`: enables or disables collision detection, turning it off increases performances.
+- `collisions_enabled`: enables or disables collision detection, turning it off increases performance.
 - `collision_layer`: the collision layer to use during collision detection. Visible only if `collisions_enabled` is on.
 - `collision_mask`: the collision mask to use during collision detection. Visible only if `collisions_enabled` is on.
 - `collision_shape`: the CollisionShape to use during collision detection. Visible only if `collisions_enabled` is on.
@@ -320,19 +320,19 @@ It's configurable with:
   - `Based On Lifetime`: the curve x axis will map to the lifetime of the bullet, from 0 to `lifetime_curves_span`.
   - `Based On Target Distance`: the curve x axis will map to the distance to the target, from 0 to `distance_curves_span`.
   - `Based on Angle To Target`: the curve x axis will map to the angle between the bullet `velocity` Vector2 and the Vector2 pointing from the bullet to the target node, from 0 to PI.
-- `speed_multiplier`: controls the bullet speed multiplying its velocity magnitude by the value defined in this curve, based on whathever is set in `speed_control_mode`.
+- `speed_multiplier`: controls the bullet speed multiplying its velocity magnitude by the value defined in this curve, based on whatever is set in `speed_control_mode`.
 - `turning_speed_control_mode`: specifies the mode the turning speed curve will determine its value:
   - `Based On Lifetime`: the curve x axis will map to the lifetime of the bullet, from 0 to `lifetime_curves_span`.
   - `Based On Target Distance`: the curve x axis will map to the distance to the target, from 0 to `distance_curves_span`.
   - `Based on Angle To Target`: the curve x axis will map to the angle between the bullet `velocity` Vector2 and the Vector2 pointing from the bullet to the target node, from 0 to PI.
 - `turning_speed`: controls the bullet turning speed towards the target node, based on whathever is set in `turning_speed_control_mode`.
 - `material`: the material used to render each bullet.
-- `collisions_enabled`: enables or disables collision detection, turning it off increases performances.
+- `collisions_enabled`: enables or disables collision detection, turning it off increases performance.
 - `collision_layer`: the collision layer to use during collision detection. Visible only if `collisions_enabled` is on.
 - `collision_mask`: the collision mask to use during collision detection. Visible only if `collisions_enabled` is on.
 - `collision_shape`: the CollisionShape to use during collision detection. Visible only if `collisions_enabled` is on.
 - `use_viewport_as_active_rect`: if enabled, uses the current viewport to detect whether a bullet should be deleted.
-- `active_rect`: the rect outside of which the bullets get deleted. Visible only if `use_viewport_as_active_rect` if off.
+- `active_rect`: the rect outside of which the bullets get deleted. Visible only if `use_viewport_as_active_rect` is off.
 - `rotate`: controls whether the bullets automatically rotate based on their direction of travel.
 - `unique_modulate_component`: controls which modulate component in the material will be used as a unique value for each bullet instance. This can be used to offset bullets animation frames by unique amounts inside shaders and it's needed due to Godot not supporting material instance properties in 3.x.
 - `data`: custom data you can assign to the BulletKit.
@@ -355,7 +355,7 @@ Bullets spawned by a FollowingDynamicBulletKit have those properties:
 The BulletsEnvironment node is responsible for defining which bullets will be spawned in the current scene.
 It can be configured through the editor setting which kinds of bullets will be used, the pool sizes and the z indices.
 
-The `parent_hint` property indicates which node to use as a starting point to search for the first available Viewport or CanvasLayer up in the scene tree.
+The `parent_hint` property indicates which node to use as the starting point to search for the first available Viewport or CanvasLayer up in the scene tree.
 The resulting node will then be used to render the bullets.
 
 Note: any change to a BulletsEnvironment node at runtime needs the node to be reloaded to take effect.
@@ -552,7 +552,7 @@ var bullets_spawn_distance : float
 ```gdscript
 # Shoots bullets based on how many children the node has.
 # Every child is a spawn point and can have its own position and rotation.
-# `revover_seconds` indicates how manu seconds the bullet has to recover ahead of time,
+# `recover_seconds` indicates how many seconds the bullet has to recover ahead of time,
 # e.g. when spawning a bullet in the middle of two physics steps.
 shoot(recover_seconds : float) -> void
 
