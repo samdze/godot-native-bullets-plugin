@@ -314,6 +314,9 @@ void AbstractBulletsPool<Kit, BulletType>::set_bullet_property(BulletID id, Stri
 			if(collisions_enabled)
 				Physics2DServer::get_singleton()->area_set_shape_transform(shared_area, bullet->shape_index, bullet->transform);
 		}
+	} else {
+		const String description = "Invalid BulletID: {0},{1},{2}";
+		Godot::print_error(description.format(Array::make(id.index, id.cycle, id.set)), __func__, __FILE__, __LINE__);
 	}
 }
 
@@ -323,6 +326,9 @@ Variant AbstractBulletsPool<Kit, BulletType>::get_bullet_property(BulletID id, S
 		int32_t bullet_index = shapes_to_indices[id.index - starting_shape_index];
 
 		return bullets[bullet_index]->get(property);
+	} else {
+		const String description = "Invalid BulletID: {0},{1},{2}";
+		Godot::print_error(description.format(Array::make(id.index, id.cycle, id.set)), __func__, __FILE__, __LINE__);
 	}
 	return Variant();
 }
