@@ -113,12 +113,13 @@ void AbstractBulletsPool<Kit, BulletType>::_init(Node* parent_hint, RID shared_a
 		VisualServer::get_singleton()->canvas_item_set_parent(bullet->item_rid, canvas_item);
 		VisualServer::get_singleton()->canvas_item_set_material(bullet->item_rid, kit->material->get_rid());
 
+		bullet->shape_index = starting_shape_index + i;
+		shapes_to_indices[i] = i;
+
 		if(collisions_enabled) {
 			RID shared_shape_rid = kit->collision_shape->get_rid();
 
 			Physics2DServer::get_singleton()->area_add_shape(shared_area, shared_shape_rid, Transform2D(), true);
-			bullet->shape_index = starting_shape_index + i;
-			shapes_to_indices[i] = i;
 		}
 
 		Color color = Color(1.0f, 1.0f, 1.0f, 1.0f);
