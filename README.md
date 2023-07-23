@@ -10,11 +10,14 @@ Efficiently spawn and move high amounts of objects like bullets for bullet hells
 This is a **GDNative plugin**, compatible with Godot 3.4.x and up.<br>
 Not compatible with Godot 4.x.
 
-Pre-built binaries are provided for:
+The pre-built binaries provided are slightly outdated:
 
 - Windows x86-64 (v1.2)
 - Linux x86-64 (v1.1)
 - macOS Universal (x86-64 + arm64, v1.2)
+
+**Notice**: you should always build from source to make sure you have the latest binary version.<br>
+See [Compiling and extending the plugin](#compiling-and-extending-the-plugin).
 
 ## Features
 
@@ -561,6 +564,7 @@ on_timed_events_request(timed_events : TimedEvents) -> void
 ```
 
 ## Compiling and extending the plugin
+[Prerequisites](https://docs.godotengine.org/en/3.6/tutorials/scripting/gdnative/gdnative_c_example.html#prerequisites)
 
 The plugin can be extended with new BulletKits that are more suitable to your specific use cases.<br>
 To do so, you have to download the entire repository together with submodules, write some C++ code and recompile the plugin.
