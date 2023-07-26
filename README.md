@@ -10,13 +10,13 @@ Efficiently spawn and move high amounts of objects like bullets for bullet hells
 This is a **GDNative plugin**, compatible with Godot 3.4.x and up.<br>
 Not compatible with Godot 4.x.
 
-The pre-built binaries provided are slightly outdated:
+The versions of the pre-built binaries are as follows:
 
-- Windows x86-64 (v1.2)
-- Linux x86-64 (v1.1)
-- macOS Universal (x86-64 + arm64, v1.2)
+- Windows x86-64 (v1.2.1)
+- Linux x86-64 (v1.2.1)
+- macOS Universal (x86-64 + arm64, v1.2.1)
 
-**Notice**: you should always build from source to make sure you have the latest binary version.<br>
+**Notice**: to make sure you have the latest binary version you can build from source.<br>
 See [Compiling and extending the plugin](#compiling-and-extending-the-plugin).
 
 ## Features
