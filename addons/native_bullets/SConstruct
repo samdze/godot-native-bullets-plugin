@@ -1,16 +1,33 @@
 #!python
-import os, subprocess
+import os, subprocess, sys
 
 opts = Variables([], ARGUMENTS)
 
+# Try to detect the host platform automatically.
+# This is used if no `platform` argument is passed
+if sys.platform.startswith('linux'):
+    host_platform = 'linux'
+elif sys.platform.startswith('freebsd'):
+    host_platform = 'freebsd'
+elif sys.platform == 'darwin':
+    host_platform = 'osx'
+elif sys.platform == 'win32' or sys.platform == 'msys':
+    host_platform = 'windows'
+else:
+    raise ValueError(
+        'Could not detect platform automatically, please specify with '
+        'platform=<platform>'
+    )
+
 # Gets the standard flags CC, CCX, etc.
-env = DefaultEnvironment()
+env = Environment(ENV = os.environ)
 
 # Define our options
 opts.Add(EnumVariable('target', "Compilation target", 'debug', ['d', 'debug', 'r', 'release']))
 opts.Add(EnumVariable('platform', "Compilation platform", '', ['', 'windows', 'x11', 'linux', 'osx']))
 opts.Add(EnumVariable('p', "Compilation target, alias for 'platform'", '', ['', 'windows', 'x11', 'linux', 'osx']))
 opts.Add(EnumVariable('macos_arch', "Target architecture for the macOS platform", 'universal', ['universal', 'x86_64', 'arm64']))
+opts.Add(BoolVariable('use_mingw', 'Use the MinGW compiler instead of MSVC - only effective on Windows', False))
 opts.Add(BoolVariable('use_llvm', "Use the LLVM / Clang compiler", 'no'))
 opts.Add(PathVariable('target_path', 'The path where the lib is installed.', 'bin/'))
 opts.Add(PathVariable('target_name', 'The library name.', 'bullets', PathVariable.PathAccept))
@@ -50,7 +67,7 @@ if env['platform'] == "osx":
         env['target_path'] += env['macos_arch'] + '/'
         env.Append(CCFLAGS = ['-arch', env['macos_arch']])
         env.Append(LINKFLAGS = ['-arch', env['macos_arch']])
-    
+
     if env['target'] in ('debug', 'd'):
         env.Append(CCFLAGS = ['-g','-O2', '-std=c++17'])
     else:
@@ -60,10 +77,31 @@ if env['platform'] == "osx":
 elif env['platform'] in ('x11', 'linux'):
     env['target_path'] += 'x11/'
     cpp_library += '.linux'
+
+    if host_platform == 'osx':
+        # Cross-compilation from macOS to Linux x86_64
+        # using https://github.com/messense/homebrew-macos-cross-toolchains
+        env['CXX'] = 'x86_64-unknown-linux-gnu-g++'
+        env['AR'] = 'x86_64-unknown-linux-gnu-ar'
+        env['RANLIB'] = 'x86_64-unknown-linux-gnu-ranlib'
+        env['LINK'] = "x86_64-unknown-linux-gnu-g++"
+
     if env['target'] in ('debug', 'd'):
         env.Append(CCFLAGS = ['-fPIC', '-g3','-Og', '-std=c++17'])
     else:
         env.Append(CCFLAGS = ['-fPIC', '-g','-O3', '-std=c++17'])
+
+    if host_platform == 'osx':
+        # Cross-compilation from macOS to Linux
+        env['SHLIBSUFFIX'] = '.so'
+        env['LIBSUFFIXES'] = ['$LIBSUFFIX']
+
+    env.Append(LINKFLAGS=[
+            '-shared',
+            '-Wl,--no-undefined',
+            '-static-libgcc', '-static-libstdc++'
+    ])
+
 
 elif env['platform'] == "windows":
     env['target_path'] += 'win64/'
@@ -72,12 +110,45 @@ elif env['platform'] == "windows":
     # that way you can run scons in a vs 2017 prompt and it will find all the required tools
     env.Append(ENV = os.environ)
 
-    env.Append(CCFLAGS = ['-DWIN32', '-D_WIN32', '-D_WINDOWS', '-W3', '-GR', '-D_CRT_SECURE_NO_WARNINGS'])
-    if env['target'] in ('debug', 'd'):
-        env.Append(CCFLAGS = ['-EHsc', '-D_DEBUG', '-MDd'])
-        env['PDB'] = env['target_path'] + env['target_name'] + '.pdb'
-    else:
-        env.Append(CCFLAGS = ['-O2', '-EHsc', '-DNDEBUG', '-MD'])
+    if host_platform == 'windows' and not env['use_mingw']:
+        env.Append(CCFLAGS = ['-DWIN32', '-D_WIN32', '-D_WINDOWS', '-W3', '-GR', '-D_CRT_SECURE_NO_WARNINGS'])
+        if env['target'] in ('debug', 'd'):
+            env.Append(CCFLAGS = ['-EHsc', '-D_DEBUG', '-MDd'])
+            env['PDB'] = env['target_path'] + env['target_name'] + '.pdb'
+        else:
+            env.Append(CCFLAGS = ['-O2', '-EHsc', '-DNDEBUG', '-MD'])
+
+    elif host_platform == 'linux' or host_platform == 'freebsd' or host_platform == 'osx' or env['use_mingw']:
+        # Native or cross-compilation using MinGW
+        if host_platform == 'windows':
+            env = Environment(ENV = os.environ, tools=["mingw"])
+            opts.Update(env)
+            env.Append(CCFLAGS = ['-DWIN32', '-D_WIN32', '-D_WINDOWS', '-D_CRT_SECURE_NO_WARNINGS'])
+            env['target_path'] += 'win64/'
+
+        if env['target'] in ('debug', 'd'):
+            env.Append(CCFLAGS = ['-fPIC', '-g3','-Og', '-std=c++17'])
+        else:
+            env.Append(CCFLAGS = ['-fPIC', '-g', '-O3', '-std=c++17'])
+
+        env['CXX'] = 'x86_64-w64-mingw32-g++'
+        env['AR'] = "x86_64-w64-mingw32-ar"
+        env['RANLIB'] = "x86_64-w64-mingw32-ranlib"
+        env['LINK'] = "x86_64-w64-mingw32-g++"
+
+	# These options are for a release build even using target=debug
+        env.Append(CCFLAGS=['-O3', '-std=c++14', '-Wwrite-strings'])
+        env.Append(LINKFLAGS=[
+            '--static', '-shared',
+            '-Wl,--no-undefined',
+            '-static-libgcc', '-static-libstdc++'
+        ])
+
+        env['SHLIBPREFIX'] = ''
+        env['SHLIBSUFFIX'] = '.dll'
+        env["LIBPREFIXES"] = ["$LIBPREFIX"]
+        env["LIBSUFFIXES"] = ["$LIBSUFFIX"]
+
 
 if env['target'] in ('debug', 'd'):
     env.Append(CPPDEFINES=['DEBUG_ENABLED'])
