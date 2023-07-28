@@ -21,7 +21,7 @@ void AbstractBulletsPool<Kit, BulletType>::_enable_bullet(BulletType* bullet) {
 
 	Rect2 texture_rect = Rect2(-kit->texture->get_size() / 2.0f, kit->texture->get_size());
 	RID texture_rid = kit->texture->get_rid();
-	
+
 	VisualServer::get_singleton()->canvas_item_add_texture_rect(bullet->item_rid,
 		texture_rect,
 		texture_rid);
@@ -62,8 +62,8 @@ AbstractBulletsPool<Kit, BulletType>::~AbstractBulletsPool() {
 template <class Kit, class BulletType>
 void AbstractBulletsPool<Kit, BulletType>::_init(Node* parent_hint, RID shared_area, int32_t starting_shape_index,
 		int32_t set_index, Ref<BulletKit> kit, int32_t pool_size, int32_t z_index) {
-	
-	// Check if collisions are enabled and if layer or mask are != 0, 
+
+	// Check if collisions are enabled and if layer or mask are != 0,
 	// otherwise the bullets would not collide with anything anyways.
 	this->collisions_enabled = kit->collisions_enabled && kit->collision_shape.is_valid() &&
 		((int64_t)kit->collision_layer + (int64_t)kit->collision_mask) != 0;
@@ -86,7 +86,7 @@ void AbstractBulletsPool<Kit, BulletType>::_init(Node* parent_hint, RID shared_a
 		if (this->viewport) {
 			break;
 		}
-		
+
 		n = n->get_parent();
 	}
 	if (this->canvas_layer) {
@@ -105,6 +105,12 @@ void AbstractBulletsPool<Kit, BulletType>::_init(Node* parent_hint, RID shared_a
 	VisualServer::get_singleton()->canvas_item_set_parent(canvas_item, canvas_parent);
 	VisualServer::get_singleton()->canvas_item_set_z_index(canvas_item, z_index);
 
+	RID shared_shape_rid = kit->collision_shape->get_rid();
+
+	if(collisions_enabled) {
+		Physics2DServer::get_singleton()->area_set_space(shared_area, viewport->find_world_2d()->get_space());
+	}
+
 	for(int32_t i = 0; i < pool_size; i++) {
 		BulletType* bullet = BulletType::_new();
 		bullets[i] = bullet;
@@ -117,8 +123,6 @@ void AbstractBulletsPool<Kit, BulletType>::_init(Node* parent_hint, RID shared_a
 		shapes_to_indices[i] = i;
 
 		if(collisions_enabled) {
-			RID shared_shape_rid = kit->collision_shape->get_rid();
-
 			Physics2DServer::get_singleton()->area_add_shape(shared_area, shared_shape_rid, Transform2D(), true);
 		}
 
@@ -176,7 +180,7 @@ int32_t AbstractBulletsPool<Kit, BulletType>::_process(float delta) {
 				i += 1;
 				continue;
 			}
-			
+
 			VisualServer::get_singleton()->canvas_item_set_transform(bullet->item_rid, bullet->transform);
 			Physics2DServer::get_singleton()->area_set_shape_transform(shared_area, bullet->shape_index, bullet->transform);
 		}
@@ -190,7 +194,7 @@ int32_t AbstractBulletsPool<Kit, BulletType>::_process(float delta) {
 				i += 1;
 				continue;
 			}
-			
+
 			VisualServer::get_singleton()->canvas_item_set_transform(bullet->item_rid, bullet->transform);
 		}
 	}
@@ -254,10 +258,10 @@ bool AbstractBulletsPool<Kit, BulletType>::release_bullet(BulletID id) {
 template <class Kit, class BulletType>
 void AbstractBulletsPool<Kit, BulletType>::_release_bullet(int32_t index) {
 	BulletType* bullet = bullets[index];
-	
+
 	if(collisions_enabled)
 		Physics2DServer::get_singleton()->area_set_shape_disabled(shared_area, bullet->shape_index, true);
-	
+
 	_disable_bullet(bullet);
 	bullet->cycle += 1;
 
