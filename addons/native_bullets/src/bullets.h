@@ -1,13 +1,13 @@
 #ifndef BULLETS_H
 #define BULLETS_H
 
-#include <Godot.hpp>
-#include <Node2D.hpp>
-#include <AtlasTexture.hpp>
-#include <Material.hpp>
-#include <Color.hpp>
-#include <Array.hpp>
-#include <RegEx.hpp>
+#include <godot_cpp/godot.hpp>
+#include <godot_cpp/classes/node2d.hpp>
+#include <godot_cpp/classes/atlas_texture.hpp>
+#include <godot_cpp/classes/material.hpp>
+#include <godot_cpp/variant/color.hpp>
+#include <godot_cpp/variant/array.hpp>
+#include <godot_cpp/classes/reg_ex.hpp>
 
 #include <vector>
 #include <memory>
@@ -19,7 +19,7 @@ using namespace godot;
 
 
 class Bullets : public Node2D {
-	GODOT_CLASS(Bullets, Node2D)
+	GDCLASS(Bullets, Node2D)
 	
 private:
 	// A pool internal representation with related properties.

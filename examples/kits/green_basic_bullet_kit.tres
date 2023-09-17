@@ -1,7 +1,7 @@
 [gd_resource type="Resource" load_steps=5 format=2]
 
 [ext_resource path="res://addons/native_bullets/kits/basic_bullet_kit.gdns" type="Script" id=1]
-[ext_resource path="res://examples/images/laser_green_08.png" type="Texture" id=2]
+[ext_resource path="res://examples/images/laser_green_08.png" type="Texture2D" id=2]
 [ext_resource path="res://examples/misc/static_vertical_bullet.material" type="Material" id=3]
 
 [sub_resource type="RectangleShape2D" id=1]

@@ -1,13 +1,13 @@
 #ifndef BULLET_KIT_H
 #define BULLET_KIT_H
 
-#include <Godot.hpp>
-#include <Resource.hpp>
-#include <Shape2D.hpp>
-#include <Material.hpp>
-#include <Texture.hpp>
-#include <PackedScene.hpp>
-#include <Script.hpp>
+#include <godot_cpp/godot.hpp>
+#include <godot_cpp/classes/resource.hpp>
+#include <godot_cpp/classes/shape2d.hpp>
+#include <godot_cpp/classes/material.hpp>
+#include <godot_cpp/classes/texture2d.hpp>
+#include <godot_cpp/classes/packed_scene.hpp>
+#include <godot_cpp/classes/script.hpp>
 
 #include <memory>
 
@@ -32,7 +32,7 @@ using namespace godot;
 class BulletsPool;
 
 class BulletKit : public Resource {
-	GODOT_CLASS(BulletKit, Resource)
+	GDCLASS(BulletKit, Resource)
 
 public:
 	// The material used to render each bullet.
@@ -94,6 +94,9 @@ public:
 		register_property<BulletKit, String>("bullet_properties",
 			&BulletKit::_property_setter, &BulletKit::_property_getter, "",
 			GODOT_METHOD_RPC_MODE_DISABLED, GODOT_PROPERTY_USAGE_EDITOR);
+
+		ClassDB::add_property("bullet_class_name",
+			PropertyInfo(Variant::STRING, "bullet_class_name", PROPERTY_HINT_NONE, "", PROPERTY_USAGE_NO_EDITOR), "set_bullet_class_name", "get_bullet_class_name");
 	}
 
 	virtual bool is_valid() { return material.is_valid(); }

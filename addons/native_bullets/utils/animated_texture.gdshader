@@ -7,7 +7,7 @@ uniform float frame_duration : hint_range(0.001, 16.0) = 0.1;
 uniform int texture_h_frames : hint_range(1, 128) = 1;
 uniform int texture_v_frames : hint_range(1, 128) = 1;
 uniform bool looping = true;
-uniform vec4 modulate : hint_color = vec4(1.0, 1.0, 1.0, 1.0);
+uniform vec4 modulate : source_color = vec4(1.0, 1.0, 1.0, 1.0);
 
 void vertex() {
 	float h_frames = float(texture_h_frames);
@@ -17,8 +17,8 @@ void vertex() {
 	VERTEX = VERTEX * mat2(vec2(cos(default_orientation), -sin(default_orientation)),
 		vec2(sin(default_orientation), cos(default_orientation)));
 	float total_frames = float(frames);
-	// Using the red component of modulate to offset the animation frame.
-	float frame = floor(MODULATE.r / frame_duration + TIME / frame_duration);
+	// Using the red component of COLOR to offset the animation frame.
+	float frame = floor(COLOR.r / frame_duration + TIME / frame_duration);
 	
 	if (!looping) {
 		frame = clamp(frame, 0.0, total_frames - 1.0);
@@ -33,5 +33,5 @@ void vertex() {
 void fragment() {
 	vec4 color = texture(TEXTURE, UV);
 	
-	COLOR = vec4(color.rgb * modulate.rgb, color.a * modulate.a * MODULATE.a);
+	COLOR = vec4(color.rgb * modulate.rgb, color.a * modulate.a * COLOR.a);
 }

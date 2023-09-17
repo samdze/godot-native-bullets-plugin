@@ -1,10 +1,10 @@
 #ifndef FOLLOWING_BULLET_KIT_H
 #define FOLLOWING_BULLET_KIT_H
 
-#include <Texture.hpp>
-#include <PackedScene.hpp>
-#include <Node2D.hpp>
-#include <SceneTree.hpp>
+#include <godot_cpp/classes/texture2d.hpp>
+#include <godot_cpp/classes/packed_scene.hpp>
+#include <godot_cpp/classes/node2d.hpp>
+#include <godot_cpp/classes/scene_tree.hpp>
 #include <cmath>
 
 #include "../bullet_kit.h"
@@ -14,7 +14,7 @@ using namespace godot;
 
 // Bullet definition.
 class FollowingBullet : public Bullet {
-	GODOT_CLASS(FollowingBullet, Bullet)
+	GDCLASS(FollowingBullet, Bullet)
 public:
 	Node2D* target_node = nullptr;
 
@@ -40,15 +40,15 @@ public:
 
 // Bullet kit definition.
 class FollowingBulletKit : public BulletKit {
-	GODOT_CLASS(FollowingBulletKit, BulletKit)
+	GDCLASS(FollowingBulletKit, BulletKit)
 public:
 	BULLET_KIT(FollowingBulletsPool)
 
-	Ref<Texture> texture;
+	Ref<Texture2D> texture;
 	float bullets_turning_speed = 1.0f;
 
 	static void _register_methods() {
-		register_property<FollowingBulletKit, Ref<Texture>>("texture", &FollowingBulletKit::texture, Ref<Texture>(), 
+		register_property<FollowingBulletKit, Ref<Texture2D>>("texture", &FollowingBulletKit::texture, Ref<Texture2D>(), 
 			GODOT_METHOD_RPC_MODE_DISABLED, GODOT_PROPERTY_USAGE_DEFAULT, GODOT_PROPERTY_HINT_RESOURCE_TYPE, "Texture");
 		register_property<FollowingBulletKit, float>("bullets_turning_speed", &FollowingBulletKit::bullets_turning_speed, 1.0f, 
 			GODOT_METHOD_RPC_MODE_DISABLED, GODOT_PROPERTY_USAGE_DEFAULT, GODOT_PROPERTY_HINT_RANGE, "0.0,128.0");

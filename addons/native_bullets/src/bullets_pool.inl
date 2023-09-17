@@ -1,9 +1,9 @@
-#include <Godot.hpp>
-#include <VisualServer.hpp>
-#include <World2D.hpp>
-#include <Physics2DServer.hpp>
-#include <Viewport.hpp>
-#include <Font.hpp>
+#include <godot_cpp/godot.hpp>
+#include <godot_cpp/classes/rendering_server.hpp>
+#include <godot_cpp/classes/world2d.hpp>
+#include <godot_cpp/classes/physics_server2d.hpp>
+#include <godot_cpp/classes/viewport.hpp>
+#include <godot_cpp/classes/font.hpp>
 
 #include "bullets_pool.h"
 

@@ -1,11 +1,11 @@
-#include <VisualServer.hpp>
-#include <Physics2DServer.hpp>
-#include <World2D.hpp>
-#include <Viewport.hpp>
-#include <OS.hpp>
-#include <Engine.hpp>
-#include <Font.hpp>
-#include <RegExMatch.hpp>
+#include <godot_cpp/classes/rendering_server.hpp>
+#include <godot_cpp/classes/world2d.hpp>
+#include <godot_cpp/classes/physics_server2d.hpp>
+#include <godot_cpp/classes/viewport.hpp>
+#include <godot_cpp/classes/os.hpp>
+#include <godot_cpp/classes/engine.hpp>
+#include <godot_cpp/classes/font.hpp>
+#include <godot_cpp/classes/reg_ex_match.hpp>
 
 #include "bullets.h"
 

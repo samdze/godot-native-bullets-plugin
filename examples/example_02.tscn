@@ -1,6 +1,6 @@
 [gd_scene load_steps=12 format=2]
 
-[ext_resource path="res://examples/images/player_ship_2_blue.png" type="Texture" id=1]
+[ext_resource path="res://examples/images/player_ship_2_blue.png" type="Texture2D" id=1]
 [ext_resource path="res://examples/scripts/kits_active_rect_configurator.gd" type="Script" id=2]
 [ext_resource path="res://addons/native_bullets/bullets_environment.gd" type="Script" id=3]
 [ext_resource path="res://examples/kits/green_basic_bullet_kit.tres" type="Resource" id=4]
@@ -23,15 +23,15 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 
 [node name="Center" type="Control" parent="."]
-margin_left = 512.0
-margin_top = 300.0
-margin_right = 512.0
-margin_bottom = 300.0
+offset_left = 512.0
+offset_top = 300.0
+offset_right = 512.0
+offset_bottom = 300.0
 
 [node name="Player" type="Node2D" parent="Center"]
 script = ExtResource( 5 )
 
-[node name="Sprite" type="Sprite" parent="Center/Player"]
+[node name="Sprite2D" type="Sprite2D" parent="Center/Player"]
 position = Vector2( 0, -6 )
 texture = ExtResource( 1 )
 __meta__ = {
@@ -58,66 +58,66 @@ bullet_kit = ExtResource( 4 )
 bullets_speed = 400.0
 bullets_spawn_distance = 20.0
 
-[node name="Position2D" type="Position2D" parent="Center/Player/TimedRotator/BulletsSpawner"]
+[node name="Marker2D" type="Marker2D" parent="Center/Player/TimedRotator/BulletsSpawner"]
 
-[node name="Position2D2" type="Position2D" parent="Center/Player/TimedRotator/BulletsSpawner"]
+[node name="Position2D2" type="Marker2D" parent="Center/Player/TimedRotator/BulletsSpawner"]
 rotation = 0.0698132
 
-[node name="Position2D3" type="Position2D" parent="Center/Player/TimedRotator/BulletsSpawner"]
+[node name="Position2D3" type="Marker2D" parent="Center/Player/TimedRotator/BulletsSpawner"]
 rotation = 0.139626
 
-[node name="Position2D6" type="Position2D" parent="Center/Player/TimedRotator/BulletsSpawner"]
+[node name="Position2D6" type="Marker2D" parent="Center/Player/TimedRotator/BulletsSpawner"]
 rotation = 0.20944
 
-[node name="Position2D12" type="Position2D" parent="Center/Player/TimedRotator/BulletsSpawner"]
+[node name="Position2D12" type="Marker2D" parent="Center/Player/TimedRotator/BulletsSpawner"]
 rotation = 0.279253
 
-[node name="Position2D13" type="Position2D" parent="Center/Player/TimedRotator/BulletsSpawner"]
+[node name="Position2D13" type="Marker2D" parent="Center/Player/TimedRotator/BulletsSpawner"]
 rotation = 0.349066
 
-[node name="Position2D14" type="Position2D" parent="Center/Player/TimedRotator/BulletsSpawner"]
+[node name="Position2D14" type="Marker2D" parent="Center/Player/TimedRotator/BulletsSpawner"]
 rotation = 0.418879
 
-[node name="Position2D15" type="Position2D" parent="Center/Player/TimedRotator/BulletsSpawner"]
+[node name="Position2D15" type="Marker2D" parent="Center/Player/TimedRotator/BulletsSpawner"]
 rotation = 0.488692
 
-[node name="Position2D16" type="Position2D" parent="Center/Player/TimedRotator/BulletsSpawner"]
+[node name="Position2D16" type="Marker2D" parent="Center/Player/TimedRotator/BulletsSpawner"]
 rotation = 0.558505
 
-[node name="Position2D17" type="Position2D" parent="Center/Player/TimedRotator/BulletsSpawner"]
+[node name="Position2D17" type="Marker2D" parent="Center/Player/TimedRotator/BulletsSpawner"]
 rotation = 0.628319
 
-[node name="Position2D18" type="Position2D" parent="Center/Player/TimedRotator/BulletsSpawner"]
+[node name="Position2D18" type="Marker2D" parent="Center/Player/TimedRotator/BulletsSpawner"]
 rotation = 0.698132
 
-[node name="Position2D7" type="Position2D" parent="Center/Player/TimedRotator/BulletsSpawner"]
+[node name="Position2D7" type="Marker2D" parent="Center/Player/TimedRotator/BulletsSpawner"]
 rotation = -0.0698132
 
-[node name="Position2D4" type="Position2D" parent="Center/Player/TimedRotator/BulletsSpawner"]
+[node name="Position2D4" type="Marker2D" parent="Center/Player/TimedRotator/BulletsSpawner"]
 rotation = -0.139626
 
-[node name="Position2D5" type="Position2D" parent="Center/Player/TimedRotator/BulletsSpawner"]
+[node name="Position2D5" type="Marker2D" parent="Center/Player/TimedRotator/BulletsSpawner"]
 rotation = -0.20944
 
-[node name="Position2D8" type="Position2D" parent="Center/Player/TimedRotator/BulletsSpawner"]
+[node name="Position2D8" type="Marker2D" parent="Center/Player/TimedRotator/BulletsSpawner"]
 rotation = -0.279253
 
-[node name="Position2D9" type="Position2D" parent="Center/Player/TimedRotator/BulletsSpawner"]
+[node name="Position2D9" type="Marker2D" parent="Center/Player/TimedRotator/BulletsSpawner"]
 rotation = -0.349066
 
-[node name="Position2D10" type="Position2D" parent="Center/Player/TimedRotator/BulletsSpawner"]
+[node name="Position2D10" type="Marker2D" parent="Center/Player/TimedRotator/BulletsSpawner"]
 rotation = -0.418879
 
-[node name="Position2D11" type="Position2D" parent="Center/Player/TimedRotator/BulletsSpawner"]
+[node name="Position2D11" type="Marker2D" parent="Center/Player/TimedRotator/BulletsSpawner"]
 rotation = -0.488692
 
-[node name="Position2D19" type="Position2D" parent="Center/Player/TimedRotator/BulletsSpawner"]
+[node name="Position2D19" type="Marker2D" parent="Center/Player/TimedRotator/BulletsSpawner"]
 rotation = -0.558505
 
-[node name="Position2D20" type="Position2D" parent="Center/Player/TimedRotator/BulletsSpawner"]
+[node name="Position2D20" type="Marker2D" parent="Center/Player/TimedRotator/BulletsSpawner"]
 rotation = -0.628319
 
-[node name="Position2D21" type="Position2D" parent="Center/Player/TimedRotator/BulletsSpawner"]
+[node name="Position2D21" type="Marker2D" parent="Center/Player/TimedRotator/BulletsSpawner"]
 rotation = -0.698132
 
 [node name="BulletKitsConfigurator" type="Node" parent="."]
@@ -141,19 +141,19 @@ bullet_type_0/z_index = 1
 [node name="MarginContainer" type="MarginContainer" parent="UI"]
 anchor_right = 1.0
 anchor_bottom = 1.0
-custom_constants/margin_right = 8
-custom_constants/margin_top = 8
-custom_constants/margin_left = 8
-custom_constants/margin_bottom = 8
+theme_override_constants/margin_right = 8
+theme_override_constants/margin_top = 8
+theme_override_constants/margin_left = 8
+theme_override_constants/margin_bottom = 8
 __meta__ = {
 "_edit_use_anchors_": false
 }
 
 [node name="VBoxContainer" type="VBoxContainer" parent="UI/MarginContainer"]
-margin_left = 8.0
-margin_top = 8.0
-margin_right = 1016.0
-margin_bottom = 592.0
+offset_left = 8.0
+offset_top = 8.0
+offset_right = 1016.0
+offset_bottom = 592.0
 alignment = 2
 __meta__ = {
 "_edit_lock_": true,
@@ -161,9 +161,9 @@ __meta__ = {
 }
 
 [node name="Bullets" type="Label" parent="UI/MarginContainer/VBoxContainer"]
-margin_top = 570.0
-margin_right = 1008.0
-margin_bottom = 584.0
+offset_top = 570.0
+offset_right = 1008.0
+offset_bottom = 584.0
 text = "Bullets: {0}"
 script = ExtResource( 10 )
 __meta__ = {

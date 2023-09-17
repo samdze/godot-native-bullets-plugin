@@ -1,18 +1,19 @@
+@icon("icons/icon_bullet_properties.svg")
 extends Node2D
-class_name BulletsSpawner, "res://addons/native_bullets/icons/icon_bullet_properties.svg"
+class_name BulletsSpawner
 # Simple bullets spawner that uses child nodes as spawning points.
 # It sets bullets velocity, position and rotation.
 
 
-export(bool) var enabled = true
-export(Resource) var bullet_kit
-export(float, 0.0, 65535.0) var bullets_speed = 100.0
-export(float, -512.0, 512.0) var bullets_spawn_distance = 0.0
+@export var enabled: bool = true
+@export var bullet_kit: Resource
+@export var bullets_speed = 100.0 # (float, 0.0, 65535.0)
+@export var bullets_spawn_distance = 0.0 # (float, -512.0, 512.0)
 
 
 # Called by TimedEvents nodes when they wish to automatically connect to other nodes.
 func on_timed_events_request(timed_events : TimedEvents):
-	timed_events.connect("event_with_leftover", self, "shoot")
+	timed_events.connect("event_with_leftover", Callable(self, "shoot"))
 
 
 func shoot(recover_seconds = 0.0):

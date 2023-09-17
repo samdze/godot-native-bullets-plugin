@@ -1,8 +1,8 @@
 #ifndef BULLET_H
 #define BULLET_H
 
-#include <Godot.hpp>
-#include <Transform2D.hpp>
+#include <godot_cpp/godot.hpp>
+#include <godot_cpp/variant/transform2d.hpp>
 
 using namespace godot;
 
@@ -17,7 +17,7 @@ struct BulletID {
 };
 
 class Bullet : public Object {
-	GODOT_CLASS(Bullet, Object)
+	GDCLASS(Bullet, Object)
 
 public:
 	RID item_rid;

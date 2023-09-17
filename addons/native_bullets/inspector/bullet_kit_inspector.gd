@@ -1,4 +1,4 @@
-tool
+@tool
 extends EditorInspectorPlugin
 
 
@@ -22,7 +22,7 @@ func parse_property(object, type, path, hint, hint_text, usage):
 		native_script.library = preload("../bullets.gdnlib")
 		native_script.set_class_name(object.bullet_class_name)
 		native_script.reload()
-		var bullet_properties_viewer = preload("bullet_kit_bullet_properties.tscn").instance()
+		var bullet_properties_viewer = preload("bullet_kit_bullet_properties.tscn").instantiate()
 		bullet_properties_viewer.theme = theme
 		add_custom_control(bullet_properties_viewer)
 		bullet_properties_viewer.generate_from(native_script.get_script_property_list())

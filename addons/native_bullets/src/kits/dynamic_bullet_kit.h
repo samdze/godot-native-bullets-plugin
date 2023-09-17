@@ -1,9 +1,9 @@
 #ifndef DYNAMIC_BULLET_KIT_H
 #define DYNAMIC_BULLET_KIT_H
 
-#include <Texture.hpp>
-#include <PackedScene.hpp>
-#include <Curve.hpp>
+#include <godot_cpp/classes/texture2d.hpp>
+#include <godot_cpp/classes/packed_scene.hpp>
+#include <godot_cpp/classes/curve.hpp>
 
 #include "../bullet_kit.h"
 
@@ -12,7 +12,7 @@ using namespace godot;
 
 // Bullet definition.
 class DynamicBullet : public Bullet {
-	GODOT_CLASS(DynamicBullet, Bullet)
+	GDCLASS(DynamicBullet, Bullet)
 public:
 	Transform2D starting_trasform;
 	float starting_speed;
@@ -53,18 +53,18 @@ public:
 
 // Bullet kit definition.
 class DynamicBulletKit : public BulletKit {
-	GODOT_CLASS(DynamicBulletKit, BulletKit)
+	GDCLASS(DynamicBulletKit, BulletKit)
 public:
 	BULLET_KIT(DynamicBulletsPool)
 
-	Ref<Texture> texture;
+	Ref<Texture2D> texture;
 	float lifetime_curves_span = 1.0f;
 	bool lifetime_curves_loop = true;
 	Ref<Curve> speed_multiplier_over_lifetime;
 	Ref<Curve> rotation_offset_over_lifetime;
 
 	static void _register_methods() {
-		register_property<DynamicBulletKit, Ref<Texture>>("texture", &DynamicBulletKit::texture, Ref<Texture>(), 
+		register_property<DynamicBulletKit, Ref<Texture2D>>("texture", &DynamicBulletKit::texture, Ref<Texture2D>(), 
 			GODOT_METHOD_RPC_MODE_DISABLED, GODOT_PROPERTY_USAGE_DEFAULT, GODOT_PROPERTY_HINT_RESOURCE_TYPE, "Texture");
 		register_property<DynamicBulletKit, float>("lifetime_curves_span", &DynamicBulletKit::lifetime_curves_span, 1.0f,
 			GODOT_METHOD_RPC_MODE_DISABLED, GODOT_PROPERTY_USAGE_DEFAULT, GODOT_PROPERTY_HINT_RANGE, "0.001,256.0");

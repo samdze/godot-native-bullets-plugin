@@ -1,9 +1,9 @@
 extends Node2D
 
 
-export(float, 0, 10.0) var rotation_speed = 5.0
+@export var rotation_speed = 5.0 # (float, 0, 10.0)
 
-onready var timed_events = $TimedEvents
+@onready var timed_events = $TimedEvents
 
 
 func _process(delta):

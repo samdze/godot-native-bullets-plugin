@@ -1,7 +1,7 @@
 [gd_scene load_steps=3 format=2]
 
 [ext_resource path="res://addons/native_bullets/inspector/bullets_environment_controls.gd" type="Script" id=1]
-[ext_resource path="res://addons/native_bullets/icons/icon_bullets_environment.svg" type="Texture" id=2]
+[ext_resource path="res://addons/native_bullets/icons/icon_bullets_environment.svg" type="Texture2D" id=2]
 
 [node name="Controls" type="HBoxContainer"]
 anchor_right = 1.0
@@ -13,55 +13,55 @@ __meta__ = {
 }
 
 [node name="Icons" type="HBoxContainer" parent="."]
-margin_right = 132.0
-margin_bottom = 180.0
+offset_right = 132.0
+offset_bottom = 180.0
 size_flags_horizontal = 3
 
-[node name="CollisionShape" type="TextureRect" parent="Icons"]
-margin_right = 16.0
-margin_bottom = 180.0
-hint_tooltip = "Collisions enabled."
+[node name="CollisionShape3D" type="TextureRect" parent="Icons"]
+offset_right = 16.0
+offset_bottom = 180.0
+tooltip_text = "Collisions enabled."
 texture = ExtResource( 2 )
 stretch_mode = 6
 
 [node name="ViewportAsActive" type="TextureRect" parent="Icons"]
-margin_left = 20.0
-margin_right = 36.0
-margin_bottom = 180.0
-hint_tooltip = "Viewport used as active rect."
+offset_left = 20.0
+offset_right = 36.0
+offset_bottom = 180.0
+tooltip_text = "SubViewport used as active rect."
 texture = ExtResource( 2 )
 stretch_mode = 6
 
 [node name="Rotating" type="TextureRect" parent="Icons"]
-margin_left = 40.0
-margin_right = 56.0
-margin_bottom = 180.0
-hint_tooltip = "Bullets rotate based on their direction of travel."
+offset_left = 40.0
+offset_right = 56.0
+offset_bottom = 180.0
+tooltip_text = "Bullets rotate based on their direction of travel."
 texture = ExtResource( 2 )
 stretch_mode = 6
 
 [node name="Data" type="TextureRect" parent="Icons"]
-margin_left = 60.0
-margin_right = 76.0
-margin_bottom = 180.0
-hint_tooltip = "Extra custom data assigned."
+offset_left = 60.0
+offset_right = 76.0
+offset_bottom = 180.0
+tooltip_text = "Extra custom data assigned."
 texture = ExtResource( 2 )
 stretch_mode = 6
 
-[node name="MoveUpButton" type="ToolButton" parent="."]
-margin_left = 136.0
-margin_right = 148.0
-margin_bottom = 180.0
+[node name="MoveUpButton" type="Button" parent="."]
+offset_left = 136.0
+offset_right = 148.0
+offset_bottom = 180.0
 
-[node name="MoveDownButton" type="ToolButton" parent="."]
-margin_left = 152.0
-margin_right = 164.0
-margin_bottom = 180.0
+[node name="MoveDownButton" type="Button" parent="."]
+offset_left = 152.0
+offset_right = 164.0
+offset_bottom = 180.0
 
-[node name="DeleteButton" type="ToolButton" parent="."]
-margin_left = 168.0
-margin_right = 180.0
-margin_bottom = 180.0
+[node name="DeleteButton" type="Button" parent="."]
+offset_left = 168.0
+offset_right = 180.0
+offset_bottom = 180.0
 
 [connection signal="pressed" from="MoveUpButton" to="." method="_on_move_up_pressed"]
 [connection signal="pressed" from="MoveDownButton" to="." method="_on_move_down_pressed"]

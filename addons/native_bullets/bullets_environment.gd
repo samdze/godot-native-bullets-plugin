@@ -1,15 +1,16 @@
-tool
+@tool
+@icon("icons/icon_bullets_environment.svg")
 extends Node
-class_name BulletsEnvironment, "icons/icon_bullets_environment.svg"
+class_name BulletsEnvironment
 
 
 signal tree_entering(node)
 
-export(bool) var current = true setget _set_current
-export(Array, Resource) var bullet_kits: Array
-export(Array, int) var pools_sizes: Array
-export(Array, NodePath) var parents_hints: Array
-export(Array, int) var z_indices: Array
+@export var current: bool = true: set = set_current
+@export var bullet_kits: Array # (Array, Resource)
+@export var pools_sizes: Array # (Array, int)
+@export var parents_hints: Array # (Array, NodePath)
+@export var z_indices: Array # (Array, int)
 
 var properties_regex : RegEx
 
@@ -20,13 +21,13 @@ func _init():
 
 
 func _enter_tree():
-	if Engine.editor_hint:
+	if Engine.is_editor_hint():
 		return
 	emit_signal("tree_entering", self)
 
 
 func _ready():
-	if Engine.editor_hint:
+	if Engine.is_editor_hint():
 		return
 #	var i = 0
 #	for parent_path in parents:
@@ -40,19 +41,19 @@ func _ready():
 
 
 func _exit_tree():
-	if Engine.editor_hint:
+	if Engine.is_editor_hint():
 		return
 	if is_instance_valid(Bullets):
 		Bullets.unmount(self)
 
 
 func reload():
-	_set_current(false)
-	_set_current(true)
+	set_current(false)
+	set_current(true)
 
 
-func _set_current(value):
-	if Engine.editor_hint:
+func set_current(value):
+	if Engine.is_editor_hint():
 		current = value
 		return
 	if current != value:
@@ -64,7 +65,7 @@ func _set_current(value):
 				Bullets.unmount(self)
 
 
-func _get(property: String):
+func _get(property: StringName):
 	if property == "bullet_types_amount":
 		return bullet_kits.size()
 	
@@ -84,13 +85,13 @@ func _get(property: String):
 	return null
 
 
-func _set(property: String, value):
+func _set(property: StringName, value):
 	if property == "bullet_types_amount":
 		bullet_kits.resize(value)
 		pools_sizes.resize(value)
 		parents_hints.resize(value)
 		z_indices.resize(value)
-		property_list_changed_notify()
+		notify_property_list_changed()
 		return true
 	
 	var result = properties_regex.search(property)
