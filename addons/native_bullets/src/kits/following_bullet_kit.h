@@ -5,6 +5,7 @@
 #include <godot_cpp/classes/packed_scene.hpp>
 #include <godot_cpp/classes/node2d.hpp>
 #include <godot_cpp/classes/scene_tree.hpp>
+#include <godot_cpp/variant/utility_functions.hpp>
 #include <cmath>
 
 #include "../bullet_kit.h"
@@ -20,21 +21,19 @@ public:
 
 	void _init() {}
 
+	Node2D* get_target_node() { return target_node; }
 	void set_target_node(Node2D* node) {
 		target_node = node;
 	}
 
-	Node2D* get_target_node() {
-		return target_node;
-	}
+	static void _bind_methods() {
+		ClassDB::bind_method(D_METHOD("set_target_node", "node"), &FollowingBullet::set_target_node);
+		ClassDB::bind_method(D_METHOD("get_target_node"), &FollowingBullet::get_target_node);
 
-	static void _register_methods() {
-		// Registering an Object reference property with GODOT_PROPERTY_HINT_RESOURCE_TYPE and hint_string is just
+		// Registering an Object reference property with GODOT_PROPERTY_HINT_NODE_TYPE and hint_string is just
 		// a way to tell the editor plugin the type of the property, so that it can be viewed in the BulletKit inspector.
-		register_property<FollowingBullet, Node2D*>("target_node",
-			&FollowingBullet::set_target_node,
-			&FollowingBullet::get_target_node, nullptr,
-			GODOT_METHOD_RPC_MODE_DISABLED, GODOT_PROPERTY_USAGE_NO_INSTANCE_STATE, GODOT_PROPERTY_HINT_RESOURCE_TYPE, "Node2D");
+		ADD_PROPERTY(PropertyInfo(Variant::OBJECT, "target_node", PROPERTY_HINT_NODE_TYPE, "Node2D",
+			PROPERTY_USAGE_NO_INSTANCE_STATE, "Node2D"), "set_target_node", "get_target_node");
 	}
 };
 
@@ -42,18 +41,31 @@ public:
 class FollowingBulletKit : public BulletKit {
 	GDCLASS(FollowingBulletKit, BulletKit)
 public:
-	BULLET_KIT(FollowingBulletsPool)
+	BULLET_KIT(FollowingBulletKit, FollowingBulletsPool, FollowingBullet)
 
 	Ref<Texture2D> texture;
 	float bullets_turning_speed = 1.0f;
 
-	static void _register_methods() {
-		register_property<FollowingBulletKit, Ref<Texture2D>>("texture", &FollowingBulletKit::texture, Ref<Texture2D>(), 
-			GODOT_METHOD_RPC_MODE_DISABLED, GODOT_PROPERTY_USAGE_DEFAULT, GODOT_PROPERTY_HINT_RESOURCE_TYPE, "Texture");
-		register_property<FollowingBulletKit, float>("bullets_turning_speed", &FollowingBulletKit::bullets_turning_speed, 1.0f, 
-			GODOT_METHOD_RPC_MODE_DISABLED, GODOT_PROPERTY_USAGE_DEFAULT, GODOT_PROPERTY_HINT_RANGE, "0.0,128.0");
-		
-		BULLET_KIT_REGISTRATION(FollowingBulletKit, FollowingBullet)
+	Ref<Texture2D> get_texture() { return texture; }
+	void set_texture(Ref<Texture2D> texture) {
+		this->texture = texture;
+	}
+	
+	float get_bullets_turning_speed() { return bullets_turning_speed; }
+	void set_bullets_turning_speed(float speed) {
+		bullets_turning_speed = speed;
+	}
+
+	static void _bind_methods() {
+		ClassDB::bind_method(D_METHOD("set_texture", "texture"), &FollowingBulletKit::set_texture);
+		ClassDB::bind_method(D_METHOD("get_texture"), &FollowingBulletKit::get_texture);
+		ClassDB::bind_method(D_METHOD("set_bullets_turning_speed", "speed"), &FollowingBulletKit::set_bullets_turning_speed);
+		ClassDB::bind_method(D_METHOD("get_bullets_turning_speed"), &FollowingBulletKit::get_bullets_turning_speed);
+
+		ADD_PROPERTY(PropertyInfo(Variant::OBJECT, "texture", PROPERTY_HINT_RESOURCE_TYPE, "Texture2D",
+			PROPERTY_USAGE_DEFAULT, "Texture2D"), "set_texture", "get_texture");
+		ADD_PROPERTY(PropertyInfo(Variant::FLOAT, "bullets_turning_speed", PROPERTY_HINT_RANGE, "0.0,128.0",
+			PROPERTY_USAGE_DEFAULT, ""), "set_bullets_turning_speed", "get_bullets_turning_speed");
 	}
 };
 
@@ -69,7 +81,7 @@ class FollowingBulletsPool : public AbstractBulletsPool<FollowingBulletKit, Foll
 		RID texture_rid = kit->texture->get_rid();
 		
 		// Configure the bullet to draw the kit texture each frame.
-		VisualServer::get_singleton()->canvas_item_add_texture_rect(bullet->item_rid,
+		RenderingServer::get_singleton()->canvas_item_add_texture_rect(bullet->item_rid,
 			texture_rect,
 			texture_rid);
 	}
@@ -77,6 +89,9 @@ class FollowingBulletsPool : public AbstractBulletsPool<FollowingBulletKit, Foll
 	//void _disable_bullet(FollowingBullet* bullet); Use default implementation.
 
 	bool _process_bullet(FollowingBullet* bullet, float delta) {
+		if(!UtilityFunctions::is_instance_valid(bullet->target_node)) {
+			bullet->set_target_node(nullptr);
+		}
 		if(bullet->target_node != nullptr) {
 			// Find the rotation to the target node.
 			Vector2 to_target = bullet->target_node->get_global_position() - bullet->transform.get_origin();
@@ -94,7 +109,7 @@ class FollowingBulletsPool : public AbstractBulletsPool<FollowingBulletKit, Foll
 			return true;
 		}
 		// Rotate the bullet based on its velocity "rotate" is enabled.
-		if(kit->rotate) {
+		if(kit->auto_rotate) {
 			bullet->transform.set_rotation(bullet->velocity.angle());
 		}
 		// Bullet is still alive, increase its lifetime.

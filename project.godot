@@ -11,17 +11,22 @@ config_version=5
 [application]
 
 config/name="Native Bullets"
-run/main_scene="res://examples/example_01.tscn"
+run/main_scene="res://examples/example_02.tscn"
 config/features=PackedStringArray("4.1")
 boot_splash/fullsize=false
 
 [autoload]
 
-Bullets="*res://addons/native_bullets/bullets.gdns"
+Bullets="*res://addons/native_bullets/bullets.tscn"
 
 [debug]
 
 gdscript/warnings/return_value_discarded=false
+
+[display]
+
+window/size/viewport_width=1000
+window/size/viewport_height=680
 
 [dotnet]
 
@@ -42,8 +47,8 @@ singletons=[]
 
 [physics]
 
-2d/run_on_thread=2
 2d/use_bvh=false
+2d/run_on_thread=2
 
 [rendering]
 

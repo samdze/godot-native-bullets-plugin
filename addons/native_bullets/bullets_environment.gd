@@ -133,7 +133,7 @@ func _get_property_list():
 			"type": TYPE_OBJECT,
 			"usage": PROPERTY_USAGE_DEFAULT,
 			"hint": PROPERTY_HINT_RESOURCE_TYPE,
-			"hint_string": "Resource"
+			"hint_string": "BulletKit"
 		})
 		properties.append({
 			"name": "bullet_type_{0}/pool_size".format(format_array),

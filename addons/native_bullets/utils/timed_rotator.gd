@@ -1,4 +1,4 @@
-@icon("icons/icon_timed_rotator.svg")
+@icon("../icons/icon_timed_rotator.svg")
 extends Node2D
 class_name TimedRotator
 # Defines and sets the rotation of the node over time based on a curve.

@@ -4,6 +4,7 @@
 #include <godot_cpp/classes/texture2d.hpp>
 #include <godot_cpp/classes/packed_scene.hpp>
 
+#include "../bullet.h"
 #include "../bullet_kit.h"
 
 using namespace godot;
@@ -13,7 +14,7 @@ using namespace godot;
 class BasicBulletKit : public BulletKit {
 	GDCLASS(BasicBulletKit, BulletKit)
 public:
-	BULLET_KIT(BasicBulletsPool)
+	BULLET_KIT(BasicBulletKit, BasicBulletsPool, Bullet)
 
 	Ref<Texture2D> texture;
 
@@ -28,10 +29,9 @@ public:
 	static void _bind_methods() {
 		ClassDB::bind_method(D_METHOD("set_texture", "texture"), &BasicBulletKit::set_texture);
 		ClassDB::bind_method(D_METHOD("get_texture"), &BasicBulletKit::get_texture);
-		ClassDB::add_property("BasicBulletKit", PropertyInfo(Variant::OBJECT, "texture", PROPERTY_HINT_RESOURCE_TYPE, "Texture2D",
+
+		ADD_PROPERTY(PropertyInfo(Variant::OBJECT, "texture", PROPERTY_HINT_RESOURCE_TYPE, "Texture2D",
 			PROPERTY_USAGE_DEFAULT, "Texture2D"), "set_texture", "get_texture");
-		
-		BULLET_KIT_REGISTRATION(BasicBulletKit, Bullet)
 	}
 };
 
@@ -61,8 +61,8 @@ class BasicBulletsPool : public AbstractBulletsPool<BasicBulletKit, Bullet> {
 			// Return true if the bullet should be deleted.
 			return true;
 		}
-		// Rotate the bullet based on its velocity "rotate" is enabled.
-		if(kit->rotate) {
+		// Rotate the bullet based on its velocity if "auto_rotate" is enabled.
+		if(kit->auto_rotate) {
 			bullet->transform.set_rotation(bullet->velocity.angle());
 		}
 		// Bullet is still alive, increase its lifetime.

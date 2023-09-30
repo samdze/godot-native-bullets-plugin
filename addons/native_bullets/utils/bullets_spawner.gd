@@ -1,4 +1,4 @@
-@icon("icons/icon_bullet_properties.svg")
+@icon("../icons/icon_bullet_properties.svg")
 extends Node2D
 class_name BulletsSpawner
 # Simple bullets spawner that uses child nodes as spawning points.

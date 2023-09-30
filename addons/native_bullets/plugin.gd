@@ -16,7 +16,7 @@ func _enter_tree():
 	add_inspector_plugin(bullets_inspector_plugin)
 	add_inspector_plugin(bullet_kit_inspector_plugin)
 	
-	add_autoload_singleton("Bullets", "res://addons/native_bullets/bullets.gdns")
+	add_autoload_singleton("Bullets", "res://addons/native_bullets/bullets.tscn")
 
 
 func _exit_tree():

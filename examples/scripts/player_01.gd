@@ -28,6 +28,7 @@ func _on_area_shape_entered(area_id, _area, area_shape, _local_shape):
 	var bullet_id = Bullets.get_bullet_from_shape(area_id, area_shape)
 	
 	var kit = Bullets.get_kit_from_bullet(bullet_id)
+	# The bullet kit should have a custom property `hit_scene` that contains a PackedScene.
 	var bullet_hit = kit.data.hit_scene.instantiate()
 	add_child(bullet_hit)
 	bullet_hit.global_position = Bullets.get_bullet_property(bullet_id, "transform").get_origin()

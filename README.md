@@ -199,7 +199,7 @@ func _on_area_shape_entered(area_id, _area, area_shape, _local_shape):
 	# You can also retrieve the BulletKit that generated the bullet and get/set its properties.
 	var kit_collision_shape = Bullets.get_kit_from_bullet(bullet_id).collision_shape
 
-	# Remove the bullet, call_deferred is necessary because the Physics2DServer is in its flushing state during callbacks.
+	# Remove the bullet, call_deferred is necessary because the PhysicsServer2D is in its flushing state during callbacks.
 	Bullets.call_deferred("release_bullet", bullet_id)
 ```
 
@@ -586,6 +586,7 @@ Here's an example.
 #include <godot_cpp/classes/packed_scene.hpp>
 #include <godot_cpp/classes/node2d.hpp>
 #include <godot_cpp/classes/scene_tree.hpp>
+#include <godot_cpp/variant/utility_functions.hpp>
 #include <cmath>
 
 #include "../bullet_kit.h"
@@ -613,13 +614,14 @@ public:
 		return target_node;
 	}
 
-	static void _register_methods() {
-		// Registering an Object reference property with GODOT_PROPERTY_HINT_RESOURCE_TYPE and hint_string is just
+	static void _bind_methods() {
+		ClassDB::bind_method(D_METHOD("set_target_node", "node"), &CustomFollowingBullet::set_target_node);
+		ClassDB::bind_method(D_METHOD("get_target_node"), &CustomFollowingBullet::get_target_node);
+
+		// Registering an Object reference property with GODOT_PROPERTY_HINT_NODE_TYPE and hint_string is just
 		// a way to tell the editor plugin the type of the property, so that it can be viewed in the BulletKit inspector.
-		register_property<CustomFollowingBullet, Node2D*>("target_node",
-			&CustomFollowingBullet::set_target_node,
-			&CustomFollowingBullet::get_target_node, nullptr,
-			GODOT_METHOD_RPC_MODE_DISABLED, GODOT_PROPERTY_USAGE_NO_INSTANCE_STATE, GODOT_PROPERTY_HINT_RESOURCE_TYPE, "Node2D");
+		ADD_PROPERTY(PropertyInfo(Variant::OBJECT, "target_node", PROPERTY_HINT_NODE_TYPE, "Node2D",
+			PROPERTY_USAGE_NO_INSTANCE_STATE, "Node2D"), "set_target_node", "get_target_node");
 	}
 };
 
@@ -630,21 +632,32 @@ class CustomFollowingBulletKit : public BulletKit {
 	GDCLASS(CustomFollowingBulletKit, BulletKit)
 public:
 	// Use this macro to configure this bullet kit.
-	// Pass the BulletsPool type that will be used as the argument.
-	BULLET_KIT(CustomFollowingBulletsPool)
+	// Pass the BulletKit type, the BulletsPool type and the Bullet type that will be used as the arguments.
+	BULLET_KIT(CustomFollowingBulletKit, CustomFollowingBulletsPool, CustomFollowingBullet)
 
 	Ref<Texture2D> texture;
 	float bullets_turning_speed = 1.0f;
 
-	static void _register_methods() {
-		register_property<CustomFollowingBulletKit, Ref<Texture2D>>("texture", &CustomFollowingBulletKit::texture, Ref<Texture2D>(),
-			GODOT_METHOD_RPC_MODE_DISABLED, GODOT_PROPERTY_USAGE_DEFAULT, GODOT_PROPERTY_HINT_RESOURCE_TYPE, "Texture");
-		register_property<CustomFollowingBulletKit, float>("bullets_turning_speed", &CustomFollowingBulletKit::bullets_turning_speed, 1.0f,
-			GODOT_METHOD_RPC_MODE_DISABLED, GODOT_PROPERTY_USAGE_DEFAULT, GODOT_PROPERTY_HINT_RANGE, "0.0,128.0");
+	Ref<Texture2D> get_texture() { return texture; }
+	void set_texture(Ref<Texture2D> texture) {
+		this->texture = texture;
+	}
+	
+	float get_bullets_turning_speed() { return bullets_turning_speed; }
+	void set_bullets_turning_speed(float speed) {
+		bullets_turning_speed = speed;
+	}
 
-		// Add this macro at the end of the _register_methods() method.
-		// Pass this BulletKit type and the used Bullet type as arguments.
-		BULLET_KIT_REGISTRATION(CustomFollowingBulletKit, CustomFollowingBullet)
+	static void _bind_methods() {
+		ClassDB::bind_method(D_METHOD("set_texture", "texture"), &CustomFollowingBulletKit::set_texture);
+		ClassDB::bind_method(D_METHOD("get_texture"), &CustomFollowingBulletKit::get_texture);
+		ClassDB::bind_method(D_METHOD("set_bullets_turning_speed", "speed"), &CustomFollowingBulletKit::set_bullets_turning_speed);
+		ClassDB::bind_method(D_METHOD("get_bullets_turning_speed"), &CustomFollowingBulletKit::get_bullets_turning_speed);
+
+		ADD_PROPERTY(PropertyInfo(Variant::OBJECT, "texture", PROPERTY_HINT_RESOURCE_TYPE, "Texture2D",
+			PROPERTY_USAGE_DEFAULT, "Texture2D"), "set_texture", "get_texture");
+		ADD_PROPERTY(PropertyInfo(Variant::FLOAT, "bullets_turning_speed", PROPERTY_HINT_RANGE, "0.0,128.0",
+			PROPERTY_USAGE_DEFAULT, ""), "set_bullets_turning_speed", "get_bullets_turning_speed");
 	}
 };
 
@@ -666,7 +679,7 @@ class CustomFollowingBulletsPool : public AbstractBulletsPool<CustomFollowingBul
 		RID texture_rid = kit->texture->get_rid();
 
 		// Configure the bullet to draw the kit texture each frame.
-		VisualServer::get_singleton()->canvas_item_add_texture_rect(bullet->item_rid,
+		RenderingServer::get_singleton()->canvas_item_add_texture_rect(bullet->item_rid,
 			texture_rect,
 			texture_rid);
 	}
@@ -677,6 +690,11 @@ class CustomFollowingBulletsPool : public AbstractBulletsPool<CustomFollowingBul
 
 	bool _process_bullet(CustomFollowingBullet* bullet, float delta) {
 		// Runs each frame for each bullet, here goes your update logic.
+
+		// Check if target_node is still a valid object and has not been freed.
+		if(!UtilityFunctions::is_instance_valid(bullet->target_node)) {
+			bullet->set_target_node(nullptr);
+		}
 		if(bullet->target_node != nullptr) {
 			// Find the rotation to the target node.
 			Vector2 to_target = bullet->target_node->get_global_position() - bullet->transform.get_origin();
@@ -716,7 +734,7 @@ Next, register you Godot classes inside the `register_types.cpp` file.
 ```c++
 // src/register_types.cpp
 
-#include "bullets.h"
+#include "native_bullets.h"
 ...
 ...
 
@@ -739,11 +757,11 @@ Compile the bindings and the plugin for your selected platform.
 
 ```
 cd addons/native_bullets/godot-cpp
-scons platform=windows target=release generate_bindings=yes -j4
+scons platform=windows target=template_release generate_bindings=yes -j4
 
 cd ..
-scons platform=windows target=release
+scons platform=windows target=template_release
 ```
 
-Finally, create a NativeScript resource setting `bullets.gdnlib` as its library and `CustomFollowingBulletKit` as its class name.<br>
-Now you can attach this script to your BulletKit resources and use it.
+Finally, reload the editor and your new BulletKit should be available to use.<br>
+You can also assign an icon to the BulletKit adding a line in the `native_bullets.gdextension` file.

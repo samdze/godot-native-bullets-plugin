@@ -15,11 +15,11 @@ func init(theme: Theme):
 	self.theme = theme
 
 
-func can_handle(object):
+func _can_handle(object):
 	return object is BulletsEnvironment
 
 
-func parse_property(object, type, path, hint, hint_text, usage):
+func _parse_property(object, type, path, hint, hint_text, usage, wide):
 	if path == "bullet_kits" or path == "pools_sizes" or path == "parents_hints" or path == "z_indices":
 		return true
 	

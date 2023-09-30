@@ -32,24 +32,11 @@ const TYPE_MAPPINGS = {
 	TYPE_PLANE: "Plane",
 }
 
-@onready var header = $Header
-@onready var background = $Header/Background/ColorRect
-@onready var header_label = $Header/Foreground/Label
-
-
-func _ready():
-	background.color = get_theme_color("prop_category", "Editor")
-	header_label.add_theme_font_override("font", get_theme_font("font", "Tree"))
-	header_label.add_theme_color_override("font_color", get_theme_color("font_color", "Tree"))
-
 
 func generate_from(properties_array):
-	header = $Header
-	
 	for c in get_children():
-		if c != header:
-			remove_child(c)
-			c.queue_free()
+		remove_child(c)
+		c.queue_free()
 	
 	for property in properties_array:
 		var hbox = HBoxContainer.new()
@@ -64,6 +51,7 @@ func generate_from(properties_array):
 		label.mouse_filter = Control.MOUSE_FILTER_STOP
 		
 		var icon = Button.new()
+		icon.flat = true
 		icon.size_flags_horizontal = SIZE_EXPAND_FILL
 		icon.clip_text = true
 		
@@ -80,5 +68,5 @@ func generate_from(properties_array):
 				icon_name = "Variant"
 			else:
 				icon_name = property["class_name"]
-		icon.icon = icon.get_icon(icon_name, "EditorIcons")
+		icon.icon = icon.get_theme_icon(icon_name, "EditorIcons")
 		icon.text = icon_name

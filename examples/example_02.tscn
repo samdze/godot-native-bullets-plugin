@@ -1,60 +1,57 @@
-[gd_scene load_steps=12 format=2]
+[gd_scene load_steps=12 format=3 uid="uid://b5tuuwbn8ags0"]
 
-[ext_resource path="res://examples/images/player_ship_2_blue.png" type="Texture2D" id=1]
-[ext_resource path="res://examples/scripts/kits_active_rect_configurator.gd" type="Script" id=2]
-[ext_resource path="res://addons/native_bullets/bullets_environment.gd" type="Script" id=3]
-[ext_resource path="res://examples/kits/green_basic_bullet_kit.tres" type="Resource" id=4]
-[ext_resource path="res://examples/scripts/player_02.gd" type="Script" id=5]
-[ext_resource path="res://addons/native_bullets/utils/timed_events.gd" type="Script" id=6]
-[ext_resource path="res://addons/native_bullets/utils/bullets_spawner.gd" type="Script" id=7]
-[ext_resource path="res://addons/native_bullets/utils/timed_rotator.gd" type="Script" id=8]
-[ext_resource path="res://examples/scripts/bullets_counter.gd" type="Script" id=10]
+[ext_resource type="Texture2D" uid="uid://cfxbm6nhsf2wb" path="res://examples/images/player_ship_2_blue.png" id="1"]
+[ext_resource type="Script" path="res://examples/scripts/kits_active_rect_configurator.gd" id="2"]
+[ext_resource type="Script" path="res://addons/native_bullets/bullets_environment.gd" id="3"]
+[ext_resource type="Script" path="res://examples/scripts/player_02.gd" id="5"]
+[ext_resource type="Script" path="res://addons/native_bullets/utils/timed_events.gd" id="6"]
+[ext_resource type="Script" path="res://addons/native_bullets/utils/bullets_spawner.gd" id="7"]
+[ext_resource type="Script" path="res://addons/native_bullets/utils/timed_rotator.gd" id="8"]
+[ext_resource type="DynamicBulletKit" uid="uid://qpxrr0f6yn5b" path="res://examples/kits/green_dynamic_bullet_kit.tres" id="9_oxtj6"]
+[ext_resource type="Script" path="res://examples/scripts/bullets_counter.gd" id="10"]
 
-[sub_resource type="Curve" id=2]
-_data = [ Vector2( 0, 1 ), 0.0, 0.0, 0, 1, Vector2( 1, 1 ), 0.0, 0.0, 1, 0 ]
+[sub_resource type="Curve" id="2"]
+_data = [Vector2(0, 1), 0.0, 0.0, 0, 1, Vector2(1, 1), 0.0, 0.0, 1, 0]
+point_count = 2
 
-[sub_resource type="Curve" id=3]
+[sub_resource type="Curve" id="3"]
 min_value = -4.0
 max_value = 4.0
-_data = [ Vector2( 0, -4 ), 0.0, 16.0773, 0, 1, Vector2( 0.497596, 4 ), 16.0773, -15.9234, 1, 1, Vector2( 1, -4 ), -15.9234, 0.0, 1, 0 ]
+_data = [Vector2(0, -4), 0.0, 16.0773, 0, 1, Vector2(0.497596, 4), 16.0773, -15.9234, 1, 1, Vector2(1, -4), -15.9234, 0.0, 1, 0]
+point_count = 3
 
 [node name="Example01" type="CenterContainer"]
+anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
 
 [node name="Center" type="Control" parent="."]
-offset_left = 512.0
-offset_top = 300.0
-offset_right = 512.0
-offset_bottom = 300.0
+layout_mode = 2
 
 [node name="Player" type="Node2D" parent="Center"]
-script = ExtResource( 5 )
+script = ExtResource("5")
 
 [node name="Sprite2D" type="Sprite2D" parent="Center/Player"]
-position = Vector2( 0, -6 )
-texture = ExtResource( 1 )
-__meta__ = {
-"_edit_lock_": true
-}
+position = Vector2(0, -6)
+texture = ExtResource("1")
 
 [node name="TimedEvents" type="Node" parent="Center/Player"]
-script = ExtResource( 6 )
+script = ExtResource("6")
 enabled = false
 connect_to_children = NodePath("../TimedRotator")
-events_per_second_over_time = SubResource( 2 )
+events_per_second_over_time = SubResource("2")
 events_per_second_multiplier = 100.0
 
 [node name="TimedRotator" type="Node2D" parent="Center/Player"]
-position = Vector2( 0, -43 )
-script = ExtResource( 8 )
+position = Vector2(0, -43)
+script = ExtResource("8")
 duration = 0.009
-orientation_over_time = SubResource( 3 )
+orientation_over_time = SubResource("3")
 
 [node name="BulletsSpawner" type="Node2D" parent="Center/Player/TimedRotator"]
 rotation = -1.5708
-script = ExtResource( 7 )
-bullet_kit = ExtResource( 4 )
+script = ExtResource("7")
+bullet_kit = ExtResource("9_oxtj6")
 bullets_speed = 400.0
 bullets_spawn_distance = 20.0
 
@@ -121,17 +118,17 @@ rotation = -0.628319
 rotation = -0.698132
 
 [node name="BulletKitsConfigurator" type="Node" parent="."]
-script = ExtResource( 2 )
+script = ExtResource("2")
 bullets_active_rect_grow = 20.0
 
 [node name="BulletsEnvironment" type="Node" parent="."]
-script = ExtResource( 3 )
-bullet_kits = [ ExtResource( 4 ) ]
-pools_sizes = [ 3000 ]
-parents_hints = [ null ]
-z_indices = [ 1 ]
+script = ExtResource("3")
+bullet_kits = [ExtResource("9_oxtj6")]
+pools_sizes = [3000]
+parents_hints = [null]
+z_indices = [1]
 bullet_types_amount = 1
-bullet_type_0/bullet_kit = ExtResource( 4 )
+bullet_type_0/bullet_kit = ExtResource("9_oxtj6")
 bullet_type_0/pool_size = 3000
 bullet_type_0/parent_hint = null
 bullet_type_0/z_index = 1
@@ -139,35 +136,21 @@ bullet_type_0/z_index = 1
 [node name="UI" type="CanvasLayer" parent="."]
 
 [node name="MarginContainer" type="MarginContainer" parent="UI"]
+anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
-theme_override_constants/margin_right = 8
-theme_override_constants/margin_top = 8
 theme_override_constants/margin_left = 8
+theme_override_constants/margin_top = 8
+theme_override_constants/margin_right = 8
 theme_override_constants/margin_bottom = 8
-__meta__ = {
-"_edit_use_anchors_": false
-}
 
 [node name="VBoxContainer" type="VBoxContainer" parent="UI/MarginContainer"]
-offset_left = 8.0
-offset_top = 8.0
-offset_right = 1016.0
-offset_bottom = 592.0
+layout_mode = 2
 alignment = 2
-__meta__ = {
-"_edit_lock_": true,
-"_edit_use_anchors_": false
-}
 
 [node name="Bullets" type="Label" parent="UI/MarginContainer/VBoxContainer"]
-offset_top = 570.0
-offset_right = 1008.0
-offset_bottom = 584.0
+layout_mode = 2
 text = "Bullets: {0}"
-script = ExtResource( 10 )
-__meta__ = {
-"_edit_use_anchors_": false
-}
+script = ExtResource("10")
 
 [connection signal="tree_entering" from="BulletsEnvironment" to="BulletKitsConfigurator" method="_on_bullets_environment_tree_entering"]

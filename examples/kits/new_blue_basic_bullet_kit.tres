@@ -1,0 +1,18 @@
+[gd_resource type="BasicBulletKit" load_steps=5 format=3 uid="uid://bhek5kl148bmp"]
+
+[ext_resource type="Material" uid="uid://do2ypd8orp24m" path="res://examples/misc/static_vertical_bullet.material" id="1_7qwma"]
+[ext_resource type="PackedScene" uid="uid://bcs6afxib7o2s" path="res://examples/misc/blue_hit.tscn" id="1_84ek7"]
+[ext_resource type="Texture2D" uid="uid://dk2y3qkc8bm6h" path="res://examples/images/laser_blue_04.png" id="2_ebfg4"]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_ede5j"]
+radius = 6.0
+
+[resource]
+texture = ExtResource("2_ebfg4")
+material = ExtResource("1_7qwma")
+collision_layer = 16
+collision_mask = 1
+collision_shape = SubResource("CircleShape2D_ede5j")
+data = {
+"hit_scene": ExtResource("1_84ek7")
+}

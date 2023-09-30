@@ -4,4 +4,4 @@
 void initialize_native_bullets_module();
 void uninitialize_native_bullets_module();
 
-#endif // GDEXAMPLE_REGISTER_TYPES_H
+#endif

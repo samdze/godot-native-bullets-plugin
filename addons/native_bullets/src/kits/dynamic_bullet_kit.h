@@ -5,6 +5,7 @@
 #include <godot_cpp/classes/packed_scene.hpp>
 #include <godot_cpp/classes/curve.hpp>
 
+#include "../bullet.h"
 #include "../bullet_kit.h"
 
 using namespace godot;
@@ -14,40 +15,51 @@ using namespace godot;
 class DynamicBullet : public Bullet {
 	GDCLASS(DynamicBullet, Bullet)
 public:
-	Transform2D starting_trasform;
+	Transform2D starting_transform;
 	float starting_speed;
 
+	Transform2D get_transform() { return transform; }
 	void set_transform(Transform2D transform) {
-		starting_trasform = transform;
+		starting_transform = transform;
 		this->transform = transform;
 	}
 
-	Transform2D get_transform() {
-		return transform;
+	Transform2D get_starting_transform() { return starting_transform; }
+	void set_starting_transform(Transform2D transform) {
+		starting_transform = transform;
 	}
 
+	Vector2 get_velocity() { return velocity; }
 	void set_velocity(Vector2 velocity) {
 		starting_speed = velocity.length();
 		this->velocity = velocity;
 	}
 
-	Vector2 get_velocity() {
-		return velocity;
+	float get_starting_speed() { return starting_speed; }
+	void set_starting_speed(float speed) {
+		starting_speed = speed;
 	}
 
 	void _init() {}
 
-	static void _register_methods() {
-		register_property<DynamicBullet, Transform2D>("transform",
-			&DynamicBullet::set_transform,
-			&DynamicBullet::get_transform, Transform2D());
-		register_property<DynamicBullet, Transform2D>("starting_trasform",
-			&DynamicBullet::starting_trasform, Transform2D());
-		register_property<DynamicBullet, Vector2>("velocity",
-			&DynamicBullet::set_velocity,
-			&DynamicBullet::get_velocity, Vector2());
-		register_property<DynamicBullet, float>("starting_speed",
-			&DynamicBullet::starting_speed, 0.0f);
+	static void _bind_methods() {
+		ClassDB::bind_method(D_METHOD("set_transform", "texture"), &DynamicBullet::set_transform);
+		ClassDB::bind_method(D_METHOD("get_transform"), &DynamicBullet::get_transform);
+		ClassDB::bind_method(D_METHOD("set_starting_transform", "transform"), &DynamicBullet::set_starting_transform);
+		ClassDB::bind_method(D_METHOD("get_starting_transform"), &DynamicBullet::get_starting_transform);
+		ClassDB::bind_method(D_METHOD("set_velocity", "velocity"), &DynamicBullet::set_velocity);
+		ClassDB::bind_method(D_METHOD("get_velocity"), &DynamicBullet::get_velocity);
+		ClassDB::bind_method(D_METHOD("set_starting_speed", "speed"), &DynamicBullet::set_starting_speed);
+		ClassDB::bind_method(D_METHOD("get_starting_speed"), &DynamicBullet::get_starting_speed);
+
+		ADD_PROPERTY(PropertyInfo(Variant::TRANSFORM2D, "transform", PROPERTY_HINT_NONE, "",
+			PROPERTY_USAGE_DEFAULT, ""), "set_transform", "get_transform");
+		ADD_PROPERTY(PropertyInfo(Variant::TRANSFORM2D, "starting_transform", PROPERTY_HINT_NONE, "",
+			PROPERTY_USAGE_DEFAULT, ""), "set_starting_transform", "get_starting_transform");
+		ADD_PROPERTY(PropertyInfo(Variant::VECTOR2, "velocity", PROPERTY_HINT_NONE, "",
+			PROPERTY_USAGE_DEFAULT, ""), "set_velocity", "get_velocity");
+		ADD_PROPERTY(PropertyInfo(Variant::FLOAT, "starting_speed", PROPERTY_HINT_NONE, "",
+			PROPERTY_USAGE_DEFAULT, ""), "set_starting_speed", "get_starting_speed");
 	}
 };
 
@@ -55,7 +67,7 @@ public:
 class DynamicBulletKit : public BulletKit {
 	GDCLASS(DynamicBulletKit, BulletKit)
 public:
-	BULLET_KIT(DynamicBulletsPool)
+	BULLET_KIT(DynamicBulletKit, DynamicBulletsPool, DynamicBullet)
 
 	Ref<Texture2D> texture;
 	float lifetime_curves_span = 1.0f;
@@ -63,19 +75,53 @@ public:
 	Ref<Curve> speed_multiplier_over_lifetime;
 	Ref<Curve> rotation_offset_over_lifetime;
 
-	static void _register_methods() {
-		register_property<DynamicBulletKit, Ref<Texture2D>>("texture", &DynamicBulletKit::texture, Ref<Texture2D>(), 
-			GODOT_METHOD_RPC_MODE_DISABLED, GODOT_PROPERTY_USAGE_DEFAULT, GODOT_PROPERTY_HINT_RESOURCE_TYPE, "Texture");
-		register_property<DynamicBulletKit, float>("lifetime_curves_span", &DynamicBulletKit::lifetime_curves_span, 1.0f,
-			GODOT_METHOD_RPC_MODE_DISABLED, GODOT_PROPERTY_USAGE_DEFAULT, GODOT_PROPERTY_HINT_RANGE, "0.001,256.0");
-		register_property<DynamicBulletKit, bool>("lifetime_curves_loop", &DynamicBulletKit::lifetime_curves_loop, true,
-			GODOT_METHOD_RPC_MODE_DISABLED, GODOT_PROPERTY_USAGE_DEFAULT);
-		register_property<DynamicBulletKit, Ref<Curve>>("speed_multiplier_over_lifetime", &DynamicBulletKit::speed_multiplier_over_lifetime, Ref<Curve>(), 
-			GODOT_METHOD_RPC_MODE_DISABLED, GODOT_PROPERTY_USAGE_DEFAULT, GODOT_PROPERTY_HINT_RESOURCE_TYPE, "Curve");
-		register_property<DynamicBulletKit, Ref<Curve>>("rotation_offset_over_lifetime", &DynamicBulletKit::rotation_offset_over_lifetime, Ref<Curve>(), 
-			GODOT_METHOD_RPC_MODE_DISABLED, GODOT_PROPERTY_USAGE_DEFAULT, GODOT_PROPERTY_HINT_RESOURCE_TYPE, "Curve");
-		
-		BULLET_KIT_REGISTRATION(DynamicBulletKit, DynamicBullet)
+	Ref<Texture2D> get_texture() { return texture; }
+	void set_texture(Ref<Texture2D> texture) {
+		this->texture = texture;
+	}
+
+	float get_lifetime_curves_span() { return lifetime_curves_span; }
+	void set_lifetime_curves_span(float lifetime_curves_span) {
+		this->lifetime_curves_span = lifetime_curves_span;
+	}
+
+	bool get_lifetime_curves_loop() { return lifetime_curves_loop; }
+	void set_lifetime_curves_loop(bool lifetime_curves_loop) {
+		this->lifetime_curves_loop = lifetime_curves_loop;
+	}
+
+	Ref<Curve> get_speed_multiplier_over_lifetime() { return speed_multiplier_over_lifetime; }
+	void set_speed_multiplier_over_lifetime(Ref<Curve> speed_multiplier_over_lifetime) {
+		this->speed_multiplier_over_lifetime = speed_multiplier_over_lifetime;
+	}
+
+	Ref<Curve> get_rotation_offset_over_lifetime() { return rotation_offset_over_lifetime; }
+	void set_rotation_offset_over_lifetime(Ref<Curve> rotation_offset_over_lifetime) {
+		this->rotation_offset_over_lifetime = rotation_offset_over_lifetime;
+	}
+
+	static void _bind_methods() {
+		ClassDB::bind_method(D_METHOD("set_texture", "texture"), &DynamicBulletKit::set_texture);
+		ClassDB::bind_method(D_METHOD("get_texture"), &DynamicBulletKit::get_texture);
+		ClassDB::bind_method(D_METHOD("set_lifetime_curves_span", "lifetime_curves_span"), &DynamicBulletKit::set_lifetime_curves_span);
+		ClassDB::bind_method(D_METHOD("get_lifetime_curves_span"), &DynamicBulletKit::get_lifetime_curves_span);
+		ClassDB::bind_method(D_METHOD("set_lifetime_curves_loop", "lifetime_curves_loop"), &DynamicBulletKit::set_lifetime_curves_loop);
+		ClassDB::bind_method(D_METHOD("get_lifetime_curves_loop"), &DynamicBulletKit::get_lifetime_curves_loop);
+		ClassDB::bind_method(D_METHOD("set_speed_multiplier_over_lifetime", "speed_multiplier_over_lifetime"), &DynamicBulletKit::set_speed_multiplier_over_lifetime);
+		ClassDB::bind_method(D_METHOD("get_speed_multiplier_over_lifetime"), &DynamicBulletKit::get_speed_multiplier_over_lifetime);
+		ClassDB::bind_method(D_METHOD("set_rotation_offset_over_lifetime", "rotation_offset_over_lifetime"), &DynamicBulletKit::set_rotation_offset_over_lifetime);
+		ClassDB::bind_method(D_METHOD("get_rotation_offset_over_lifetime"), &DynamicBulletKit::get_rotation_offset_over_lifetime);
+
+		ADD_PROPERTY(PropertyInfo(Variant::OBJECT, "texture", PROPERTY_HINT_RESOURCE_TYPE, "Texture2D",
+			PROPERTY_USAGE_DEFAULT, "Texture2D"), "set_texture", "get_texture");
+		ADD_PROPERTY(PropertyInfo(Variant::FLOAT, "lifetime_curves_span", PROPERTY_HINT_RANGE, "0.001,256.0", 
+			PROPERTY_USAGE_DEFAULT, ""), "set_lifetime_curves_span", "get_lifetime_curves_span");
+		ADD_PROPERTY(PropertyInfo(Variant::BOOL, "lifetime_curves_loop", PROPERTY_HINT_NONE, "", 
+			PROPERTY_USAGE_DEFAULT, ""), "set_lifetime_curves_loop", "get_lifetime_curves_loop");
+		ADD_PROPERTY(PropertyInfo(Variant::OBJECT, "speed_multiplier_over_lifetime", PROPERTY_HINT_RESOURCE_TYPE, "Curve", 
+			PROPERTY_USAGE_DEFAULT, "Curve"), "set_speed_multiplier_over_lifetime", "get_speed_multiplier_over_lifetime");
+		ADD_PROPERTY(PropertyInfo(Variant::OBJECT, "rotation_offset_over_lifetime", PROPERTY_HINT_RESOURCE_TYPE, "Curve", 
+			PROPERTY_USAGE_DEFAULT, "Curve"), "set_rotation_offset_over_lifetime", "get_rotation_offset_over_lifetime");
 	}
 };
 
@@ -91,7 +137,7 @@ class DynamicBulletsPool : public AbstractBulletsPool<DynamicBulletKit, DynamicB
 		RID texture_rid = kit->texture->get_rid();
 		
 		// Configure the bullet to draw the kit texture each frame.
-		VisualServer::get_singleton()->canvas_item_add_texture_rect(bullet->item_rid,
+		RenderingServer::get_singleton()->canvas_item_add_texture_rect(bullet->item_rid,
 			texture_rect,
 			texture_rid);
 	}
@@ -105,12 +151,12 @@ class DynamicBulletsPool : public AbstractBulletsPool<DynamicBulletKit, DynamicB
 		}
 
 		if(kit->speed_multiplier_over_lifetime.is_valid()) {
-			float speed_multiplier = kit->speed_multiplier_over_lifetime->interpolate(adjusted_lifetime);
+			float speed_multiplier = kit->speed_multiplier_over_lifetime->sample(adjusted_lifetime);
 			bullet->velocity = bullet->velocity.normalized() * bullet->starting_speed * speed_multiplier;
 		}
 		if(kit->rotation_offset_over_lifetime.is_valid()) {
-			float rotation_offset = kit->rotation_offset_over_lifetime->interpolate(adjusted_lifetime);
-			float absolute_rotation = bullet->starting_trasform.get_rotation() + rotation_offset;
+			float rotation_offset = kit->rotation_offset_over_lifetime->sample(adjusted_lifetime);
+			float absolute_rotation = bullet->starting_transform.get_rotation() + rotation_offset;
 
 			bullet->velocity = bullet->velocity.rotated(absolute_rotation - bullet->transform.get_rotation());
 		}
@@ -122,7 +168,7 @@ class DynamicBulletsPool : public AbstractBulletsPool<DynamicBulletKit, DynamicB
 			return true;
 		}
 		// Rotate the bullet based on its velocity "rotate" is enabled.
-		if(kit->rotate) {
+		if(kit->auto_rotate) {
 			bullet->transform.set_rotation(bullet->velocity.angle());
 		}
 		// Bullet is still alive, increase its lifetime.

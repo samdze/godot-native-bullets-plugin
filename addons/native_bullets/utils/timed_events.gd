@@ -1,4 +1,4 @@
-@icon("icons/icon_timed_events.svg")
+@icon("../icons/icon_timed_events.svg")
 extends Node
 class_name TimedEvents
 # Defines and fires an amount of events per second over time based on a curve.

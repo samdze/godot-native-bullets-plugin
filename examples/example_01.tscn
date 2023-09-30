@@ -1,7 +1,6 @@
 [gd_scene load_steps=14 format=3 uid="uid://c8i2cgwpsm00b"]
 
 [ext_resource type="Texture2D" uid="uid://cfxbm6nhsf2wb" path="res://examples/images/player_ship_2_blue.png" id="1"]
-[ext_resource type="Resource" path="res://examples/kits/blue_basic_bullet_kit.tres" id="2"]
 [ext_resource type="Script" path="res://addons/native_bullets/bullets_environment.gd" id="3"]
 [ext_resource type="Texture2D" uid="uid://d0yp1peym2lp8" path="res://examples/images/enemy_black_1.png" id="4"]
 [ext_resource type="Script" path="res://addons/native_bullets/utils/timed_rotator.gd" id="5"]
@@ -10,6 +9,7 @@
 [ext_resource type="Script" path="res://examples/scripts/player_01.gd" id="8"]
 [ext_resource type="Texture2D" uid="uid://dx7gwfnjm8odp" path="res://examples/images/laser_red_08.png" id="9"]
 [ext_resource type="Script" path="res://examples/scripts/bullets_counter.gd" id="10"]
+[ext_resource type="BasicBulletKit" uid="uid://bhek5kl148bmp" path="res://examples/kits/new_blue_basic_bullet_kit.tres" id="11_blwd7"]
 
 [sub_resource type="Curve" id="2"]
 _data = [Vector2(0, 1), 0.0, 0.0, 0, 1, Vector2(1, 1), 0.0, 0.0, 1, 0]
@@ -18,7 +18,7 @@ point_count = 2
 [sub_resource type="Curve" id="3"]
 min_value = -45.0
 max_value = 45.0
-_data = [Vector2(0, -45), 0.0, 179.139, 0, 1, Vector2(0.502404, 45), 179.139, -180.87, 1, 1, Vector2(1, -45), -180.87, 0.0, 1, 0]
+_data = [Vector2(0, -45), 0.0, 180.0, 0, 0, Vector2(0.5, 45), 180.0, -180.0, 0, 0, Vector2(1, -45), -180.0, 0.0, 0, 0]
 point_count = 3
 
 [sub_resource type="CircleShape2D" id="1"]
@@ -27,7 +27,7 @@ radius = 5.0
 [node name="Example01" type="Node2D"]
 
 [node name="Enemy" type="Sprite2D" parent="."]
-position = Vector2(512, 48)
+position = Vector2(500, 48)
 texture = ExtResource("4")
 
 [node name="TimedEvents" type="Node" parent="Enemy"]
@@ -41,13 +41,13 @@ events_per_second_multiplier = 250.0
 [node name="TimedRotatorLeft" type="Node2D" parent="Enemy/Turrets"]
 position = Vector2(-21, 37)
 script = ExtResource("5")
-duration = 0.011
+duration = 0.051
 orientation_over_time = SubResource("3")
 
 [node name="BulletsSpawner" type="Node2D" parent="Enemy/Turrets/TimedRotatorLeft"]
 rotation = 1.5708
 script = ExtResource("7")
-bullet_kit = ExtResource("2")
+bullet_kit = ExtResource("11_blwd7")
 bullets_speed = 250.0
 bullets_spawn_distance = 24.0
 
@@ -62,13 +62,13 @@ rotation = 0.0698132
 [node name="TimedRotatorRight" type="Node2D" parent="Enemy/Turrets"]
 position = Vector2(21, 37)
 script = ExtResource("5")
-duration = 0.011
+duration = 0.051
 orientation_over_time = SubResource("3")
 
 [node name="BulletsSpawner" type="Node2D" parent="Enemy/Turrets/TimedRotatorRight"]
 rotation = 1.5708
 script = ExtResource("7")
-bullet_kit = ExtResource("2")
+bullet_kit = ExtResource("11_blwd7")
 bullets_speed = 250.0
 bullets_spawn_distance = 24.0
 
@@ -80,8 +80,8 @@ rotation = -0.0698132
 [node name="Position2D2" type="Marker2D" parent="Enemy/Turrets/TimedRotatorRight/BulletsSpawner"]
 rotation = 0.0698132
 
-[node name="Player" type="Area2D" parent="."]
-position = Vector2(512, 520)
+[node name="Player" type="Area2D" parent="." groups=["Player"]]
+position = Vector2(500, 520)
 collision_mask = 16
 script = ExtResource("8")
 
@@ -98,10 +98,15 @@ shape = SubResource("1")
 
 [node name="BulletsEnvironment" type="Node" parent="."]
 script = ExtResource("3")
-bullet_kits = [ExtResource("2")]
+bullet_kits = [ExtResource("11_blwd7")]
 pools_sizes = [3000]
 parents_hints = [null]
 z_indices = [1]
+bullet_types_amount = 1
+bullet_type_0/bullet_kit = ExtResource("11_blwd7")
+bullet_type_0/pool_size = 3000
+bullet_type_0/parent_hint = null
+bullet_type_0/z_index = 1
 
 [node name="UI" type="CanvasLayer" parent="."]
 
@@ -109,6 +114,8 @@ z_indices = [1]
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
 theme_override_constants/margin_left = 8
 theme_override_constants/margin_top = 8
 theme_override_constants/margin_right = 8

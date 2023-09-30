@@ -1,5 +1,9 @@
 #include "register_types.h"
-#include "bullets.h"
+#include "native_bullets.h"
+#include "kits/basic_bullet_kit.h"
+#include "kits/dynamic_bullet_kit.h"
+#include "kits/following_bullet_kit.h"
+#include "kits/following_dynamic_bullet_kit.h"
 
 #include <gdextension_interface.h>
 #include <godot_cpp/core/defs.hpp>
@@ -13,9 +17,9 @@ void initialize_native_bullets_module(ModuleInitializationLevel p_level) {
         return;
     }
 
-    ClassDB::register_class<Bullet>();
+	ClassDB::register_class<Bullet>();
 	ClassDB::register_class<BulletKit>();
-	ClassDB::register_class<Bullets>();
+	ClassDB::register_class<NativeBullets>();
 
 	// Default Bullet Kits.
 	ClassDB::register_class<BasicBulletKit>();
@@ -44,8 +48,8 @@ extern "C" {
 	GDExtensionBool GDE_EXPORT native_bullets_init(GDExtensionInterfaceGetProcAddress p_get_proc_address, const GDExtensionClassLibraryPtr p_library, GDExtensionInitialization *r_initialization) {
 		godot::GDExtensionBinding::InitObject init_obj(p_get_proc_address, p_library, r_initialization);
 
-		init_obj.register_initializer(initialize_example_module);
-		init_obj.register_terminator(uninitialize_example_module);
+		init_obj.register_initializer(initialize_native_bullets_module);
+		init_obj.register_terminator(uninitialize_native_bullets_module);
 		init_obj.set_minimum_library_initialization_level(MODULE_INITIALIZATION_LEVEL_SCENE);
 
 		return init_obj.init();
