@@ -49,11 +49,13 @@ public:
 	Ref<Texture2D> get_texture() { return texture; }
 	void set_texture(Ref<Texture2D> texture) {
 		this->texture = texture;
+		emit_changed();
 	}
 	
 	float get_bullets_turning_speed() { return bullets_turning_speed; }
 	void set_bullets_turning_speed(float speed) {
 		bullets_turning_speed = speed;
+		emit_changed();
 	}
 
 	static void _bind_methods() {

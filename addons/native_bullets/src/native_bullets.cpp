@@ -190,7 +190,7 @@ void NativeBullets::mount(Node* bullets_environment) {
 			pool_sets[i].pools[j].size = pool_size;
 			pool_sets[i].pools[j].z_index = z_indices[kit_index_in_node];
 
-			pool_sets[i].pools[j].pool->_initparent_node_hint, shared_area, pool_set_available_bullets,
+			pool_sets[i].pools[j].pool->_init(parent_node_hint, shared_area, pool_set_available_bullets,
 				i, kit, pool_size, z_indices[kit_index_in_node]);
 
 			pool_set_available_bullets += pool_size;

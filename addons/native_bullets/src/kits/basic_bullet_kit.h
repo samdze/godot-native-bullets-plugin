@@ -20,6 +20,7 @@ public:
 
 	void set_texture(Ref<Texture2D> texture) {
 		this->texture = texture;
+		emit_changed();
 	}
 
 	Ref<Texture2D> get_texture() {

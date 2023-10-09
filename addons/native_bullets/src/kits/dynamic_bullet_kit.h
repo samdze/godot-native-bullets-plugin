@@ -78,26 +78,31 @@ public:
 	Ref<Texture2D> get_texture() { return texture; }
 	void set_texture(Ref<Texture2D> texture) {
 		this->texture = texture;
+		emit_changed();
 	}
 
 	float get_lifetime_curves_span() { return lifetime_curves_span; }
 	void set_lifetime_curves_span(float lifetime_curves_span) {
 		this->lifetime_curves_span = lifetime_curves_span;
+		emit_changed();
 	}
 
 	bool get_lifetime_curves_loop() { return lifetime_curves_loop; }
 	void set_lifetime_curves_loop(bool lifetime_curves_loop) {
 		this->lifetime_curves_loop = lifetime_curves_loop;
+		emit_changed();
 	}
 
 	Ref<Curve> get_speed_multiplier_over_lifetime() { return speed_multiplier_over_lifetime; }
 	void set_speed_multiplier_over_lifetime(Ref<Curve> speed_multiplier_over_lifetime) {
 		this->speed_multiplier_over_lifetime = speed_multiplier_over_lifetime;
+		emit_changed();
 	}
 
 	Ref<Curve> get_rotation_offset_over_lifetime() { return rotation_offset_over_lifetime; }
 	void set_rotation_offset_over_lifetime(Ref<Curve> rotation_offset_over_lifetime) {
 		this->rotation_offset_over_lifetime = rotation_offset_over_lifetime;
+		emit_changed();
 	}
 
 	static void _bind_methods() {

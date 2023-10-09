@@ -73,41 +73,49 @@ public:
 	Ref<Texture2D> get_texture() { return texture; }
 	void set_texture(Ref<Texture2D> texture) {
 		this->texture = texture;
+		emit_changed();
 	}
 
 	float get_lifetime_curves_span() { return lifetime_curves_span; }
 	void set_lifetime_curves_span(float span) {
 		lifetime_curves_span = span;
+		emit_changed();
 	}
 
 	float get_distance_curves_span() { return distance_curves_span; }
 	void set_distance_curves_span(float span) {
 		distance_curves_span = span;
+		emit_changed();
 	}
 
 	bool get_lifetime_curves_loop() { return lifetime_curves_loop; }
 	void set_lifetime_curves_loop(bool loop) {
 		lifetime_curves_loop = loop;
+		emit_changed();
 	}
 
 	int32_t get_speed_control_mode() { return speed_control_mode; }
 	void set_speed_control_mode(int32_t mode) {
 		speed_control_mode = mode;
+		emit_changed();
 	}
 
 	Ref<Curve> get_speed_multiplier() { return speed_multiplier; }
 	void set_speed_multiplier(Ref<Curve> curve) {
 		speed_multiplier = curve;
+		emit_changed();
 	}
 
 	int32_t get_turning_speed_control_mode() { return turning_speed_control_mode; }
 	void set_turning_speed_control_mode(int32_t mode) {
 		turning_speed_control_mode = mode;
+		emit_changed();
 	}
 
 	Ref<Curve> get_turning_speed() { return turning_speed; }
 	void set_turning_speed(Ref<Curve> curve) {
 		turning_speed = curve;
+		emit_changed();
 	}
 
 	static void _bind_methods() {
