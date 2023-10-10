@@ -19,8 +19,6 @@ class FollowingBullet : public Bullet {
 public:
 	Node2D* target_node = nullptr;
 
-	void _init() {}
-
 	Node2D* get_target_node() { return target_node; }
 	void set_target_node(Node2D* node) {
 		target_node = node;
@@ -49,13 +47,11 @@ public:
 	Ref<Texture2D> get_texture() { return texture; }
 	void set_texture(Ref<Texture2D> texture) {
 		this->texture = texture;
-		emit_changed();
 	}
 	
 	float get_bullets_turning_speed() { return bullets_turning_speed; }
 	void set_bullets_turning_speed(float speed) {
 		bullets_turning_speed = speed;
-		emit_changed();
 	}
 
 	static void _bind_methods() {

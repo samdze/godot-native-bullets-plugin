@@ -7,14 +7,14 @@ Efficiently spawn and move high amounts of objects like bullets for bullet hells
   <img src="https://user-images.githubusercontent.com/19392104/138732303-21ab282f-3f00-417f-ba47-d6e1713648ea.gif" width="360" />
 </p>
 
-This is a **GDNative plugin**, compatible with Godot 3.4.x and up.<br>
-Not compatible with Godot 4.x.
+This is a **GDExtension plugin**, compatible with Godot 4.1 and up.<br>
+Not compatible with Godot 3.x.
 
 The versions of the pre-built binaries are as follows:
 
-- Windows x86-64 (v1.2.1)
-- Linux x86-64 (v1.2.1)
-- macOS Universal (x86-64 + arm64, v1.2.1)
+- Windows (x86-64, v2.0)
+- Linux (x86-64, v2.0)
+- macOS Universal (x86-64 + arm64, v2.0)
 
 **Notice**: to make sure you have the latest binary version you can build from source.<br>
 See [Compiling and extending the plugin](#compiling-and-extending-the-plugin).
@@ -51,7 +51,7 @@ The first thing to do is create a BulletKit resource and choose how bullets will
 3. As the `material`, you can use a new material resource using the `animated_shader.gdshader` you can find in the utils folder.
    This shader takes care of animating your bullets if you specify more than 1 frame in its parameters.
 
-4. For now, turn off `collisions_enabled`, turn `use_viewport_as_active_rect` on, turn `rotate` off and set `unique_modulate_component` to `None`.
+4. For now, turn off `collisions_enabled`, turn `use_viewport_as_active_rect` on, turn `auto_rotate` off and set `unique_modulate_component` to `None`.
    See the [Reference](#reference) section to learn more.
 
 <p align="center">
@@ -91,7 +91,7 @@ Create a script.
 
 ```gdscript
 # Assign a valid BulletKit via the inspector.
-export(Resource) var bullet_kit
+export(BulletKit) var bullet_kit
 
 
 func _process(delta):
@@ -228,7 +228,7 @@ It's configurable with:
 - `collision_shape`: the CollisionShape to use during collision detection. Visible only if `collisions_enabled` is on.
 - `use_viewport_as_active_rect`: if enabled, uses the current viewport to detect whether a bullet should be deleted.
 - `active_rect`: the rect outside of which the bullets get deleted. Visible only if `use_viewport_as_active_rect` if off.
-- `rotate`: controls whether the bullets automatically rotate based on their direction of travel.
+- `auto_rotate`: controls whether the bullets automatically rotate based on their direction of travel.
 - `unique_modulate_component`: controls which modulate component in the material will be used as a unique value for each bullet instance. This can be used to offset bullets animation frames by unique amounts inside shaders and it's needed due to Godot not supporting material instance properties in 3.x.
 - `data`: custom data you can assign to the BulletKit.
 
@@ -258,7 +258,7 @@ It's configurable with:
 - `collision_shape`: the CollisionShape to use during collision detection. Visible only if `collisions_enabled` is on.
 - `use_viewport_as_active_rect`: if enabled, uses the current viewport to detect whether a bullet should be deleted.
 - `active_rect`: the rect outside of which the bullets get deleted. Visible only if `use_viewport_as_active_rect` if off.
-- `rotate`: controls whether the bullets automatically rotate based on their direction of travel.
+- `auto_rotate`: controls whether the bullets automatically rotate based on their direction of travel.
 - `unique_modulate_component`: controls which modulate component in the material will be used as a unique value for each bullet instance. This can be used to offset bullets animation frames by unique amounts inside shaders and it's needed due to Godot not supporting material instance properties in 3.x.
 - `data`: custom data you can assign to the BulletKit.
 
@@ -292,7 +292,7 @@ It's configurable with:
 - `collision_shape`: the CollisionShape to use during collision detection. Visible only if `collisions_enabled` is on.
 - `use_viewport_as_active_rect`: if enabled, uses the current viewport to detect whether a bullet should be deleted.
 - `active_rect`: the rect outside of which the bullets get deleted. Visible only if `use_viewport_as_active_rect` if off.
-- `rotate`: controls whether the bullets automatically rotate based on their direction of travel.
+- `auto_rotate`: controls whether the bullets automatically rotate based on their direction of travel.
 - `unique_modulate_component`: controls which modulate component in the material will be used as a unique value for each bullet instance. This can be used to offset bullets animation frames by unique amounts inside shaders and it's needed due to Godot not supporting material instance properties in 3.x.
 - `data`: custom data you can assign to the BulletKit.
 
@@ -336,7 +336,7 @@ It's configurable with:
 - `collision_shape`: the CollisionShape to use during collision detection. Visible only if `collisions_enabled` is on.
 - `use_viewport_as_active_rect`: if enabled, uses the current viewport to detect whether a bullet should be deleted.
 - `active_rect`: the rect outside of which the bullets get deleted. Visible only if `use_viewport_as_active_rect` is off.
-- `rotate`: controls whether the bullets automatically rotate based on their direction of travel.
+- `auto_rotate`: controls whether the bullets automatically rotate based on their direction of travel.
 - `unique_modulate_component`: controls which modulate component in the material will be used as a unique value for each bullet instance. This can be used to offset bullets animation frames by unique amounts inside shaders and it's needed due to Godot not supporting material instance properties in 3.x.
 - `data`: custom data you can assign to the BulletKit.
 
@@ -602,10 +602,7 @@ class CustomFollowingBullet : public Bullet {
 public:
 	Node2D* target_node = nullptr;
 
-	// the _init method must be defined.
-	void _init() {}
-
-	// Custom setter and getter, not needed.
+	// Custom setter and getter.
 	void set_target_node(Node2D* node) {
 		target_node = node;
 	}
@@ -711,8 +708,8 @@ class CustomFollowingBulletsPool : public AbstractBulletsPool<CustomFollowingBul
 			// Return true if the bullet should be deleted.
 			return true;
 		}
-		// Rotate the bullet based on its velocity if "rotate" is enabled.
-		if(kit->rotate) {
+		// Rotate the bullet based on its velocity if "auto_rotate" is enabled.
+		if(kit->auto_rotate) {
 			bullet->transform.set_rotation(bullet->velocity.angle());
 		}
 		// Bullet is still alive, increase its lifetime.
@@ -756,10 +753,7 @@ void initialize_native_bullets_module(ModuleInitializationLevel p_level) {
 Compile the bindings and the plugin for your selected platform.
 
 ```
-cd addons/native_bullets/godot-cpp
-scons platform=windows target=template_release generate_bindings=yes -j4
-
-cd ..
+cd addons/native_bullets
 scons platform=windows target=template_release
 ```
 

@@ -4,12 +4,12 @@
 [ext_resource type="Script" path="res://addons/native_bullets/bullets_environment.gd" id="3"]
 [ext_resource type="Texture2D" uid="uid://d0yp1peym2lp8" path="res://examples/images/enemy_black_1.png" id="4"]
 [ext_resource type="Script" path="res://addons/native_bullets/utils/timed_rotator.gd" id="5"]
+[ext_resource type="BasicBulletKit" uid="uid://bhek5kl148bmp" path="res://examples/kits/blue_basic_bullet_kit.tres" id="5_g7sff"]
 [ext_resource type="Script" path="res://addons/native_bullets/utils/timed_events.gd" id="6"]
 [ext_resource type="Script" path="res://addons/native_bullets/utils/bullets_spawner.gd" id="7"]
 [ext_resource type="Script" path="res://examples/scripts/player_01.gd" id="8"]
 [ext_resource type="Texture2D" uid="uid://dx7gwfnjm8odp" path="res://examples/images/laser_red_08.png" id="9"]
 [ext_resource type="Script" path="res://examples/scripts/bullets_counter.gd" id="10"]
-[ext_resource type="BasicBulletKit" uid="uid://bhek5kl148bmp" path="res://examples/kits/new_blue_basic_bullet_kit.tres" id="11_blwd7"]
 
 [sub_resource type="Curve" id="2"]
 _data = [Vector2(0, 1), 0.0, 0.0, 0, 1, Vector2(1, 1), 0.0, 0.0, 1, 0]
@@ -47,7 +47,7 @@ orientation_over_time = SubResource("3")
 [node name="BulletsSpawner" type="Node2D" parent="Enemy/Turrets/TimedRotatorLeft"]
 rotation = 1.5708
 script = ExtResource("7")
-bullet_kit = ExtResource("11_blwd7")
+bullet_kit = ExtResource("5_g7sff")
 bullets_speed = 250.0
 bullets_spawn_distance = 24.0
 
@@ -68,7 +68,7 @@ orientation_over_time = SubResource("3")
 [node name="BulletsSpawner" type="Node2D" parent="Enemy/Turrets/TimedRotatorRight"]
 rotation = 1.5708
 script = ExtResource("7")
-bullet_kit = ExtResource("11_blwd7")
+bullet_kit = ExtResource("5_g7sff")
 bullets_speed = 250.0
 bullets_spawn_distance = 24.0
 
@@ -98,13 +98,13 @@ shape = SubResource("1")
 
 [node name="BulletsEnvironment" type="Node" parent="."]
 script = ExtResource("3")
-bullet_kits = [ExtResource("11_blwd7")]
-pools_sizes = [3000]
+bullet_kits = [ExtResource("5_g7sff")]
+pools_sizes = [4000]
 parents_hints = [null]
 z_indices = [1]
 bullet_types_amount = 1
-bullet_type_0/bullet_kit = ExtResource("11_blwd7")
-bullet_type_0/pool_size = 3000
+bullet_type_0/bullet_kit = ExtResource("5_g7sff")
+bullet_type_0/pool_size = 4000
 bullet_type_0/parent_hint = null
 bullet_type_0/z_index = 1
 

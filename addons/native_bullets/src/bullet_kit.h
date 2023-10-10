@@ -55,61 +55,53 @@ public:
 	Ref<Material> get_material() { return material; }
 	void set_material(Ref<Material> material) {
 		this->material = material;
-		emit_changed();
 	}
 
 	bool get_collisions_enabled() { return collisions_enabled; }
 	void set_collisions_enabled(bool enabled) {
 		collisions_enabled = enabled;
-		emit_changed();
+		notify_property_list_changed();
 	}
 
 	int32_t get_collision_layer() { return collision_layer; }
 	void set_collision_layer(int32_t layer) {
 		collision_layer = layer;
-		emit_changed();
 	}
 
 	int32_t get_collision_mask() { return collision_mask; }
 	void set_collision_mask(int32_t mask) {
 		collision_mask = mask;
-		emit_changed();
 	}
 
 	Ref<Shape2D> get_collision_shape() { return collision_shape; }
 	void set_collision_shape(Ref<Shape2D> shape) {
 		collision_shape = shape;
-		emit_changed();
 	}
 
 	bool get_use_viewport_as_active_rect() { return use_viewport_as_active_rect; }
 	void set_use_viewport_as_active_rect(bool use) {
 		use_viewport_as_active_rect = use;
-		emit_changed();
+		notify_property_list_changed();
 	}
 
 	Rect2 get_active_rect() { return active_rect; }
 	void set_active_rect(Rect2 rect) {
 		active_rect = rect;
-		emit_changed();
 	}
 
 	bool get_auto_rotate() { return auto_rotate; }
 	void set_auto_rotate(bool rotate) {
 		auto_rotate = rotate;
-		emit_changed();
 	}
 
 	int32_t get_unique_modulate_component() { return unique_modulate_component; }
 	void set_unique_modulate_component(int32_t component) {
 		unique_modulate_component = component;
-		emit_changed();
 	}
 
 	Variant get_data() { return data; }
 	void set_data(Variant data) {
 		this->data = data;
-		emit_changed();
 	}
 	
 	String get_bullet_class_name() { return bullet_class_name; }
@@ -161,7 +153,7 @@ public:
 		ADD_PROPERTY(PropertyInfo(Variant::DICTIONARY, "data", PROPERTY_HINT_NONE, "", 
 			PROPERTY_USAGE_DEFAULT, "Dictionary"), "set_data", "get_data");
 
-		ADD_PROPERTY(PropertyInfo(Variant::NIL, "Bullet Properties", PROPERTY_HINT_NONE, "Bullet", 
+		ADD_PROPERTY(PropertyInfo(Variant::NIL, "Bullet", PROPERTY_HINT_NONE, "Bullet", 
 			PROPERTY_USAGE_CATEGORY, "Bullet"), "", "get_bullet_properties");
 		// This property returns the class name of the used Bullet.
 		// It's also a property used to allow the inspector to show custom editor controls.

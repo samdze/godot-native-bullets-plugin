@@ -1,14 +1,15 @@
-[gd_scene load_steps=12 format=3 uid="uid://b5tuuwbn8ags0"]
+[gd_scene load_steps=13 format=3 uid="uid://h064xpe24o42"]
 
 [ext_resource type="Texture2D" uid="uid://cfxbm6nhsf2wb" path="res://examples/images/player_ship_2_blue.png" id="1"]
-[ext_resource type="Script" path="res://examples/scripts/kits_active_rect_configurator.gd" id="2"]
-[ext_resource type="Script" path="res://addons/native_bullets/bullets_environment.gd" id="3"]
 [ext_resource type="Script" path="res://examples/scripts/player_02.gd" id="5"]
 [ext_resource type="Script" path="res://addons/native_bullets/utils/timed_events.gd" id="6"]
+[ext_resource type="DynamicBulletKit" uid="uid://d4cumuc0py5q0" path="res://examples/kits/green_02_dynamic_bullet_kit.tres" id="6_kkx8r"]
 [ext_resource type="Script" path="res://addons/native_bullets/utils/bullets_spawner.gd" id="7"]
+[ext_resource type="DynamicBulletKit" uid="uid://n5sd74v86yis" path="res://examples/kits/green_01_dynamic_bullet_kit.tres" id="7_4ncgm"]
 [ext_resource type="Script" path="res://addons/native_bullets/utils/timed_rotator.gd" id="8"]
-[ext_resource type="DynamicBulletKit" uid="uid://qpxrr0f6yn5b" path="res://examples/kits/green_dynamic_bullet_kit.tres" id="9_oxtj6"]
-[ext_resource type="Script" path="res://examples/scripts/bullets_counter.gd" id="10"]
+[ext_resource type="Script" path="res://examples/scripts/kits_active_rect_configurator.gd" id="8_bwhi6"]
+[ext_resource type="Script" path="res://addons/native_bullets/bullets_environment.gd" id="9_qmycn"]
+[ext_resource type="Script" path="res://examples/scripts/bullets_counter.gd" id="10_318gu"]
 
 [sub_resource type="Curve" id="2"]
 _data = [Vector2(0, 1), 0.0, 0.0, 0, 1, Vector2(1, 1), 0.0, 0.0, 1, 0]
@@ -49,13 +50,11 @@ duration = 0.009
 orientation_over_time = SubResource("3")
 
 [node name="BulletsSpawner" type="Node2D" parent="Center/Player/TimedRotator"]
-rotation = -1.5708
+rotation = -1.0472
 script = ExtResource("7")
-bullet_kit = ExtResource("9_oxtj6")
-bullets_speed = 400.0
+bullet_kit = ExtResource("6_kkx8r")
+bullets_speed = 800.0
 bullets_spawn_distance = 20.0
-
-[node name="Marker2D" type="Marker2D" parent="Center/Player/TimedRotator/BulletsSpawner"]
 
 [node name="Position2D2" type="Marker2D" parent="Center/Player/TimedRotator/BulletsSpawner"]
 rotation = 0.0698132
@@ -87,51 +86,62 @@ rotation = 0.628319
 [node name="Position2D18" type="Marker2D" parent="Center/Player/TimedRotator/BulletsSpawner"]
 rotation = 0.698132
 
-[node name="Position2D7" type="Marker2D" parent="Center/Player/TimedRotator/BulletsSpawner"]
+[node name="BulletsSpawner2" type="Node2D" parent="Center/Player/TimedRotator"]
+rotation = -2.0944
+script = ExtResource("7")
+bullet_kit = ExtResource("7_4ncgm")
+bullets_speed = 800.0
+bullets_spawn_distance = 20.0
+
+[node name="Position2D7" type="Marker2D" parent="Center/Player/TimedRotator/BulletsSpawner2"]
 rotation = -0.0698132
 
-[node name="Position2D4" type="Marker2D" parent="Center/Player/TimedRotator/BulletsSpawner"]
+[node name="Position2D4" type="Marker2D" parent="Center/Player/TimedRotator/BulletsSpawner2"]
 rotation = -0.139626
 
-[node name="Position2D5" type="Marker2D" parent="Center/Player/TimedRotator/BulletsSpawner"]
+[node name="Position2D5" type="Marker2D" parent="Center/Player/TimedRotator/BulletsSpawner2"]
 rotation = -0.20944
 
-[node name="Position2D8" type="Marker2D" parent="Center/Player/TimedRotator/BulletsSpawner"]
+[node name="Position2D8" type="Marker2D" parent="Center/Player/TimedRotator/BulletsSpawner2"]
 rotation = -0.279253
 
-[node name="Position2D9" type="Marker2D" parent="Center/Player/TimedRotator/BulletsSpawner"]
+[node name="Position2D9" type="Marker2D" parent="Center/Player/TimedRotator/BulletsSpawner2"]
 rotation = -0.349066
 
-[node name="Position2D10" type="Marker2D" parent="Center/Player/TimedRotator/BulletsSpawner"]
+[node name="Position2D10" type="Marker2D" parent="Center/Player/TimedRotator/BulletsSpawner2"]
 rotation = -0.418879
 
-[node name="Position2D11" type="Marker2D" parent="Center/Player/TimedRotator/BulletsSpawner"]
+[node name="Position2D11" type="Marker2D" parent="Center/Player/TimedRotator/BulletsSpawner2"]
 rotation = -0.488692
 
-[node name="Position2D19" type="Marker2D" parent="Center/Player/TimedRotator/BulletsSpawner"]
+[node name="Position2D19" type="Marker2D" parent="Center/Player/TimedRotator/BulletsSpawner2"]
 rotation = -0.558505
 
-[node name="Position2D20" type="Marker2D" parent="Center/Player/TimedRotator/BulletsSpawner"]
+[node name="Position2D20" type="Marker2D" parent="Center/Player/TimedRotator/BulletsSpawner2"]
 rotation = -0.628319
 
-[node name="Position2D21" type="Marker2D" parent="Center/Player/TimedRotator/BulletsSpawner"]
+[node name="Position2D21" type="Marker2D" parent="Center/Player/TimedRotator/BulletsSpawner2"]
 rotation = -0.698132
 
 [node name="BulletKitsConfigurator" type="Node" parent="."]
-script = ExtResource("2")
+script = ExtResource("8_bwhi6")
 bullets_active_rect_grow = 20.0
 
 [node name="BulletsEnvironment" type="Node" parent="."]
-script = ExtResource("3")
-bullet_kits = [ExtResource("9_oxtj6")]
-pools_sizes = [3000]
-parents_hints = [null]
-z_indices = [1]
-bullet_types_amount = 1
-bullet_type_0/bullet_kit = ExtResource("9_oxtj6")
-bullet_type_0/pool_size = 3000
+script = ExtResource("9_qmycn")
+bullet_kits = [ExtResource("7_4ncgm"), ExtResource("6_kkx8r")]
+pools_sizes = [5000, 5000]
+parents_hints = [null, null]
+z_indices = [1, 1]
+bullet_types_amount = 2
+bullet_type_0/bullet_kit = ExtResource("7_4ncgm")
+bullet_type_0/pool_size = 5000
 bullet_type_0/parent_hint = null
 bullet_type_0/z_index = 1
+bullet_type_1/bullet_kit = ExtResource("6_kkx8r")
+bullet_type_1/pool_size = 5000
+bullet_type_1/parent_hint = null
+bullet_type_1/z_index = 1
 
 [node name="UI" type="CanvasLayer" parent="."]
 
@@ -151,6 +161,6 @@ alignment = 2
 [node name="Bullets" type="Label" parent="UI/MarginContainer/VBoxContainer"]
 layout_mode = 2
 text = "Bullets: {0}"
-script = ExtResource("10")
+script = ExtResource("10_318gu")
 
 [connection signal="tree_entering" from="BulletsEnvironment" to="BulletKitsConfigurator" method="_on_bullets_environment_tree_entering"]

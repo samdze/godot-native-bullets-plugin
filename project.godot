@@ -11,7 +11,7 @@ config_version=5
 [application]
 
 config/name="Native Bullets"
-run/main_scene="res://examples/example_02.tscn"
+run/main_scene="res://examples/example_01.tscn"
 config/features=PackedStringArray("4.1")
 boot_splash/fullsize=false
 
