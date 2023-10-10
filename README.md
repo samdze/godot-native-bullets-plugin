@@ -8,7 +8,7 @@ Efficiently spawn and move high amounts of objects like bullets for bullet hells
 </p>
 
 This is a **GDExtension plugin**, compatible with Godot 4.1 and up.<br>
-Not compatible with Godot 3.x.
+The Godot 3.x compatible version of the plugin can be found [here](https://github.com/samdze/godot-native-bullets-plugin/tree/3.x).
 
 The versions of the pre-built binaries are as follows:
 
@@ -55,7 +55,7 @@ The first thing to do is create a BulletKit resource and choose how bullets will
    See the [Reference](#reference) section to learn more.
 
 <p align="center">
-  <img src="https://user-images.githubusercontent.com/19392104/140386739-dc06ddbe-1943-45b0-a4c7-ac5e6a494783.png" />
+  <img src="https://github.com/samdze/godot-native-bullets-plugin/assets/19392104/8a44c279-d63b-436c-b8cd-ec014e006166.png" />
 </p>
 
 This BulletKit resource is now ready to be used!
@@ -78,7 +78,7 @@ The BulletsEnvironment node has to be configured to choose which kinds of bullet
    Leave the `parent_hint` property empty, it will make the bullets spawn in the nearest Viewport or CanvasLayer up in the scene tree.
 
 <p align="center">
-  <img src="https://user-images.githubusercontent.com/19392104/140386914-287dc3bb-9926-4f89-b4c1-f60a878406e3.png" />
+  <img src="https://github.com/samdze/godot-native-bullets-plugin/assets/19392104/860c6fcb-69a6-4ddf-8912-270095896037.png" />
 </p>
 
 Nice! Now the bullets are ready.
