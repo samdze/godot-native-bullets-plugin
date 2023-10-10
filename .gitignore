@@ -6,6 +6,7 @@ addons/native_bullets/tmp/*
 .import/
 export.cfg
 export_presets.cfg
+.godot/
 
 # Mono-specific ignores
 .mono/
