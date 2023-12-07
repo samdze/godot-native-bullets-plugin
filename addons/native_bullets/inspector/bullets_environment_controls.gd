@@ -4,7 +4,6 @@ extends HBoxContainer
 
 var object: BulletsEnvironment
 var index: int
-var editor_theme: Theme
 var icon_collisions: TextureRect
 var icon_viewport: TextureRect
 var icon_rotating: TextureRect
@@ -17,6 +16,7 @@ func _ready():
 	icon_rotating = $Icons/Rotating
 	icon_data = $Icons/Data
 	
+	var editor_theme = EditorInterface.get_editor_theme()
 	icon_collisions.texture = editor_theme.get_icon("Area2D", "EditorIcons")
 	icon_viewport.texture = editor_theme.get_icon("SubViewportContainer", "EditorIcons")
 	icon_rotating.texture = editor_theme.get_icon("ToolRotate", "EditorIcons")

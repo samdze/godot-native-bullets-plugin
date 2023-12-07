@@ -2,17 +2,12 @@
 extends EditorInspectorPlugin
 
 
-var theme: Theme
 var properties_regex: RegEx
 
 
 func _init():
 	properties_regex = RegEx.new()
 	properties_regex.compile("bullet_type_\\d*/controls")
-
-
-func init(theme: Theme):
-	self.theme = theme
 
 
 func _can_handle(object):
@@ -30,7 +25,6 @@ func _parse_property(object, type, path, hint, hint_text, usage, wide):
 		var controls = preload("bullets_environment_controls.tscn").instantiate()
 		controls.object = object
 		controls.index = index
-		controls.editor_theme = theme
 		add_custom_control(controls)
 		return true
 	

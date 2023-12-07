@@ -41,32 +41,30 @@ func generate_from(properties_array):
 	for property in properties_array:
 		var hbox = HBoxContainer.new()
 		
-		var label = Label.new()
-		label.clip_text = true
-		label.text = property.name.capitalize()
-		label.size_flags_horizontal = SIZE_EXPAND_FILL
-		label.tooltip_text = "Property: " + property.name
-		if property.name == "item_rid" or property.name == "cycle" or property.name == "shape_index":
-			label.tooltip_text += "\nRead only."
-		label.mouse_filter = Control.MOUSE_FILTER_STOP
+		var editor_prop = EditorProperty.new()
+		editor_prop.label = property.name.capitalize()
+		editor_prop.size_flags_horizontal = SIZE_EXPAND_FILL
+		
+		# Setting a tooltip crashes the editor when the property is hovered.
+		#editor_prop.tooltip_text = "Property: " + property.name
+		#if property.name == "item_rid" or property.name == "cycle" or property.name == "shape_index":
+			#editor_prop.tooltip_text += "\nRead only."
 		
 		var icon = Button.new()
 		icon.flat = true
 		icon.size_flags_horizontal = SIZE_EXPAND_FILL
 		icon.clip_text = true
 		
-		hbox.add_child(label)
-		hbox.add_child(icon)
-		
+		editor_prop.add_child(icon)
+		hbox.add_child(editor_prop)
 		add_child(hbox)
 		
-		label.add_theme_color_override("font_color", get_theme_color("property_color", "Editor"))
-		
+		var theme = EditorInterface.get_editor_theme()
 		var icon_name = TYPE_MAPPINGS[property.type]
 		if property.type == TYPE_OBJECT:
 			if property["class_name"].is_empty():
 				icon_name = "Variant"
 			else:
 				icon_name = property["class_name"]
-		icon.icon = icon.get_theme_icon(icon_name, "EditorIcons")
+		icon.icon = theme.get_icon(icon_name, "EditorIcons")
 		icon.text = icon_name

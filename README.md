@@ -7,7 +7,7 @@ Efficiently spawn and move high amounts of objects like bullets for bullet hells
   <img src="https://user-images.githubusercontent.com/19392104/138732303-21ab282f-3f00-417f-ba47-d6e1713648ea.gif" width="360" />
 </p>
 
-This is a **GDExtension plugin**, compatible with Godot 4.1 and up.<br>
+This is a **GDExtension plugin**, compatible with Godot 4.2 and up.<br>
 The Godot 3.x compatible version of the plugin can be found [here](https://github.com/samdze/godot-native-bullets-plugin/tree/3.x).
 
 The versions of the pre-built binaries are as follows:
@@ -38,18 +38,18 @@ See [Compiling and extending the plugin](#compiling-and-extending-the-plugin).
 1. Copy the addons/native_bullets folder in your addons folder.
 2. Navigate to Project -> Project Settings -> Plugin and enable the Native Bullets plugin.
 
-For best performance, toggle `use_bvh` off in Project Settings -> Physics -> 2d.
+For best performance, toggle `physics/2d/use_bvh` off in Project Settings.
 
 ### BulletKit creation
 
 The first thing to do is create a BulletKit resource and choose how bullets will appear and behave tweaking its properties.
 
-1. Create a new empty resource and assign one of the scripts you can find in the `addons/native_bullets/kits` folder to it.
-   In this example, we'll assign the `basic_bullet_kit.gdns` script.
-   New properties will appear in the resource inspector.
+1. Create a new BulletKt resource.
+   In this example, we'll create a BasicBulletKit from the resource list.
+   Selecting it, its properties will appear in the resource inspector.
 2. To get started, fill the `texture` property with any texture you have.
-3. As the `material`, you can use a new material resource using the `animated_shader.gdshader` you can find in the utils folder.
-   This shader takes care of animating your bullets if you specify more than 1 frame in its parameters.
+3. As the `material`, you can create a new material resource using `animated_shader.gdshader` as the shader. You can find it in the utils folder.
+   This shader is optional, it takes care of animating your bullets if you specify more than 1 frame in its parameters. You can customize it, create your own or use a standard material.
 
 4. For now, turn off `collisions_enabled`, turn `use_viewport_as_active_rect` on, turn `auto_rotate` off and set `unique_modulate_component` to `None`.
    See the [Reference](#reference) section to learn more.
@@ -58,7 +58,7 @@ The first thing to do is create a BulletKit resource and choose how bullets will
   <img src="https://github.com/samdze/godot-native-bullets-plugin/assets/19392104/8a44c279-d63b-436c-b8cd-ec014e006166.png" />
 </p>
 
-This BulletKit resource is now ready to be used!
+This BasicBulletKit resource is now ready to be used!
 
 ### BulletsEnvironment node
 
@@ -194,7 +194,7 @@ func _on_area_shape_entered(area_id, _area, area_shape, _local_shape):
 	# Get bullet properties, transform, velocity, lifetime etc.
 	var bullet_transform = Bullets.get_bullet_property(bullet_id, "transform")
 	# If you previously set a custom Dictionary containing the `damage` key as the data property, you can retrieve it.
-	var bullet_damage = Bullet.get_bullet_property(bullet_id, "data").damage
+	var bullet_damage = Bullets.get_bullet_property(bullet_id, "data").damage
 
 	# You can also retrieve the BulletKit that generated the bullet and get/set its properties.
 	var kit_collision_shape = Bullets.get_kit_from_bullet(bullet_id).collision_shape
