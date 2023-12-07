@@ -7,14 +7,14 @@ Efficiently spawn and move high amounts of objects like bullets for bullet hells
   <img src="https://user-images.githubusercontent.com/19392104/138732303-21ab282f-3f00-417f-ba47-d6e1713648ea.gif" width="360" />
 </p>
 
-This is a **GDNative plugin**, compatible with Godot 3.4.x and up.<br>
-Not compatible with Godot 4.x.
+This is a **GDExtension plugin**, compatible with Godot 4.2 and up.<br>
+The Godot 3.x compatible version of the plugin can be found [here](https://github.com/samdze/godot-native-bullets-plugin/tree/3.x).
 
 The versions of the pre-built binaries are as follows:
 
-- Windows x86-64 (v1.2.1)
-- Linux x86-64 (v1.2.1)
-- macOS Universal (x86-64 + arm64, v1.2.1)
+- Windows (x86-64, v2.0)
+- Linux (x86-64, v2.0)
+- macOS Universal (x86-64 + arm64, v2.0)
 
 **Notice**: to make sure you have the latest binary version you can build from source.<br>
 See [Compiling and extending the plugin](#compiling-and-extending-the-plugin).
@@ -38,27 +38,27 @@ See [Compiling and extending the plugin](#compiling-and-extending-the-plugin).
 1. Copy the addons/native_bullets folder in your addons folder.
 2. Navigate to Project -> Project Settings -> Plugin and enable the Native Bullets plugin.
 
-For best performance, toggle `use_bvh` off in Project Settings -> Physics -> 2d.
+For best performance, toggle `physics/2d/use_bvh` off in Project Settings.
 
 ### BulletKit creation
 
 The first thing to do is create a BulletKit resource and choose how bullets will appear and behave tweaking its properties.
 
-1. Create a new empty resource and assign one of the scripts you can find in the `addons/native_bullets/kits` folder to it.
-   In this example, we'll assign the `basic_bullet_kit.gdns` script.
-   New properties will appear in the resource inspector.
+1. Create a new BulletKt resource.
+   In this example, we'll create a BasicBulletKit from the resource list.
+   Selecting it, its properties will appear in the resource inspector.
 2. To get started, fill the `texture` property with any texture you have.
-3. As the `material`, you can use a new material resource using the `animated_shader.gdshader` you can find in the utils folder.
-   This shader takes care of animating your bullets if you specify more than 1 frame in its parameters.
+3. As the `material`, you can create a new material resource using `animated_shader.gdshader` as the shader. You can find it in the utils folder.
+   This shader is optional, it takes care of animating your bullets if you specify more than 1 frame in its parameters. You can customize it, create your own or use a standard material.
 
-4. For now, turn off `collisions_enabled`, turn `use_viewport_as_active_rect` on, turn `rotate` off and set `unique_modulate_component` to `None`.
+4. For now, turn off `collisions_enabled`, turn `use_viewport_as_active_rect` on, turn `auto_rotate` off and set `unique_modulate_component` to `None`.
    See the [Reference](#reference) section to learn more.
 
 <p align="center">
-  <img src="https://user-images.githubusercontent.com/19392104/140386739-dc06ddbe-1943-45b0-a4c7-ac5e6a494783.png" />
+  <img src="https://github.com/samdze/godot-native-bullets-plugin/assets/19392104/8a44c279-d63b-436c-b8cd-ec014e006166.png" />
 </p>
 
-This BulletKit resource is now ready to be used!
+This BasicBulletKit resource is now ready to be used!
 
 ### BulletsEnvironment node
 
@@ -78,7 +78,7 @@ The BulletsEnvironment node has to be configured to choose which kinds of bullet
    Leave the `parent_hint` property empty, it will make the bullets spawn in the nearest Viewport or CanvasLayer up in the scene tree.
 
 <p align="center">
-  <img src="https://user-images.githubusercontent.com/19392104/140386914-287dc3bb-9926-4f89-b4c1-f60a878406e3.png" />
+  <img src="https://github.com/samdze/godot-native-bullets-plugin/assets/19392104/860c6fcb-69a6-4ddf-8912-270095896037.png" />
 </p>
 
 Nice! Now the bullets are ready.
@@ -91,7 +91,7 @@ Create a script.
 
 ```gdscript
 # Assign a valid BulletKit via the inspector.
-export(Resource) var bullet_kit
+export(BulletKit) var bullet_kit
 
 
 func _process(delta):
@@ -194,12 +194,12 @@ func _on_area_shape_entered(area_id, _area, area_shape, _local_shape):
 	# Get bullet properties, transform, velocity, lifetime etc.
 	var bullet_transform = Bullets.get_bullet_property(bullet_id, "transform")
 	# If you previously set a custom Dictionary containing the `damage` key as the data property, you can retrieve it.
-	var bullet_damage = Bullet.get_bullet_property(bullet_id, "data").damage
+	var bullet_damage = Bullets.get_bullet_property(bullet_id, "data").damage
 
 	# You can also retrieve the BulletKit that generated the bullet and get/set its properties.
 	var kit_collision_shape = Bullets.get_kit_from_bullet(bullet_id).collision_shape
 
-	# Remove the bullet, call_deferred is necessary because the Physics2DServer is in its flushing state during callbacks.
+	# Remove the bullet, call_deferred is necessary because the PhysicsServer2D is in its flushing state during callbacks.
 	Bullets.call_deferred("release_bullet", bullet_id)
 ```
 
@@ -228,7 +228,7 @@ It's configurable with:
 - `collision_shape`: the CollisionShape to use during collision detection. Visible only if `collisions_enabled` is on.
 - `use_viewport_as_active_rect`: if enabled, uses the current viewport to detect whether a bullet should be deleted.
 - `active_rect`: the rect outside of which the bullets get deleted. Visible only if `use_viewport_as_active_rect` if off.
-- `rotate`: controls whether the bullets automatically rotate based on their direction of travel.
+- `auto_rotate`: controls whether the bullets automatically rotate based on their direction of travel.
 - `unique_modulate_component`: controls which modulate component in the material will be used as a unique value for each bullet instance. This can be used to offset bullets animation frames by unique amounts inside shaders and it's needed due to Godot not supporting material instance properties in 3.x.
 - `data`: custom data you can assign to the BulletKit.
 
@@ -258,7 +258,7 @@ It's configurable with:
 - `collision_shape`: the CollisionShape to use during collision detection. Visible only if `collisions_enabled` is on.
 - `use_viewport_as_active_rect`: if enabled, uses the current viewport to detect whether a bullet should be deleted.
 - `active_rect`: the rect outside of which the bullets get deleted. Visible only if `use_viewport_as_active_rect` if off.
-- `rotate`: controls whether the bullets automatically rotate based on their direction of travel.
+- `auto_rotate`: controls whether the bullets automatically rotate based on their direction of travel.
 - `unique_modulate_component`: controls which modulate component in the material will be used as a unique value for each bullet instance. This can be used to offset bullets animation frames by unique amounts inside shaders and it's needed due to Godot not supporting material instance properties in 3.x.
 - `data`: custom data you can assign to the BulletKit.
 
@@ -292,7 +292,7 @@ It's configurable with:
 - `collision_shape`: the CollisionShape to use during collision detection. Visible only if `collisions_enabled` is on.
 - `use_viewport_as_active_rect`: if enabled, uses the current viewport to detect whether a bullet should be deleted.
 - `active_rect`: the rect outside of which the bullets get deleted. Visible only if `use_viewport_as_active_rect` if off.
-- `rotate`: controls whether the bullets automatically rotate based on their direction of travel.
+- `auto_rotate`: controls whether the bullets automatically rotate based on their direction of travel.
 - `unique_modulate_component`: controls which modulate component in the material will be used as a unique value for each bullet instance. This can be used to offset bullets animation frames by unique amounts inside shaders and it's needed due to Godot not supporting material instance properties in 3.x.
 - `data`: custom data you can assign to the BulletKit.
 
@@ -336,7 +336,7 @@ It's configurable with:
 - `collision_shape`: the CollisionShape to use during collision detection. Visible only if `collisions_enabled` is on.
 - `use_viewport_as_active_rect`: if enabled, uses the current viewport to detect whether a bullet should be deleted.
 - `active_rect`: the rect outside of which the bullets get deleted. Visible only if `use_viewport_as_active_rect` is off.
-- `rotate`: controls whether the bullets automatically rotate based on their direction of travel.
+- `auto_rotate`: controls whether the bullets automatically rotate based on their direction of travel.
 - `unique_modulate_component`: controls which modulate component in the material will be used as a unique value for each bullet instance. This can be used to offset bullets animation frames by unique amounts inside shaders and it's needed due to Godot not supporting material instance properties in 3.x.
 - `data`: custom data you can assign to the BulletKit.
 
@@ -421,7 +421,7 @@ get_active_bullets(kit : BulletKit) -> int
 # Returns the number of pooled bullets for the `kit` BulletKit.
 get_pool_size(kit : BulletKit) -> int
 
-# Returns the z index of the bulltes generated by the `kit` BulletKit.
+# Returns the z index of the bullets generated by the `kit` BulletKit.
 get_z_index(kit : BulletKit) -> int
 
 # Returns the total number of currently available bullets.
@@ -582,10 +582,11 @@ Here's an example.
 #ifndef CUSTOM_FOLLOWING_BULLET_KIT_H
 #define CUSTOM_FOLLOWING_BULLET_KIT_H
 
-#include <Texture.hpp>
-#include <PackedScene.hpp>
-#include <Node2D.hpp>
-#include <SceneTree.hpp>
+#include <godot_cpp/classes/texture2d.hpp>
+#include <godot_cpp/classes/packed_scene.hpp>
+#include <godot_cpp/classes/node2d.hpp>
+#include <godot_cpp/classes/scene_tree.hpp>
+#include <godot_cpp/variant/utility_functions.hpp>
 #include <cmath>
 
 #include "../bullet_kit.h"
@@ -597,14 +598,11 @@ using namespace godot;
 // This is necessary only if your BulletKit needs custom efficiently accessible bullet properties.
 class CustomFollowingBullet : public Bullet {
 	// Godot requires you to add this macro to make this class work properly.
-	GODOT_CLASS(CustomFollowingBullet, Bullet)
+	GDCLASS(CustomFollowingBullet, Bullet)
 public:
 	Node2D* target_node = nullptr;
 
-	// the _init method must be defined.
-	void _init() {}
-
-	// Custom setter and getter, not needed.
+	// Custom setter and getter.
 	void set_target_node(Node2D* node) {
 		target_node = node;
 	}
@@ -613,13 +611,14 @@ public:
 		return target_node;
 	}
 
-	static void _register_methods() {
-		// Registering an Object reference property with GODOT_PROPERTY_HINT_RESOURCE_TYPE and hint_string is just
+	static void _bind_methods() {
+		ClassDB::bind_method(D_METHOD("set_target_node", "node"), &CustomFollowingBullet::set_target_node);
+		ClassDB::bind_method(D_METHOD("get_target_node"), &CustomFollowingBullet::get_target_node);
+
+		// Registering an Object reference property with GODOT_PROPERTY_HINT_NODE_TYPE and hint_string is just
 		// a way to tell the editor plugin the type of the property, so that it can be viewed in the BulletKit inspector.
-		register_property<CustomFollowingBullet, Node2D*>("target_node",
-			&CustomFollowingBullet::set_target_node,
-			&CustomFollowingBullet::get_target_node, nullptr,
-			GODOT_METHOD_RPC_MODE_DISABLED, GODOT_PROPERTY_USAGE_NO_INSTANCE_STATE, GODOT_PROPERTY_HINT_RESOURCE_TYPE, "Node2D");
+		ADD_PROPERTY(PropertyInfo(Variant::OBJECT, "target_node", PROPERTY_HINT_NODE_TYPE, "Node2D",
+			PROPERTY_USAGE_NO_INSTANCE_STATE, "Node2D"), "set_target_node", "get_target_node");
 	}
 };
 
@@ -627,24 +626,35 @@ public:
 // Add your own properties, methods and exports.
 class CustomFollowingBulletKit : public BulletKit {
 	// Godot requires you to add this macro to make this class work properly.
-	GODOT_CLASS(CustomFollowingBulletKit, BulletKit)
+	GDCLASS(CustomFollowingBulletKit, BulletKit)
 public:
 	// Use this macro to configure this bullet kit.
-	// Pass the BulletsPool type that will be used as the argument.
-	BULLET_KIT(CustomFollowingBulletsPool)
+	// Pass the BulletKit type, the BulletsPool type and the Bullet type that will be used as the arguments.
+	BULLET_KIT(CustomFollowingBulletKit, CustomFollowingBulletsPool, CustomFollowingBullet)
 
-	Ref<Texture> texture;
+	Ref<Texture2D> texture;
 	float bullets_turning_speed = 1.0f;
 
-	static void _register_methods() {
-		register_property<CustomFollowingBulletKit, Ref<Texture>>("texture", &CustomFollowingBulletKit::texture, Ref<Texture>(),
-			GODOT_METHOD_RPC_MODE_DISABLED, GODOT_PROPERTY_USAGE_DEFAULT, GODOT_PROPERTY_HINT_RESOURCE_TYPE, "Texture");
-		register_property<CustomFollowingBulletKit, float>("bullets_turning_speed", &CustomFollowingBulletKit::bullets_turning_speed, 1.0f,
-			GODOT_METHOD_RPC_MODE_DISABLED, GODOT_PROPERTY_USAGE_DEFAULT, GODOT_PROPERTY_HINT_RANGE, "0.0,128.0");
+	Ref<Texture2D> get_texture() { return texture; }
+	void set_texture(Ref<Texture2D> texture) {
+		this->texture = texture;
+	}
+	
+	float get_bullets_turning_speed() { return bullets_turning_speed; }
+	void set_bullets_turning_speed(float speed) {
+		bullets_turning_speed = speed;
+	}
 
-		// Add this macro at the end of the _register_methods() method.
-		// Pass this BulletKit type and the used Bullet type as arguments.
-		BULLET_KIT_REGISTRATION(CustomFollowingBulletKit, CustomFollowingBullet)
+	static void _bind_methods() {
+		ClassDB::bind_method(D_METHOD("set_texture", "texture"), &CustomFollowingBulletKit::set_texture);
+		ClassDB::bind_method(D_METHOD("get_texture"), &CustomFollowingBulletKit::get_texture);
+		ClassDB::bind_method(D_METHOD("set_bullets_turning_speed", "speed"), &CustomFollowingBulletKit::set_bullets_turning_speed);
+		ClassDB::bind_method(D_METHOD("get_bullets_turning_speed"), &CustomFollowingBulletKit::get_bullets_turning_speed);
+
+		ADD_PROPERTY(PropertyInfo(Variant::OBJECT, "texture", PROPERTY_HINT_RESOURCE_TYPE, "Texture2D",
+			PROPERTY_USAGE_DEFAULT, "Texture2D"), "set_texture", "get_texture");
+		ADD_PROPERTY(PropertyInfo(Variant::FLOAT, "bullets_turning_speed", PROPERTY_HINT_RANGE, "0.0,128.0",
+			PROPERTY_USAGE_DEFAULT, ""), "set_bullets_turning_speed", "get_bullets_turning_speed");
 	}
 };
 
@@ -666,7 +676,7 @@ class CustomFollowingBulletsPool : public AbstractBulletsPool<CustomFollowingBul
 		RID texture_rid = kit->texture->get_rid();
 
 		// Configure the bullet to draw the kit texture each frame.
-		VisualServer::get_singleton()->canvas_item_add_texture_rect(bullet->item_rid,
+		RenderingServer::get_singleton()->canvas_item_add_texture_rect(bullet->item_rid,
 			texture_rect,
 			texture_rid);
 	}
@@ -677,6 +687,11 @@ class CustomFollowingBulletsPool : public AbstractBulletsPool<CustomFollowingBul
 
 	bool _process_bullet(CustomFollowingBullet* bullet, float delta) {
 		// Runs each frame for each bullet, here goes your update logic.
+
+		// Check if target_node is still a valid object and has not been freed.
+		if(!UtilityFunctions::is_instance_valid(bullet->target_node)) {
+			bullet->set_target_node(nullptr);
+		}
 		if(bullet->target_node != nullptr) {
 			// Find the rotation to the target node.
 			Vector2 to_target = bullet->target_node->get_global_position() - bullet->transform.get_origin();
@@ -693,8 +708,8 @@ class CustomFollowingBulletsPool : public AbstractBulletsPool<CustomFollowingBul
 			// Return true if the bullet should be deleted.
 			return true;
 		}
-		// Rotate the bullet based on its velocity if "rotate" is enabled.
-		if(kit->rotate) {
+		// Rotate the bullet based on its velocity if "auto_rotate" is enabled.
+		if(kit->auto_rotate) {
 			bullet->transform.set_rotation(bullet->velocity.angle());
 		}
 		// Bullet is still alive, increase its lifetime.
@@ -711,12 +726,12 @@ BULLET_KIT_IMPLEMENTATION(CustomFollowingBulletKit, CustomFollowingBulletsPool)
 #endif
 ```
 
-Next, register you Godot classes inside the `gdlibrary.cpp` file.
+Next, register you Godot classes inside the `register_types.cpp` file.
 
 ```c++
-// src/gdlibrary.cpp
+// src/register_types.cpp
 
-#include "bullets.h"
+#include "native_bullets.h"
 ...
 ...
 
@@ -725,25 +740,22 @@ Next, register you Godot classes inside the `gdlibrary.cpp` file.
 ...
 ...
 
-extern "C" void GDN_EXPORT godot_nativescript_init(void *handle) {
+void initialize_native_bullets_module(ModuleInitializationLevel p_level) {
 	...
 	...
 
 	// Custom Bullet Kits.
-	godot::register_class<CustomFollowingBullet>();
-	godot::register_class<CustomFollowingBulletKit>();
+	ClassDB::register_class<CustomFollowingBullet>();
+	ClassDB::register_class<CustomFollowingBulletKit>();
 }
 ```
 
 Compile the bindings and the plugin for your selected platform.
 
 ```
-cd addons/native_bullets/godot-cpp
-scons platform=windows target=release generate_bindings=yes -j4
-
-cd ..
-scons platform=windows target=release
+cd addons/native_bullets
+scons platform=windows target=template_release
 ```
 
-Finally, create a NativeScript resource setting `bullets.gdnlib` as its library and `CustomFollowingBulletKit` as its class name.<br>
-Now you can attach this script to your BulletKit resources and use it.
+Finally, reload the editor and your new BulletKit should be available to use.<br>
+You can also assign an icon to the BulletKit adding a line in the `native_bullets.gdextension` file.

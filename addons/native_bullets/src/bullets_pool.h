@@ -1,12 +1,12 @@
 #ifndef BULLETS_POOL_H
 #define BULLETS_POOL_H
 
-#include <Godot.hpp>
-#include <CanvasLayer.hpp>
-#include <CanvasItem.hpp>
-#include <AtlasTexture.hpp>
-#include <Material.hpp>
-#include <Color.hpp>
+#include <godot_cpp/godot.hpp>
+#include <godot_cpp/classes/canvas_layer.hpp>
+#include <godot_cpp/classes/canvas_item.hpp>
+#include <godot_cpp/classes/atlas_texture.hpp>
+#include <godot_cpp/classes/material.hpp>
+#include <godot_cpp/variant/color.hpp>
 
 #include "bullet.h"
 #include "bullet_kit.h"

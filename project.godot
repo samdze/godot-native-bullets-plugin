@@ -6,93 +6,39 @@
 ;   [section] ; section goes between []
 ;   param=value ; assign values to parameters
 
-config_version=4
-
-_global_script_classes=[ {
-"base": "Resource",
-"class": "BasicBulletKit",
-"language": "NativeScript",
-"path": "res://addons/native_bullets/kits/basic_bullet_kit.gdns"
-}, {
-"base": "Resource",
-"class": "BulletKit",
-"language": "NativeScript",
-"path": "res://addons/native_bullets/bullet_kit.gdns"
-}, {
-"base": "Node2D",
-"class": "Bullets",
-"language": "NativeScript",
-"path": "res://addons/native_bullets/bullets.gdns"
-}, {
-"base": "Node",
-"class": "BulletsEnvironment",
-"language": "GDScript",
-"path": "res://addons/native_bullets/bullets_environment.gd"
-}, {
-"base": "Node2D",
-"class": "BulletsSpawner",
-"language": "GDScript",
-"path": "res://addons/native_bullets/utils/bullets_spawner.gd"
-}, {
-"base": "Resource",
-"class": "DynamicBulletKit",
-"language": "NativeScript",
-"path": "res://addons/native_bullets/kits/dynamic_bullet_kit.gdns"
-}, {
-"base": "Resource",
-"class": "FollowingBulletKit",
-"language": "NativeScript",
-"path": "res://addons/native_bullets/kits/following_bullet_kit.gdns"
-}, {
-"base": "Resource",
-"class": "FollowingDynamicBulletKit",
-"language": "NativeScript",
-"path": "res://addons/native_bullets/kits/following_dynamic_bullet_kit.gdns"
-}, {
-"base": "Node",
-"class": "TimedEvents",
-"language": "GDScript",
-"path": "res://addons/native_bullets/utils/timed_events.gd"
-}, {
-"base": "Node2D",
-"class": "TimedRotator",
-"language": "GDScript",
-"path": "res://addons/native_bullets/utils/timed_rotator.gd"
-} ]
-_global_script_class_icons={
-"BasicBulletKit": "res://addons/native_bullets/icons/icon_bullet_kit.svg",
-"BulletKit": "res://addons/native_bullets/icons/icon_bullet_kit.svg",
-"Bullets": "res://addons/native_bullets/icons/icon_bullets.svg",
-"BulletsEnvironment": "res://addons/native_bullets/icons/icon_bullets_environment.svg",
-"BulletsSpawner": "res://addons/native_bullets/icons/icon_bullet_properties.svg",
-"DynamicBulletKit": "res://addons/native_bullets/icons/icon_bullet_kit.svg",
-"FollowingBulletKit": "res://addons/native_bullets/icons/icon_bullet_kit.svg",
-"FollowingDynamicBulletKit": "res://addons/native_bullets/icons/icon_bullet_kit.svg",
-"TimedEvents": "res://addons/native_bullets/icons/icon_timed_events.svg",
-"TimedRotator": "res://addons/native_bullets/icons/icon_timed_rotator.svg"
-}
+config_version=5
 
 [application]
 
 config/name="Native Bullets"
 run/main_scene="res://examples/example_01.tscn"
+config/features=PackedStringArray("4.2")
 boot_splash/fullsize=false
 
 [autoload]
 
-Bullets="*res://addons/native_bullets/bullets.gdns"
+Bullets="*res://addons/native_bullets/bullets.tscn"
 
 [debug]
 
 gdscript/warnings/return_value_discarded=false
 
+[display]
+
+window/size/viewport_width=1000
+window/size/viewport_height=680
+
+[dotnet]
+
+project/assembly_name="Native Bullets"
+
 [editor_plugins]
 
-enabled=PoolStringArray( "res://addons/native_bullets/plugin.cfg" )
+enabled=PackedStringArray("res://addons/native_bullets/plugin.cfg")
 
 [gdnative]
 
-singletons=[  ]
+singletons=[]
 
 [layer_names]
 
@@ -101,13 +47,13 @@ singletons=[  ]
 
 [physics]
 
-2d/thread_model=2
 2d/use_bvh=false
+2d/run_on_thread=2
 
 [rendering]
 
+environment/defaults/default_clear_color=Color(0.905882, 0.694118, 0.521569, 1)
 quality/intended_usage/framebuffer_allocation=0
 quality/intended_usage/framebuffer_allocation.mobile=0
 quality/shadows/filter_mode=0
 batching/parameters/batch_buffer_size=65535
-environment/default_clear_color=Color( 0.905882, 0.694118, 0.521569, 1 )

@@ -1,0 +1,3 @@
+[gd_scene format=3 uid="uid://dgmwj4e1vcskr"]
+
+[node name="Bullets" type="NativeBullets"]

@@ -1,0 +1,22 @@
+[gd_resource type="DynamicBulletKit" load_steps=5 format=3 uid="uid://d4cumuc0py5q0"]
+
+[ext_resource type="Material" uid="uid://do2ypd8orp24m" path="res://examples/misc/static_vertical_bullet.material" id="1_tntse"]
+[ext_resource type="Texture2D" uid="uid://cnlrtpftmj8k3" path="res://examples/images/laser_green_08.png" id="2_qrbgi"]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_h6ql2"]
+
+[sub_resource type="Curve" id="Curve_y5ens"]
+min_value = -3.14
+max_value = 2.13163e-14
+_data = [Vector2(0, 0), 0.0, 2.08165e-12, 0, 0, Vector2(0.5, -2.4), 0.0, 0.0, 0, 0, Vector2(0.85, 2.08165e-12), 2.08165e-12, 0.0, 0, 0]
+point_count = 3
+
+[resource]
+texture = ExtResource("2_qrbgi")
+lifetime_curves_span = 1.5
+rotation_offset_over_lifetime = SubResource("Curve_y5ens")
+material = ExtResource("1_tntse")
+collisions_enabled = false
+collision_shape = SubResource("CircleShape2D_h6ql2")
+auto_rotate = true
+data = null

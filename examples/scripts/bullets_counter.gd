@@ -1,7 +1,7 @@
 extends Label
 
 
-onready var format_string = text
+@onready var format_string = text
 
 
 func _process(_delta):

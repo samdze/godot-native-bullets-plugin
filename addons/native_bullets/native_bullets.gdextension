@@ -1,0 +1,29 @@
+[configuration]
+
+entry_symbol = "native_bullets_init"
+compatibility_minimum = 4.1
+
+[icons]
+NativeBullets = "res://addons/native_bullets/icons/icon_bullets.svg"
+
+BulletKit = "res://addons/native_bullets/icons/icon_bullet_kit.svg"
+BasicBulletKit = "res://addons/native_bullets/icons/icon_bullet_kit.svg"
+DynamicBulletKit = "res://addons/native_bullets/icons/icon_bullet_kit.svg"
+FollowingBulletKit = "res://addons/native_bullets/icons/icon_bullet_kit.svg"
+FollowingDynamicBulletKit = "res://addons/native_bullets/icons/icon_bullet_kit.svg"
+
+Bullet = "res://addons/native_bullets/icons/icon_bullet_properties.svg"
+DynamicBullet = "res://addons/native_bullets/icons/icon_bullet_properties.svg"
+FollowingBullet = "res://addons/native_bullets/icons/icon_bullet_properties.svg"
+FollowingDynamicBullet = "res://addons/native_bullets/icons/icon_bullet_properties.svg"
+
+[libraries]
+
+macos.debug = "bin/libbullets.macos.template_debug.framework"
+macos.release = "bin/libbullets.macos.template_release.framework"
+windows.debug.x86_64 = "bin/libbullets.windows.template_debug.x86_64.dll"
+windows.release.x86_64 = "bin/libbullets.windows.template_release.x86_64.dll"
+linux.debug.x86_64 = "bin/libbullets.linux.template_debug.x86_64.so"
+linux.release.x86_64 = "bin/libbullets.linux.template_release.x86_64.so"
+linux.debug.arm64 = "bin/libbullets.linux.template_debug.arm64.so"
+linux.release.arm64 = "bin/libbullets.linux.template_release.arm64.so"

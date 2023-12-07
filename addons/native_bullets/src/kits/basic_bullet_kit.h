@@ -1,9 +1,10 @@
 #ifndef BASIC_BULLET_KIT_H
 #define BASIC_BULLET_KIT_H
 
-#include <Texture.hpp>
-#include <PackedScene.hpp>
+#include <godot_cpp/classes/texture2d.hpp>
+#include <godot_cpp/classes/packed_scene.hpp>
 
+#include "../bullet.h"
 #include "../bullet_kit.h"
 
 using namespace godot;
@@ -11,17 +12,27 @@ using namespace godot;
 
 // Bullet kit definition.
 class BasicBulletKit : public BulletKit {
-	GODOT_CLASS(BasicBulletKit, BulletKit)
+	GDCLASS(BasicBulletKit, BulletKit)
 public:
-	BULLET_KIT(BasicBulletsPool)
+	BULLET_KIT(BasicBulletKit, BasicBulletsPool, Bullet)
 
-	Ref<Texture> texture;
+	Ref<Texture2D> texture;
 
-	static void _register_methods() {
-		register_property<BasicBulletKit, Ref<Texture>>("texture", &BasicBulletKit::texture, Ref<Texture>(), 
-			GODOT_METHOD_RPC_MODE_DISABLED, GODOT_PROPERTY_USAGE_DEFAULT, GODOT_PROPERTY_HINT_RESOURCE_TYPE, "Texture");
-		
-		BULLET_KIT_REGISTRATION(BasicBulletKit, Bullet)
+	void set_texture(Ref<Texture2D> texture) {
+		this->texture = texture;
+		emit_changed();
+	}
+
+	Ref<Texture2D> get_texture() {
+		return texture;
+	}
+
+	static void _bind_methods() {
+		ClassDB::bind_method(D_METHOD("set_texture", "texture"), &BasicBulletKit::set_texture);
+		ClassDB::bind_method(D_METHOD("get_texture"), &BasicBulletKit::get_texture);
+
+		ADD_PROPERTY(PropertyInfo(Variant::OBJECT, "texture", PROPERTY_HINT_RESOURCE_TYPE, "Texture2D",
+			PROPERTY_USAGE_DEFAULT, "Texture2D"), "set_texture", "get_texture");
 	}
 };
 
@@ -37,7 +48,7 @@ class BasicBulletsPool : public AbstractBulletsPool<BasicBulletKit, Bullet> {
 		RID texture_rid = kit->texture->get_rid();
 		
 		// Configure the bullet to draw the kit texture each frame.
-		VisualServer::get_singleton()->canvas_item_add_texture_rect(bullet->item_rid,
+		RenderingServer::get_singleton()->canvas_item_add_texture_rect(bullet->item_rid,
 			texture_rect,
 			texture_rid);
 	}
@@ -51,8 +62,8 @@ class BasicBulletsPool : public AbstractBulletsPool<BasicBulletKit, Bullet> {
 			// Return true if the bullet should be deleted.
 			return true;
 		}
-		// Rotate the bullet based on its velocity "rotate" is enabled.
-		if(kit->rotate) {
+		// Rotate the bullet based on its velocity if "auto_rotate" is enabled.
+		if(kit->auto_rotate) {
 			bullet->transform.set_rotation(bullet->velocity.angle());
 		}
 		// Bullet is still alive, increase its lifetime.
