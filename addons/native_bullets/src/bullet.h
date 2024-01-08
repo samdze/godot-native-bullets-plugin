@@ -6,51 +6,50 @@
 
 using namespace godot;
 
-
 struct BulletID {
-	int32_t index;
-	int32_t cycle;
-	int32_t set;
+    int32_t index;
+    int32_t cycle;
+    int32_t set;
 
-	BulletID(int32_t index, int32_t cycle, int32_t set): 
-		index(index), cycle(cycle), set(set) {}
+    BulletID(int32_t index, int32_t cycle, int32_t set): 
+        index(index), cycle(cycle), set(set) {}
 };
 
 class Bullet : public Object {
-	GDCLASS(Bullet, Object)
-
-	RID item_rid;
-	int32_t cycle = 0;
-	int32_t shape_index = -1;
-	Transform2D transform;
-	Vector2 velocity;
-	float lifetime;
-	Variant data;
-
-protected:
-	static void _bind_methods();
+    GDCLASS(Bullet, Object)
 
 public:
-	Bullet() {}
-	~Bullet() {}
+    RID item_rid;
+    int32_t cycle = 0;
+    int32_t shape_index = -1;
+    Transform2D transform;
+    Vector2 velocity;
+    float lifetime;
+    Variant data;
 
-	RID get_item_rid();
+    Bullet() {}
+    ~Bullet() {}
 
-	int32_t get_cycle();
+    RID get_item_rid();
 
-	int32_t get_shape_index();
+    int32_t get_cycle();
 
-	Transform2D get_transform();
-	void set_transform(Transform2D transform);
+    int32_t get_shape_index();
 
-	Vector2 get_velocity();
-	void set_velocity(Vector2 velocity);
+    Transform2D get_transform();
+    void set_transform(Transform2D transform);
 
-	float get_lifetime();
-	void set_lifetime(float lifetime);
+    Vector2 get_velocity();
+    void set_velocity(Vector2 velocity);
 
-	Variant get_data();
-	void set_data(Variant data);
+    float get_lifetime();
+    void set_lifetime(float lifetime);
+
+    Variant get_data();
+    void set_data(Variant data);
+
+protected:
+    static void _bind_methods();
 };
 
 #endif
