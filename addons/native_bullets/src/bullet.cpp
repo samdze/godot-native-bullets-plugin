@@ -4,14 +4,23 @@
 
 
 RID Bullet::get_item_rid() { return item_rid; }
+void Bullet::set_item_rid(RID i_rid) {
+	this->item_rid = i_rid;
+}
 
 int32_t Bullet::get_cycle() { return cycle; }
+void Bullet::increase_cycle() {
+	this->cycle += 1;
+}
 
 int32_t Bullet::get_shape_index() { return shape_index; }
+void Bullet::set_shape_index(int32_t s_index){
+	this->shape_index = s_index;
+}
 
 Transform2D Bullet::get_transform() { return transform; }
 void Bullet::set_transform(Transform2D p_transform) {
-	transform = p_transform;
+	this->transform = p_transform;
 }
 
 Vector2 Bullet::get_velocity() { return velocity; }
@@ -23,6 +32,10 @@ float Bullet::get_lifetime() { return lifetime; }
 void Bullet::set_lifetime(float lifetime) {
 	this->lifetime = lifetime;
 }
+void Bullet::add_lifetime(float delta) {
+	this->lifetime += delta;
+}
+
 
 Variant Bullet::get_data() { return data; }
 void Bullet::set_data(Variant data) {
@@ -32,6 +45,7 @@ void Bullet::set_data(Variant data) {
 void Bullet::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("get_item_rid"), &Bullet::get_item_rid);
 	ClassDB::bind_method(D_METHOD("get_cycle"), &Bullet::get_cycle);
+	ClassDB::bind_method(D_METHOD("increase_cycle"), &Bullet::increase_cycle);
 	ClassDB::bind_method(D_METHOD("get_shape_index"), &Bullet::get_shape_index);
 	ClassDB::bind_method(D_METHOD("get_transform"), &Bullet::get_transform);
 	ClassDB::bind_method(D_METHOD("set_transform", "value"), &Bullet::set_transform);
@@ -39,6 +53,7 @@ void Bullet::_bind_methods() {
 	ClassDB::bind_method(D_METHOD("set_velocity", "value"), &Bullet::set_velocity);
 	ClassDB::bind_method(D_METHOD("get_lifetime"), &Bullet::get_lifetime);
 	ClassDB::bind_method(D_METHOD("set_lifetime", "value"), &Bullet::set_lifetime);
+	ClassDB::bind_method(D_METHOD("add_lifetime", "value"), &Bullet::add_lifetime);
 	ClassDB::bind_method(D_METHOD("get_data"), &Bullet::get_data);
 	ClassDB::bind_method(D_METHOD("set_data", "value"), &Bullet::set_data);
 

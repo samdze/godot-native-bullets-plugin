@@ -158,12 +158,12 @@ class FollowingDynamicBulletsPool : public AbstractBulletsPool<FollowingDynamicB
 
 	void _enable_bullet(FollowingDynamicBullet* bullet) {
 		// Reset the bullet lifetime.
-		bullet->lifetime = 0.0f;
+		bullet->set_lifetime(0.0f);
 		Rect2 texture_rect = Rect2(-kit->texture->get_size() / 2.0f, kit->texture->get_size());
 		RID texture_rid = kit->texture->get_rid();
 		
 		// Configure the bullet to draw the kit texture each frame.
-		RenderingServer::get_singleton()->canvas_item_add_texture_rect(bullet->item_rid,
+		RenderingServer::get_singleton()->canvas_item_add_texture_rect(bullet->get_item_rid(),
 			texture_rect,
 			texture_rid);
 	}
@@ -171,18 +171,24 @@ class FollowingDynamicBulletsPool : public AbstractBulletsPool<FollowingDynamicB
 	// void _disable_bullet(FollowingDynamicBullet* bullet); Use default implementation.
 
 	bool _process_bullet(FollowingDynamicBullet* bullet, float delta) {
-		float adjusted_lifetime = bullet->lifetime / kit->lifetime_curves_span;
+		Transform2D bullet_transform;
+		bullet_transform = bullet->get_transform();
+		Node2D* bullet_target_node;
+		bullet_target_node = bullet->get_target_node();
+
+		float adjusted_lifetime = bullet->get_lifetime() / kit->lifetime_curves_span;
 		if(kit->lifetime_curves_loop) {
 			adjusted_lifetime = fmod(adjusted_lifetime, 1.0f);
 		}
 		float bullet_turning_speed = 0.0f;
 		float speed_multiplier = 1.0f;
 		
-		if(!UtilityFunctions::is_instance_valid(bullet->target_node)) {
+		if(!UtilityFunctions::is_instance_valid(bullet_target_node)) {
 			bullet->set_target_node(nullptr);
+			bullet_target_node = bullet->get_target_node();
 		}
-		if(kit->turning_speed.is_valid() && bullet->target_node != nullptr) {
-			Vector2 to_target = bullet->target_node->get_global_position() - bullet->transform.get_origin();
+		if(kit->turning_speed.is_valid() && bullet_target_node != nullptr) {
+			Vector2 to_target = bullet_target_node->get_global_position() - bullet_transform.get_origin();
 			// If based on lifetime.
 			if(kit->turning_speed_control_mode == 0) {
 				bullet_turning_speed = kit->turning_speed->sample(adjusted_lifetime);
@@ -194,7 +200,7 @@ class FollowingDynamicBulletsPool : public AbstractBulletsPool<FollowingDynamicB
 			}
 			// If based on angle to target.
 			else if(kit->turning_speed_control_mode == 2) {
-				float angle_to_target = bullet->velocity.angle_to(to_target);
+				float angle_to_target = bullet->get_velocity().angle_to(to_target);
 				bullet_turning_speed = kit->turning_speed->sample(std::abs(angle_to_target) / (float)Math_PI);
 			}
 		}
@@ -204,8 +210,8 @@ class FollowingDynamicBulletsPool : public AbstractBulletsPool<FollowingDynamicB
 				speed_multiplier = kit->speed_multiplier->sample(adjusted_lifetime);
 			}
 			// If based on target node: 1 or 2.
-			else if(kit->speed_control_mode < 3 && bullet->target_node != nullptr) {
-				Vector2 to_target = bullet->target_node->get_global_position() - bullet->transform.get_origin();
+			else if(kit->speed_control_mode < 3 && bullet_target_node != nullptr) {
+				Vector2 to_target = bullet_target_node->get_global_position() - bullet_transform.get_origin();
 				// If based on distance to target.
 				if(kit->speed_control_mode == 1) {
 					float distance_to_target = to_target.length();
@@ -213,36 +219,38 @@ class FollowingDynamicBulletsPool : public AbstractBulletsPool<FollowingDynamicB
 				}
 				// If based on angle to target.
 				else if(kit->speed_control_mode == 2) {
-					float angle_to_target = bullet->velocity.angle_to(to_target);
+					float angle_to_target = bullet->get_velocity().angle_to(to_target);
 					speed_multiplier = kit->speed_multiplier->sample(std::abs(angle_to_target) / (float)Math_PI);
 				}
 			}
 		}
 
 		if(speed_multiplier != 1.0f) {
-			bullet->velocity = bullet->velocity.normalized() * bullet->starting_speed * speed_multiplier;
+			bullet->set_velocity(bullet->get_velocity().normalized() * bullet->get_starting_speed() * speed_multiplier);
 		}
-		if(bullet_turning_speed != 0.0 && bullet->target_node != nullptr) {
+		if(bullet_turning_speed != 0.0 && bullet_target_node != nullptr) {
 			// Find the rotation to the target node.
-			Vector2 to_target = bullet->target_node->get_global_position() - bullet->transform.get_origin();
-			float rotation_to_target = bullet->velocity.angle_to(to_target);
+			Vector2 to_target = bullet_target_node->get_global_position() - bullet_transform.get_origin();
+			float rotation_to_target = bullet->get_velocity().angle_to(to_target);
 			float rotation_value = Math::min(bullet_turning_speed * delta, std::abs(rotation_to_target));
 			// Apply the rotation, capped to the max turning speed.
-			bullet->velocity = bullet->velocity.rotated(Math::sign(rotation_to_target) * rotation_value);
+			bullet->set_velocity(bullet->get_velocity().rotated(Math::sign(rotation_to_target) * rotation_value));
 		}
 
-		bullet->transform.set_origin(bullet->transform.get_origin() + bullet->velocity * delta);
+		bullet_transform.set_origin(bullet_transform.get_origin() + bullet->get_velocity() * delta);
 
-		if(!active_rect.has_point(bullet->transform.get_origin())) {
+		if(!active_rect.has_point(bullet_transform.get_origin())) {
+			bullet->set_transform(bullet_transform);
 			// Return true if the bullet should be deleted.
 			return true;
 		}
 		// Rotate the bullet based on its velocity "rotate" is enabled.
 		if(kit->auto_rotate) {
-			bullet->transform.set_rotation(bullet->velocity.angle());
+			bullet_transform.set_rotation(bullet->get_velocity().angle());
 		}
 		// Bullet is still alive, increase its lifetime.
-		bullet->lifetime += delta;
+		bullet->add_lifetime(delta);
+		bullet->set_transform(bullet_transform);
 		// Return false if the bullet should not be deleted yet.
 		return false;
 	}

@@ -43,12 +43,12 @@ class BasicBulletsPool : public AbstractBulletsPool<BasicBulletKit, Bullet> {
 
 	void _enable_bullet(Bullet* bullet) {
 		// Reset the bullet lifetime.
-		bullet->lifetime = 0.0f;
+		bullet->set_lifetime(0.0f);
 		Rect2 texture_rect = Rect2(-kit->texture->get_size() / 2.0f, kit->texture->get_size());
 		RID texture_rid = kit->texture->get_rid();
 		
 		// Configure the bullet to draw the kit texture each frame.
-		RenderingServer::get_singleton()->canvas_item_add_texture_rect(bullet->item_rid,
+		RenderingServer::get_singleton()->canvas_item_add_texture_rect(bullet->get_item_rid(),
 			texture_rect,
 			texture_rid);
 	}
@@ -56,18 +56,22 @@ class BasicBulletsPool : public AbstractBulletsPool<BasicBulletKit, Bullet> {
 	// void _disable_bullet(Bullet* bullet); Use default implementation.
 
 	bool _process_bullet(Bullet* bullet, float delta) {
-		bullet->transform.set_origin(bullet->transform.get_origin() + bullet->velocity * delta);
+		Transform2D bullet_transform;
+		bullet_transform = bullet->get_transform();
+		bullet_transform.set_origin(bullet_transform.get_origin() + bullet->get_velocity() * delta);
 
-		if(!active_rect.has_point(bullet->transform.get_origin())) {
+		if(!active_rect.has_point(bullet_transform.get_origin())) {
+			bullet->set_transform(bullet_transform);
 			// Return true if the bullet should be deleted.
 			return true;
 		}
 		// Rotate the bullet based on its velocity if "auto_rotate" is enabled.
 		if(kit->auto_rotate) {
-			bullet->transform.set_rotation(bullet->velocity.angle());
+			bullet_transform.set_rotation(bullet->get_velocity().angle());
 		}
 		// Bullet is still alive, increase its lifetime.
-		bullet->lifetime += delta;
+		bullet->add_lifetime(delta);
+		bullet->set_transform(bullet_transform);
 		// Return false if the bullet should not be deleted yet.
 		return false;
 	}

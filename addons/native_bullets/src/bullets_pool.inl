@@ -17,30 +17,34 @@ void AbstractBulletsPool<Kit, BulletType>::_init_bullet(BulletType* bullet) {}
 
 template <class Kit, class BulletType>
 void AbstractBulletsPool<Kit, BulletType>::_enable_bullet(BulletType* bullet) {
-	bullet->lifetime = 0.0f;
+	bullet->set_lifetime(0.0f);
 
 	Rect2 texture_rect = Rect2(-kit->texture->get_size() / 2.0f, kit->texture->get_size());
 	RID texture_rid = kit->texture->get_rid();
 
-	RenderingServer::get_singleton()->canvas_item_add_texture_rect(bullet->item_rid,
+	RenderingServer::get_singleton()->canvas_item_add_texture_rect(bullet->get_item_rid(),
 		texture_rect,
 		texture_rid);
 }
 
 template <class Kit, class BulletType>
 void AbstractBulletsPool<Kit, BulletType>::_disable_bullet(BulletType* bullet) {
-	RenderingServer::get_singleton()->canvas_item_clear(bullet->item_rid);
+	RenderingServer::get_singleton()->canvas_item_clear(bullet->get_item_rid());
 }
 
 template <class Kit, class BulletType>
 bool AbstractBulletsPool<Kit, BulletType>::_process_bullet(BulletType* bullet, float delta) {
-	bullet->transform.set_origin(bullet->transform.get_origin() + bullet->velocity * delta);
+	Transform2D bullet_transform;
+	bullet_transform = bullet->get_transform();
+	bullet_transform.set_origin(bullet_transform.get_origin() + bullet->get_velocity() * delta);
 
-	if(!active_rect.has_point(bullet->transform.get_origin())) {
+	if(!active_rect.has_point(bullet_transform.get_origin())) {
+		bullet->set_transform(bullet_transform);
 		return true;
 	}
 
-	bullet->lifetime += delta;
+	bullet->add_lifetime(delta);
+	bullet->set_transform(bullet_transform);
 	return false;
 }
 
@@ -50,7 +54,7 @@ template <class Kit, class BulletType>
 AbstractBulletsPool<Kit, BulletType>::~AbstractBulletsPool() {
 	// Bullets node is responsible for clearing all the area and area shapes
 	for(int32_t i = 0; i < pool_size; i++) {
-		RenderingServer::get_singleton()->free_rid(bullets[i]->item_rid);
+		RenderingServer::get_singleton()->free_rid(bullets[i]->get_item_rid());
 		
 		memdelete(bullets[i]);
 	}
@@ -121,11 +125,11 @@ void AbstractBulletsPool<Kit, BulletType>::_init(Node* parent_hint, RID shared_a
 		BulletType* bullet = memnew(BulletType);
 		bullets[i] = bullet;
 
-		bullet->item_rid = RenderingServer::get_singleton()->canvas_item_create();
-		RenderingServer::get_singleton()->canvas_item_set_parent(bullet->item_rid, canvas_item);
-		RenderingServer::get_singleton()->canvas_item_set_material(bullet->item_rid, kit->material->get_rid());
+		bullet->set_item_rid(RenderingServer::get_singleton()->canvas_item_create());
+		RenderingServer::get_singleton()->canvas_item_set_parent(bullet->get_item_rid(), canvas_item);
+		RenderingServer::get_singleton()->canvas_item_set_material(bullet->get_item_rid(), kit->material->get_rid());
 
-		bullet->shape_index = starting_shape_index + i;
+		bullet->set_shape_index(starting_shape_index + i);
 		shapes_to_indices[i] = i;
 
 		if(collisions_enabled) {
@@ -149,7 +153,7 @@ void AbstractBulletsPool<Kit, BulletType>::_init(Node* parent_hint, RID shared_a
 			default: // None or other values
 				break;
 		}
-		RenderingServer::get_singleton()->canvas_item_set_modulate(bullet->item_rid, color);
+		RenderingServer::get_singleton()->canvas_item_set_modulate(bullet->get_item_rid(), color);
 
 		_init_bullet(bullet);
 	}
@@ -187,8 +191,8 @@ int32_t AbstractBulletsPool<Kit, BulletType>::_process(float delta) {
 				continue;
 			}
 
-			RenderingServer::get_singleton()->canvas_item_set_transform(bullet->item_rid, bullet->transform);
-			PhysicsServer2D::get_singleton()->area_set_shape_transform(shared_area, bullet->shape_index, bullet->transform);
+			RenderingServer::get_singleton()->canvas_item_set_transform(bullet->get_item_rid(), bullet->get_transform());
+			PhysicsServer2D::get_singleton()->area_set_shape_transform(shared_area, bullet->get_shape_index(), bullet->get_transform());
 		}
 	} else {
 		for(int32_t i = pool_size - 1; i >= available_bullets; i--) {
@@ -201,7 +205,7 @@ int32_t AbstractBulletsPool<Kit, BulletType>::_process(float delta) {
 				continue;
 			}
 
-			RenderingServer::get_singleton()->canvas_item_set_transform(bullet->item_rid, bullet->transform);
+			RenderingServer::get_singleton()->canvas_item_set_transform(bullet->get_item_rid(), bullet->get_transform());
 		}
 	}
 	return amount_variation;
@@ -216,16 +220,16 @@ void AbstractBulletsPool<Kit, BulletType>::spawn_bullet(Dictionary properties) {
 		BulletType* bullet = bullets[available_bullets];
 
 		if(collisions_enabled)
-			PhysicsServer2D::get_singleton()->area_set_shape_disabled(shared_area, bullet->shape_index, false);
+			PhysicsServer2D::get_singleton()->area_set_shape_disabled(shared_area, bullet->get_shape_index(), false);
 
 		Array keys = properties.keys();
 		for(int32_t i = 0; i < keys.size(); i++) {
 			bullet->set(keys[i], properties[keys[i]]);
 		}
 
-		RenderingServer::get_singleton()->canvas_item_set_transform(bullet->item_rid, bullet->transform);
+		RenderingServer::get_singleton()->canvas_item_set_transform(bullet->get_item_rid(), bullet->get_transform());
 		if(collisions_enabled)
-			PhysicsServer2D::get_singleton()->area_set_shape_transform(shared_area, bullet->shape_index, bullet->transform);
+			PhysicsServer2D::get_singleton()->area_set_shape_transform(shared_area, bullet->get_shape_index(), bullet->get_transform());
 
 		_enable_bullet(bullet);
 	}
@@ -240,11 +244,11 @@ BulletID AbstractBulletsPool<Kit, BulletType>::obtain_bullet() {
 		BulletType* bullet = bullets[available_bullets];
 
 		if(collisions_enabled)
-			PhysicsServer2D::get_singleton()->area_set_shape_disabled(shared_area, bullet->shape_index, false);
+			PhysicsServer2D::get_singleton()->area_set_shape_disabled(shared_area, bullet->get_shape_index(), false);
 
 		_enable_bullet(bullet);
 
-		return BulletID(bullet->shape_index, bullet->cycle, set_index);
+		return BulletID(bullet->get_shape_index(), bullet->get_cycle(), set_index);
 	}
 	return BulletID(-1, -1, -1);
 }
@@ -253,7 +257,7 @@ template <class Kit, class BulletType>
 bool AbstractBulletsPool<Kit, BulletType>::release_bullet(BulletID id) {
 	if(id.index >= starting_shape_index && id.index < starting_shape_index + pool_size && id.set == set_index) {
 		int32_t bullet_index = shapes_to_indices[id.index - starting_shape_index];
-		if(bullet_index >= available_bullets && bullet_index < pool_size && id.cycle == bullets[bullet_index]->cycle) {
+		if(bullet_index >= available_bullets && bullet_index < pool_size && id.cycle == bullets[bullet_index]->get_cycle()) {
 			_release_bullet(bullet_index);
 			return true;
 		}
@@ -266,12 +270,12 @@ void AbstractBulletsPool<Kit, BulletType>::_release_bullet(int32_t index) {
 	BulletType* bullet = bullets[index];
 
 	if(collisions_enabled)
-		PhysicsServer2D::get_singleton()->area_set_shape_disabled(shared_area, bullet->shape_index, true);
+		PhysicsServer2D::get_singleton()->area_set_shape_disabled(shared_area, bullet->get_shape_index(), true);
 
 	_disable_bullet(bullet);
-	bullet->cycle += 1;
+	bullet->increase_cycle();
 
-	_swap(shapes_to_indices[bullet->shape_index - starting_shape_index], shapes_to_indices[bullets[available_bullets]->shape_index - starting_shape_index]);
+	_swap(shapes_to_indices[bullet->get_shape_index() - starting_shape_index], shapes_to_indices[bullets[available_bullets]->get_shape_index() - starting_shape_index]);
 	_swap(bullets[index], bullets[available_bullets]);
 
 	available_bullets += 1;
@@ -282,7 +286,7 @@ template <class Kit, class BulletType>
 bool AbstractBulletsPool<Kit, BulletType>::is_bullet_valid(BulletID id) {
 	if(id.index >= starting_shape_index && id.index < starting_shape_index + pool_size && id.set == set_index) {
 		int32_t bullet_index = shapes_to_indices[id.index - starting_shape_index];
-		if(bullet_index >= available_bullets && bullet_index < pool_size && id.cycle == bullets[bullet_index]->cycle) {
+		if(bullet_index >= available_bullets && bullet_index < pool_size && id.cycle == bullets[bullet_index]->get_cycle()) {
 			return true;
 		}
 	}
@@ -305,7 +309,7 @@ BulletID AbstractBulletsPool<Kit, BulletType>::get_bullet_from_shape(int32_t sha
 	if(shape_index >= starting_shape_index && shape_index < starting_shape_index + pool_size) {
 		int32_t bullet_index = shapes_to_indices[shape_index - starting_shape_index];
 		if(bullet_index >= available_bullets) {
-			return BulletID(shape_index, bullets[bullet_index]->cycle, set_index);
+			return BulletID(shape_index, bullets[bullet_index]->get_cycle(), set_index);
 		}
 	}
 	return BulletID(-1, -1, -1);
@@ -320,10 +324,10 @@ void AbstractBulletsPool<Kit, BulletType>::set_bullet_property(BulletID id, Stri
 		bullet->set(property, value);
 
 		if(property == "transform") {
-			RenderingServer::get_singleton()->canvas_item_set_transform(bullet->item_rid, bullet->transform);
+			RenderingServer::get_singleton()->canvas_item_set_transform(bullet->get_item_rid(), bullet->get_transform());
 
 			if(collisions_enabled)
-				PhysicsServer2D::get_singleton()->area_set_shape_transform(shared_area, bullet->shape_index, bullet->transform);
+				PhysicsServer2D::get_singleton()->area_set_shape_transform(shared_area, bullet->get_shape_index(), bullet->get_transform());
 		}
 	} else {
 		const String description = "Invalid BulletID: {0}, {1}, {2}.";

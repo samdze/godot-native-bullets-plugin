@@ -74,12 +74,12 @@ class FollowingBulletsPool : public AbstractBulletsPool<FollowingBulletKit, Foll
 
 	void _enable_bullet(FollowingBullet* bullet) {
 		// Reset the bullet lifetime.
-		bullet->lifetime = 0.0f;
+		bullet->set_lifetime(0.0f);
 		Rect2 texture_rect = Rect2(-kit->texture->get_size() / 2.0f, kit->texture->get_size());
 		RID texture_rid = kit->texture->get_rid();
 		
 		// Configure the bullet to draw the kit texture each frame.
-		RenderingServer::get_singleton()->canvas_item_add_texture_rect(bullet->item_rid,
+		RenderingServer::get_singleton()->canvas_item_add_texture_rect(bullet->get_item_rid(),
 			texture_rect,
 			texture_rid);
 	}
@@ -87,31 +87,38 @@ class FollowingBulletsPool : public AbstractBulletsPool<FollowingBulletKit, Foll
 	//void _disable_bullet(FollowingBullet* bullet); Use default implementation.
 
 	bool _process_bullet(FollowingBullet* bullet, float delta) {
-		if(!UtilityFunctions::is_instance_valid(bullet->target_node)) {
+		Transform2D bullet_transform;
+		bullet_transform = bullet->get_transform();
+		Node2D* bullet_target_node;
+		bullet_target_node = bullet->get_target_node();
+		if(!UtilityFunctions::is_instance_valid(bullet_target_node)) {
 			bullet->set_target_node(nullptr);
+			bullet_target_node = bullet->get_target_node();
 		}
-		if(bullet->target_node != nullptr) {
+		if(bullet_target_node != nullptr) {
 			// Find the rotation to the target node.
-			Vector2 to_target = bullet->target_node->get_global_position() - bullet->transform.get_origin();
-			float rotation_to_target = bullet->velocity.angle_to(to_target);
+			Vector2 to_target = bullet_target_node->get_global_position() - bullet_transform.get_origin();
+			float rotation_to_target = bullet->get_velocity().angle_to(to_target);
 			float rotation_value = Math::min(kit->bullets_turning_speed * delta, std::abs(rotation_to_target));
 
 			// Apply the rotation, capped to the max turning speed.
-			bullet->velocity = bullet->velocity.rotated(Math::sign(rotation_to_target) * rotation_value);
+			bullet->set_velocity(bullet->get_velocity().rotated(Math::sign(rotation_to_target) * rotation_value));
 		}
 		// Apply velocity.
-		bullet->transform.set_origin(bullet->transform.get_origin() + bullet->velocity * delta);
+		bullet_transform.set_origin(bullet_transform.get_origin() + bullet->get_velocity() * delta);
 
-		if(!active_rect.has_point(bullet->transform.get_origin())) {
+		if(!active_rect.has_point(bullet_transform.get_origin())) {
+			bullet->set_transform(bullet_transform);
 			// Return true if the bullet should be deleted.
 			return true;
 		}
 		// Rotate the bullet based on its velocity "rotate" is enabled.
 		if(kit->auto_rotate) {
-			bullet->transform.set_rotation(bullet->velocity.angle());
+			bullet_transform.set_rotation(bullet->get_velocity().angle());
 		}
 		// Bullet is still alive, increase its lifetime.
-		bullet->lifetime += delta;
+		bullet->add_lifetime(delta);
+		bullet->set_transform(bullet_transform);
 		// Return false if the bullet should not be deleted yet.
 		return false;
 	}
